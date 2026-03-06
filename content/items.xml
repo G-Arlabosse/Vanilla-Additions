@@ -1,0 +1,4 @@
+<items gfxroot="gfx/items/" version="1">
+    <passive id="1" name="Damage Potion" gfx="damage_potion_item.png" description="Rage in a bottle" quality="1" cache="damage" />
+    <active id="2" name="Big Red Button" gfx="big_red_button_item.png" description="It's a big button" quality="4" maxcharges="6" chargetype="normal" />
+</items>
