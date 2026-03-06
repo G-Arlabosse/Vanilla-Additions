@@ -3,7 +3,6 @@
 local calcium = Isaac.GetItemIdByName("Calcium")
 local DAMAGE_MULTIPLIER = 0.25
 local FIRE_RATE_MULTIPLIER = 5.0
-local FIRE_DELAY_MULTIPLIER = 1 / FIRE_RATE_MULTIPLIER
 
 local function toTearsPerSecond(maxFireDelay)
   return 30 / (maxFireDelay + 1)
