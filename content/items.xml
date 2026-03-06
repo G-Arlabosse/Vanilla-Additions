@@ -1,4 +1,5 @@
 <items gfxroot="gfx/items/" version="1">
-    <passive id="1" name="Damage Potion" gfx="damage_potion_item.png" description="Rage in a bottle" quality="1" cache="damage" />
+    <passive id="1" name="Big Rock" gfx="big_rock_item.png" description="DAMN" quality="1" cache="damage firedelay speed" />
     <active id="2" name="Big Red Button" gfx="big_red_button_item.png" description="It's a big button" quality="4" maxcharges="6" chargetype="normal" />
+    <active id="3" name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="4" chargetype="normal" cache="damage firedelay tearcolor" />
 </items>
