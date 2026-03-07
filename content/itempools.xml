@@ -2,4 +2,8 @@
     <Pool Name="treasure">
         <Item Name="Big Red Button" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
+
+    <Pool Name="curse">
+		<Item Name="Cursed Floors" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+    </Pool>
 </ItemPools>

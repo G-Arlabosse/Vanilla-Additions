@@ -1,7 +1,7 @@
 local game = Game()
 
 -- Chance to replace a normal room
-local REPLACE_CHANCE = 0.3 -- 50%
+local REPLACE_CHANCE = 0.5 -- 50%
 local cursed_floors = Isaac.GetItemIdByName("Cursed Floors")
 local LibraryRooms = {}
 
