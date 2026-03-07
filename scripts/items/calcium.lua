@@ -1,8 +1,8 @@
---@param player EntityPlayer
+---@param player EntityPlayer
 
 local calcium = Isaac.GetItemIdByName("Calcium")
 local DAMAGE_MULTIPLIER = 0.25
-local FIRE_RATE_MULTIPLIER = 5.0
+local FIRE_RATE_MULTIPLIER = 5.5
 
 local function toTearsPerSecond(maxFireDelay)
   return 30 / (maxFireDelay + 1)
@@ -12,10 +12,7 @@ local function toMaxFireDelay(tearsPerSecond)
   return (30 / tearsPerSecond) - 1
 end
 
-local function calciumUse(a, item, rng, player)
-    print(type(item), type(rng), type(player))
-    print(item, "|", rng, "|", player)
-    print("Calcium activated!")
+local function calciumUse(_, item, rng, player)
     local data = player:GetData()
     data.opikoko_calcium_active = true
 
@@ -30,6 +27,7 @@ local function calciumUse(a, item, rng, player)
     }
 end
 
+-- Deactivate calcium for each player
 local function calciumDeactivate()
     for i=0, Game():GetNumPlayers() -1 do
         local player = Isaac.GetPlayer(i)
@@ -40,19 +38,18 @@ local function calciumDeactivate()
     end
 end
 
-local function evaluateCache(a, player, cacheFlags)
-    print("evaluating cache")
+local function evaluateCache(_, player, cacheFlags)
     print(type(player), type(cacheFlags))
     print(player, "|", cacheFlags)
     local data = player:GetData()
-    print("evaluateCache called, calcium_active =", data.opikoko_calcium_active)
 
+    -- Update Damage
     if cacheFlags == CacheFlag.CACHE_DAMAGE then
         if data.opikoko_calcium_active then
             player.Damage = player.Damage * DAMAGE_MULTIPLIER
         end
     end
-    
+    -- Update Fire Rate with tears calculation
     if cacheFlags == CacheFlag.CACHE_FIREDELAY then
         if data.opikoko_calcium_active then
             player.MaxFireDelay = toMaxFireDelay(toTearsPerSecond(player.MaxFireDelay) * FIRE_RATE_MULTIPLIER)
