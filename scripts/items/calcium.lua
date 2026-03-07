@@ -13,9 +13,6 @@ local function toMaxFireDelay(tearsPerSecond)
 end
 
 local function calciumUse(a, item, rng, player)
-    print(type(item), type(rng), type(player))
-    print(item, "|", rng, "|", player)
-    print("Calcium activated!")
     local data = player:GetData()
     data.opikoko_calcium_active = true
 
@@ -41,11 +38,7 @@ local function calciumDeactivate()
 end
 
 local function evaluateCache(a, player, cacheFlags)
-    print("evaluating cache")
-    print(type(player), type(cacheFlags))
-    print(player, "|", cacheFlags)
     local data = player:GetData()
-    print("evaluateCache called, calcium_active =", data.opikoko_calcium_active)
 
     if cacheFlags == CacheFlag.CACHE_DAMAGE then
         if data.opikoko_calcium_active then
@@ -64,4 +57,3 @@ Mod:AddCallback(ModCallbacks.MC_USE_ITEM, calciumUse, calcium)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, calciumDeactivate)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_DAMAGE)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_FIREDELAY)
-print("end callbacks")

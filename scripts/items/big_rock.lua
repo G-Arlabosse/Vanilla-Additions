@@ -15,4 +15,3 @@ local function evaluateCache(a, player, cacheFlags)
 end
 
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_SPEED)
-print("end callbacks")

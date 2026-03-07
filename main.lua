@@ -2,6 +2,7 @@ Mod = RegisterMod("Vanilla Additions", 1)
 
 include("scripts.items.calcium")
 include("scripts.items.big_rock")
+include("scripts.items.cursed_floors")
 
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
 local damagePotionDamage = 1
