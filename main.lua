@@ -2,6 +2,7 @@ Mod = RegisterMod("Vanilla Additions", 1)
 
 --- Utilities ---
 include("scripts.utility.EID")
+include("scripts.utility.ShopCosts")
 
 --- Items ---
 include("scripts.items.calcium")
