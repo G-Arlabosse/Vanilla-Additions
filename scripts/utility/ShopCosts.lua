@@ -1,6 +1,7 @@
 local config = Isaac.GetItemConfig()
 
 function Mod:SetShopItemsCost()
+    --- Fallen Angel ---
     local rare_candy_id = Isaac.GetItemIdByName("Fallen Angel")
     local rare_candy_config = config:GetCollectible(rare_candy_id)
     if rare_candy_config then
