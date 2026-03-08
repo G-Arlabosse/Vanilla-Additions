@@ -1,0 +1,7 @@
+<entities anm2root="gfx/" version="5">
+
+    <entity name="Bell Baby" id="3" anm2path="familiar_bell_baby.anm2"
+    tags="cansacrifice" shadowSize="15" friction="1"
+    gridCollision="GRIDCOLL_WALLS" />
+
+</entities>
