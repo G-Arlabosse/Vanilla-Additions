@@ -1,5 +1,3 @@
----@param player EntityPlayer
-
 local calcium = Isaac.GetItemIdByName("Calcium")
 local DAMAGE_MULTIPLIER = 0.25
 local FIRE_RATE_MULTIPLIER = 5.5
@@ -12,12 +10,13 @@ local function toMaxFireDelay(tearsPerSecond)
   return (30 / tearsPerSecond) - 1
 end
 
+---@param player EntityPlayer
 local function calciumUse(_, item, rng, player)
     local data = player:GetData()
     data.opikoko_calcium_active = true
 
     -- Trigger stat change
-    player:AddCacheFlags(CacheFlag.CACHE_DAMAGE | CacheFlag.CACHE_FIREDELAY)
+    player:AddCacheFlags(CacheFlag.CACHE_ALL)
     player:EvaluateItems()
 
     return {
@@ -38,6 +37,7 @@ local function calciumDeactivate()
     end
 end
 
+---@param player EntityPlayer
 local function evaluateCache(_, player, cacheFlags)
     local data = player:GetData()
 
