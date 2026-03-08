@@ -113,14 +113,11 @@ function Mod:UnlockSpecialRooms ()
     local room = game:GetRoom()
     -- RoomDescriptor --
     local roomDescriptor = game:GetLevel():GetCurrentRoomDesc()
-    print(roomDescriptor.Data.Shape)
 
     local isSecret = roomDescriptor.Data.Type == RoomType.ROOM_SECRET|RoomType.ROOM_SUPERSECRET|RoomType.ROOM_ULTRASECRET
     for doorSlot, neighborDesc in pairs(roomDescriptor:GetNeighboringRooms()) do
         if RoomNeedsToBeOpened(neighborDesc.GridIndex)
         then
-            --print(roomDescriptor.Data.Type)
-            --print(room)
             room:GetDoor(doorSlot):SetLocked(false)
         end
     end
