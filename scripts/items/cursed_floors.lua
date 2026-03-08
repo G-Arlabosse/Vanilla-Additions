@@ -11,11 +11,11 @@ local min_rc = 0.3 -- 30%
 local max_rc = 0.8 -- 80 %
 
 local SPECIAL_ROOMS = {
-    [RoomType.ROOM_SHOP] = 10,
-    [RoomType.ROOM_TREASURE] = 10,
+    [RoomType.ROOM_SHOP] = 7,
+    [RoomType.ROOM_TREASURE] = 7,
     
     --[RoomType.ROOM_SECRET] = 5,
-    [RoomType.ROOM_CURSE] = 5,
+    [RoomType.ROOM_CURSE] = 4,
 
     --[RoomType.ROOM_SUPERSECRET] = 3,
     [RoomType.ROOM_ARCADE] = 3,
