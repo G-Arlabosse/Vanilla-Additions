@@ -39,8 +39,6 @@ local function calciumDeactivate()
 end
 
 local function evaluateCache(_, player, cacheFlags)
-    print(type(player), type(cacheFlags))
-    print(player, "|", cacheFlags)
     local data = player:GetData()
 
     -- Update Damage
@@ -55,10 +53,26 @@ local function evaluateCache(_, player, cacheFlags)
             player.MaxFireDelay = toMaxFireDelay(toTearsPerSecond(player.MaxFireDelay) * FIRE_RATE_MULTIPLIER)
         end
     end
+    -- Update Tear color
+    if cacheFlags == CacheFlag.CACHE_TEARCOLOR then
+        if data.opikoko_calcium_active then
+            player.TearColor = Color(1,1,1,1,0.5,0.5,0.5)
+        end
+    end
+end
+
+local function changeTearProperties(_, tear)
+    local player = tear.SpawnerEntity
+    local data = player:GetData()
+    if data.opikoko_calcium_active then
+        tear.Scale = tear.Scale * 0.4
+        tear.KnockbackMultiplier = tear.KnockbackMultiplier * 0.2
+    end
 end
 
 Mod:AddCallback(ModCallbacks.MC_USE_ITEM, calciumUse, calcium)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, calciumDeactivate)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_DAMAGE)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_FIREDELAY)
-print("end callbacks")
+Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_TEARCOLOR)
+Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, changeTearProperties)
