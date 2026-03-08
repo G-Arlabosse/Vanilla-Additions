@@ -1,5 +1,9 @@
 Mod = RegisterMod("Vanilla Additions", 1)
 
+--- Utilities ---
+include("scripts.utility.EID")
+
+--- Items ---
 include("scripts.items.calcium")
 include("scripts.items.big_rock")
 include("scripts.items.cursed_floors")

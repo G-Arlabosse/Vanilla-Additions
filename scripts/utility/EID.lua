@@ -1,0 +1,32 @@
+if EID then
+    local myItemId
+    local description
+
+    --- Big Rock ---
+    myItemId = Isaac.GetItemIdByName("Big Rock");
+    description = 
+    [[{{ArrowUp}} +1 Damage
+    #{{ArrowUp}} x1.2 Damage multiplier
+    #{{ArrowUp}} +0.4 Tears
+    #{{ArrowDown}} x0.75 Speed multiplier
+    #{{Warning}} Speed is capped at 1.5]]
+    EID:addCollectible(myItemId, description)
+
+    --- Calcium ---
+    myItemId = Isaac.GetItemIdByName("Calcium");
+    description = 
+    [[{{Timer}} Receive for the room:
+    #{{Blank}} {{ArrowUp}} x5 Fire rate multiplier
+    #{{Blank}} {{ArrowDown}} x0.25 Damage multiplier
+    #{{Blank}} {{ArrowDown}} -0.3 Tear Size
+    #{{Indent}} Drastically reduces knockback]]
+    EID:addCollectible(myItemId, description)
+
+    --- Cursed Floors ---
+    myItemId = Isaac.GetItemIdByName("Cursed Floors");
+    description = 
+    [[{{CurseCursed}} Receive Curse of the Cursed at the start of each floor
+    #42.5% to reroll a normal small room into a special room
+    #{{Luck}} Caps at 80% at 15 luck]]
+    EID:addCollectible(myItemId, description)
+end
