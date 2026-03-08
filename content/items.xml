@@ -3,4 +3,5 @@
     <active id="2" name="Big Red Button" gfx="big_red_button_item.png" description="It's a big button" quality="4" maxcharges="6" chargetype="normal" />
     <active id="3" name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor" />
     <passive id="4" name="Cursed Floors" gfx="cursed_floors.png" description="Cursed... for the best ???" quality="2" />
+    <active id="5" name="Rare Candy" gfx="rare_candy.png" description="Level Up !" quality="3" cache="offensive" chargetype="special" />
 </items>

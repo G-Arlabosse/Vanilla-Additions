@@ -29,4 +29,14 @@ if EID then
     #42.5% to reroll a normal small room into a special room
     #{{Luck}} Caps at 80% at 15 luck]]
     EID:addCollectible(myItemId, description)
+
+    --- Rare Candy ---
+    
+    
+    myItemId = Isaac.GetItemIdByName("Rare Candy");
+
+    description = 
+    [[{{Timer}} On use:
+    #{{Indent}} Completes the transformation Isaac last progressed on.]]
+    EID:addCollectible(myItemId, description)
 end

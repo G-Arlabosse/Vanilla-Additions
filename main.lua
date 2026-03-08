@@ -7,6 +7,7 @@ include("scripts.utility.EID")
 include("scripts.items.calcium")
 include("scripts.items.big_rock")
 include("scripts.items.cursed_floors")
+include("scripts.items.rare_candy")
 
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
 local damagePotionDamage = 1

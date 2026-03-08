@@ -2,9 +2,19 @@
     <Pool Name="treasure">
         <Item Name="Big Red Button" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Calcium" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
 
     <Pool Name="curse">
 		<Item Name="Cursed Floors" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
+
+    <Pool Name="shop">
+        <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
+
+    <Pool Name="beggar">
+        <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
+
 </ItemPools>
