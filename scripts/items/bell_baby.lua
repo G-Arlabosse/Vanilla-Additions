@@ -8,8 +8,8 @@ local RNG_SHIFT_INDEX = 35
 -- States
 local STATE_FOLLOW  = 0  -- no enemies nearby, trail behind player
 local STATE_CHASE   = 1  -- chasing a target
---local STATE_CHARGE  = 2  -- (optional) blood puppy-style charge
 
+-- Behavior constants
 local DETECT_RANGE  = 200.0  -- how far to notice enemies (divide by 40 for tiles)
 local CHASE_SPEED   = 6.0
 local FOLLOW_SPEED  = 4.5
@@ -17,6 +17,127 @@ local FOLLOW_DIST   = 60
 local CONTACT_DMG   = 2.0    -- per tick (like Blood Puppy)
 local DMG_COOLDOWN  = 5     -- ticks between damage applications
 
+-- Treasure probabilities (percentage)
+local TREASURES = {
+    ["COIN"] = 25,
+    ["HEART"] = 10,
+    ["BOMB"] = 20,
+    ["KEY"] = 15,
+    ["BATTERY"] = 7,
+    ["CHEST"] = 9,
+    ["PEDESTAL"] = 1,
+    -- ["PORTAL"] = 10,
+    ["CRAWLSPACE"] = 3
+}
+local dig_chance = 0
+local MIN_CHANCE = 0.3
+local MAX_CHANCE = 0.8
+local MIN_LUCK = -5
+local MAX_LUCK = 20
+local DOUBLE_DIG_CHANCE = 0.1
+
+local TOTAL_TREASURES_WEIGHT = 0
+for treasure, weight in pairs(TREASURES) do
+    TOTAL_TREASURES_WEIGHT = TOTAL_TREASURES_WEIGHT + weight
+end
+
+
+local function getRandomTreasure(rng)
+    local value = rng:RandomInt(TOTAL_TREASURES_WEIGHT)+1
+
+    local weightIndex = 0
+    for treasure, weight in pairs(TREASURES) do
+        weightIndex = weightIndex + weight
+        if weightIndex >= value then
+            return treasure
+        end 
+    end
+    return "NONE"
+end
+
+local function spawnTreasure(treasure, familiar)
+    
+    if treasure == "CRAWLSPACE" then
+        local room = Game():GetRoom()
+        room:SpawnGridEntity(
+        room:GetGridIndex(familiar.Position),
+        GridEntityType.GRID_STAIRS)
+        return
+    end
+    local pickup_variant = PickupVariant.PICKUP_NULL
+    if treasure == "COIN" then
+        pickup_variant = PickupVariant.PICKUP_COIN
+    elseif treasure == "HEART" then
+        pickup_variant = PickupVariant.PICKUP_HEART
+    elseif treasure == "BOMB" then
+        pickup_variant = PickupVariant.PICKUP_BOMB
+    elseif treasure == "KEY" then
+        pickup_variant = PickupVariant.PICKUP_KEY
+    elseif treasure == "BATTERY" then
+        pickup_variant = PickupVariant.PICKUP_LIL_BATTERY
+    elseif treasure == "CHEST" then
+        pickup_variant = PickupVariant.PICKUP_CHEST
+    elseif treasure == "PEDESTAL" then
+        Game():Spawn(
+        EntityType.ENTITY_PICKUP, 
+        PickupVariant.PICKUP_COLLECTIBLE, 
+        familiar.Position, 
+        Vector.Zero, 
+        nil,
+        0,
+        Game():GetRoom():GetSpawnSeed())
+        return
+    -- elseif treasure == "PORTAL" then
+    --     Game():Spawn(
+    --     EntityType.ENTITY_PICKUP, 
+    --     51, 
+    --     familiar.Position, 
+    --     Vector.Zero, 
+    --     nil,
+    --     1,
+    --     Game():GetRoom():GetSpawnSeed())
+    end
+    Game():Spawn(
+    EntityType.ENTITY_PICKUP, 
+    pickup_variant, 
+    familiar.Position, 
+    Vector.Zero, 
+    nil,
+    0,
+    Game():GetRoom():GetSpawnSeed())
+end
+
+local function digTreasure()
+    local familiars = Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FAMILIAR_VARIANT, -1)
+    for _, entity in ipairs(familiars) do
+        local familiar = entity:ToFamiliar()
+        if familiar then
+            local player = familiar.Player
+            local luck = player.Luck
+            local rng = RNG()
+            rng:SetSeed(Random(), 1)
+            if rng:RandomFloat() < dig_chance then
+                local treasure = getRandomTreasure(rng)
+                spawnTreasure(treasure, familiar)
+                -- Chance to dig twice
+                if rng:RandomFloat() < DOUBLE_DIG_CHANCE then
+                    local treasure = getRandomTreasure(rng)
+                    spawnTreasure(treasure, familiar)
+                end
+            end
+        end
+    end
+end
+
+local function updateDigChance(_, player, cacheFlags)
+    if player:GetCollectibleNum(ITEM_ID) >= 1 then
+        if cacheFlags == CacheFlag.CACHE_LUCK then
+            local luck = player.Luck
+            local clamped_luck = math.min(MAX_LUCK, math.max(MIN_LUCK, luck))
+            dig_chance = MIN_CHANCE + (MAX_CHANCE-MIN_CHANCE)*(luck-MIN_LUCK)/(MAX_LUCK-MIN_LUCK)
+        end
+    end
+end
 
 local function calculateVelocity(familiar, direction, speed)
     local room = Game():GetRoom()
@@ -43,8 +164,10 @@ local function chaseTarget(familiar, data, target)
     local dir = target.Position - familiar.Position
     local dist = dir:Length()
 
-    if dist > 15 then
+    if dist > 10 then
         calculateVelocity(familiar, dir, CHASE_SPEED)
+    else
+        familiar.Velocity = Vector.Zero
     end
 
     familiar.MoveDirection = Mod:Vec2Dir(dir:Normalized())
@@ -104,6 +227,7 @@ local function bellBabyBehavior(_, familiar)
         data.state = STATE_FOLLOW
         followPlayer(familiar, familiar.Parent)
     end
+    position = familiar.Position
     
     local sprite = familiar:GetSprite()
     local anim
@@ -146,7 +270,6 @@ end
 
 ---@param familiar EntityFamiliar
 local function handleInit(_, familiar)
-    print(familiar)
     familiar.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
 end
 
@@ -154,3 +277,5 @@ end
 Mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, bellBabyBehavior, FAMILIAR_VARIANT)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_FAMILIARS)
 Mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, handleInit, FAMILIAR_VARIANT)
+Mod:AddCallback(ModCallbacks.MC_POST_ROOM_TRIGGER_CLEAR, digTreasure)
+Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, updateDigChance, CacheFlag.CACHE_LUCK)
