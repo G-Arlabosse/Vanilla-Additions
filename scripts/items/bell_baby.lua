@@ -14,8 +14,8 @@ local DETECT_RANGE  = 200.0  -- how far to notice enemies (divide by 40 for tile
 local CHASE_SPEED   = 6.0
 local FOLLOW_SPEED  = 4.5
 local FOLLOW_DIST   = 60
-local CONTACT_DMG   = 2.0    -- per tick (like Blood Puppy)
-local DMG_COOLDOWN  = 5     -- ticks between damage applications
+local CONTACT_DMG   = 1.5    -- per tick (like Blood Puppy)
+local DMG_COOLDOWN  = 10     -- ticks between damage applications
 
 -- Treasure probabilities (percentage)
 local TREASURES = {
@@ -23,16 +23,17 @@ local TREASURES = {
     ["HEART"] = 10,
     ["BOMB"] = 20,
     ["KEY"] = 15,
-    ["BATTERY"] = 7,
-    ["CHEST"] = 9,
-    ["PEDESTAL"] = 1,
-    -- ["PORTAL"] = 10,
+    ["BATTERY"] = 8,
+    ["CARD"] = 8,
+    ["CHEST"] = 5,
+    ["GOLD_CHEST"] = 3,
+    ["BOMB_CHEST"] = 3,
     ["CRAWLSPACE"] = 3
 }
-local dig_chance = 0
-local MIN_CHANCE = 0.3
+local dig_chance = 0       -- updated with luck
+local MIN_CHANCE = 0.4
 local MAX_CHANCE = 0.8
-local MIN_LUCK = -5
+local MIN_LUCK = 0
 local MAX_LUCK = 20
 local DOUBLE_DIG_CHANCE = 0.1
 
@@ -75,18 +76,24 @@ local function spawnTreasure(treasure, familiar)
         pickup_variant = PickupVariant.PICKUP_KEY
     elseif treasure == "BATTERY" then
         pickup_variant = PickupVariant.PICKUP_LIL_BATTERY
+    elseif treasure == "CARD" then
+        pickup_variant = PickupVariant.PICKUP_TAROTCARD
     elseif treasure == "CHEST" then
         pickup_variant = PickupVariant.PICKUP_CHEST
-    elseif treasure == "PEDESTAL" then
-        Game():Spawn(
-        EntityType.ENTITY_PICKUP, 
-        PickupVariant.PICKUP_COLLECTIBLE, 
-        familiar.Position, 
-        Vector.Zero, 
-        nil,
-        0,
-        Game():GetRoom():GetSpawnSeed())
-        return
+    elseif treasure == "GOLD_CHEST" then
+        pickup_variant = PickupVariant.PICKUP_LOCKEDCHEST
+    elseif treasure == "BOMB_CHEST" then
+        pickup_variant = PickupVariant.PICKUP_BOMBCHEST
+    -- elseif treasure == "PEDESTAL" then
+    --     Game():Spawn(
+    --     EntityType.ENTITY_PICKUP, 
+    --     PickupVariant.PICKUP_COLLECTIBLE, 
+    --     familiar.Position, 
+    --     Vector.Zero, 
+    --     nil,
+    --     0,
+    --     Game():GetRoom():GetSpawnSeed())
+    --     return
     -- elseif treasure == "PORTAL" then
     --     Game():Spawn(
     --     EntityType.ENTITY_PICKUP, 

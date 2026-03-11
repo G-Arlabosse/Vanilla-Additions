@@ -29,4 +29,13 @@ if EID then
     #42.5% to reroll a normal small room into a special room
     #{{Luck}} Caps at 80% at 15 luck]]
     EID:addCollectible(myItemId, description)
+
+    --- Bell Baby ---
+    myItemId = Isaac.GetItemIdByName("Bell Baby");
+    description = 
+    [[#Chases enemies
+    #Deals 4.5 damage per second
+    #40% chance to dig a treasure from the ground when clearing a room
+    #{{Luck}} Caps at 80% at 20 luck]]
+    EID:addCollectible(myItemId, description)
 end
