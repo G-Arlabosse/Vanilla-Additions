@@ -2,13 +2,13 @@ local game = Game()
 
 local cursed_floors = Isaac.GetItemIdByName("Cursed Floors")
 local LibraryRooms = {}
-local PLAYERS_HAVE_CURSED_FLOORS = false
+local players_have_cursed_floors = false
 -- Chance to replace a normal room
-local REPLACE_CHANCE = 0
-local min_luck = -5
-local max_luck = 15
-local min_rc = 0.3 -- 30%
-local max_rc = 0.8 -- 80 %
+local replace_chance = 0
+local MIN_LUCK = -5
+local MAX_LUCK = 15
+local MIN_RC = 0.3 -- 30%
+local MAX_RC = 0.8 -- 80 %
 
 local SPECIAL_ROOMS = {
     [RoomType.ROOM_SHOP] = 7,
@@ -68,11 +68,11 @@ function Mod:ReplaceRoomsFloorGen(
     oldConfig,  ---@param oldConfig RoomConfigRoom
     seed        
 )
-    if PLAYERS_HAVE_CURSED_FLOORS then
+    if players_have_cursed_floors then
         local rng = RNG()
         rng:SetSeed(seed)
         if oldConfig.Type == RoomType.ROOM_DEFAULT and slot:GenerationIndex() ~= 0 then
-            if rng:RandomFloat() < REPLACE_CHANCE then                    
+            if rng:RandomFloat() < replace_chance then                    
                 local level = Game():GetLevel()
                 -- pick a special room config
                 local randomRoomType = getRandomSpecialRoom(rng)
@@ -82,7 +82,9 @@ function Mod:ReplaceRoomsFloorGen(
                     true,                   -- ReduceWeight
                     0,                      -- Stage
                     randomRoomType,         -- Type
-                    oldConfig.Shape
+                    oldConfig.Shape,
+                    0,                      -- MinVariant
+                    6                       -- MaxVariant
                 )
                 
                 if config then 
@@ -124,14 +126,14 @@ function Mod:UnlockSpecialRooms ()
 end
 
 function Mod:AddLevelCurse ()
-    if PLAYERS_HAVE_CURSED_FLOORS then
+    if players_have_cursed_floors then
         game:GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_CURSED, false)
     end
 end
 
 function Mod:ComputeValuesBeforeLevel ()
     --- Compute if players have Cursed Floors
-    PLAYERS_HAVE_CURSED_FLOORS = playersHaveCursedFloors()
+    players_have_cursed_floors = playersHaveCursedFloors()
 
     --- Compute Replace Chance
     local luck = 0
@@ -140,8 +142,8 @@ function Mod:ComputeValuesBeforeLevel ()
         luck = luck + player.Luck
     end
 
-    luck = math.min(max_luck, math.max(min_luck, luck))
-    REPLACE_CHANCE = min_rc + (max_rc-min_rc)*(luck-min_luck)/(max_luck-min_luck)
+    luck = math.min(MAX_LUCK, math.max(MIN_LUCK, luck))
+    replace_chance = MIN_RC + (MAX_RC-MIN_RC)*(luck-MIN_LUCK)/(MAX_LUCK-MIN_LUCK)
 end
 
 Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, Mod.ReplaceRoomsFloorGen)
