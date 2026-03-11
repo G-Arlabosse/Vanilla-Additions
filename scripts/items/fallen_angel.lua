@@ -15,14 +15,32 @@ local function FallenAngelActive ()
     return false
 end
 
-function Mod:InitPedestals(
-    pickup ---@param pickup EntityPickup
-)
+function GetPedestalsInRoom()
+    local pedestals = Isaac.FindByType(
+        EntityType.ENTITY_PICKUP,
+        PickupVariant.PICKUP_COLLECTIBLE,
+        -1,
+        false,
+        false
+    )
+
+    return pedestals
+end
+
+function Mod:InitPedestals()
+    if not Game():GetRoom():IsFirstVisit() then return end
+    
     if FallenAngelActive() then
-        if pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
-            local item_config = item_config:GetCollectible(pickup.SubType)
-            pickup.AutoUpdatePrice = false
-            pickup.Price = -item_config.DevilPrice
+        local pedestals = GetPedestalsInRoom()
+        
+        for i=1, #pedestals do
+            local pickup = pedestals[i]:ToPickup()
+            if pickup then
+                local item_id = pickup.SubType
+                local pickup_item_config = item_config:GetCollectible(item_id)
+                pickup.Price = -pickup_item_config.DevilPrice
+                pickup.AutoUpdatePrice = false
+            end
         end
     end
 end
@@ -95,5 +113,7 @@ end
 Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, Mod.PrePickupMorph)
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, Mod.PostPickupMorph)
 
-Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, Mod.InitPedestals, PickupVariant.PICKUP_COLLECTIBLE)
+-- On room enter
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.InitPedestals)
+
 Mod:AddCallback(ModCallbacks.MC_POST_UPDATE , Mod.PostUpdate)
