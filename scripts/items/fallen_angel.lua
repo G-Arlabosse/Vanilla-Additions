@@ -29,7 +29,7 @@ end
 
 function Mod:InitPedestals()
     if not Game():GetRoom():IsFirstVisit() then return end
-    
+
     if FallenAngelActive() then
         local pedestals = GetPedestalsInRoom()
         
@@ -40,6 +40,7 @@ function Mod:InitPedestals()
                 local pickup_item_config = item_config:GetCollectible(item_id)
                 pickup.Price = -pickup_item_config.DevilPrice
                 pickup.AutoUpdatePrice = false
+                pickup.OptionsPickupIndex = 0
             end
         end
     end
