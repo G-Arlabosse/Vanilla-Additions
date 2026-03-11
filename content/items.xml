@@ -1,7 +1,8 @@
 <items gfxroot="gfx/items/" version="1">
-    <passive id="1" name="Big Rock" gfx="big_rock_item.png" description="DAMN" quality="3" cache="damage firedelay speed" damage="1" damagemult="1.2" tears="0.4" />
-    <active id="2" name="Big Red Button" gfx="big_red_button_item.png" description="It's a big button" quality="4" maxcharges="6" chargetype="normal" />
-    <active id="3" name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor" />
+    <passive id="1" name="Big Rock" gfx="big_rock_item.png" description="DAMN" quality="3" cache="damage firedelay speed" damage="1" damagemult="1.2" tears="0.4" tags="offensive summonable" />
+    <active id="2" name="Big Red Button" gfx="big_red_button_item.png" description="It's a big button" quality="4" maxcharges="6" chargetype="normal" tags="offensive" />
+    <active id="3" name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor" tags="offensive" />
     <passive id="4" name="Cursed Floors" gfx="cursed_floors.png" description="Cursed... for the best ???" quality="2" />
     <active id="5" name="Rare Candy" gfx="rare_candy.png" description="Level Up !" quality="3" cache="offensive" chargetype="special" />
+    <familiar id="6" name="Bell Baby" gfx="bell_baby.png" description="What a cutie <3" quality="3" cache="familiars" tags="summonable monstermanual" />
 </items>

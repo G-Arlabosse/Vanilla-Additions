@@ -30,13 +30,18 @@ if EID then
     #{{Luck}} Caps at 80% at 15 luck]]
     EID:addCollectible(myItemId, description)
 
-    --- Rare Candy ---
-    
-    
+    --- Rare Candy --- 
     myItemId = Isaac.GetItemIdByName("Rare Candy");
-
     description = 
     [[{{Timer}} On use:
     #{{Indent}} Completes the transformation Isaac last progressed on.]]
+    
+    --- Bell Baby ---
+    myItemId = Isaac.GetItemIdByName("Bell Baby");
+    description = 
+    [[#Chases enemies
+    #Deals 4.5 damage per second
+    #40% chance to dig a treasure from the ground when clearing a room
+    #{{Luck}} Caps at 80% at 20 luck]]
     EID:addCollectible(myItemId, description)
 end

@@ -3,6 +3,7 @@
         <Item Name="Big Red Button" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Calcium" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+        <Item Name="Bell Baby" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
     <Pool Name="curse">
