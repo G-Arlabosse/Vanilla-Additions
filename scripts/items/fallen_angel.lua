@@ -50,7 +50,7 @@ local function InitPedestals()
 end
 
 
-function ActiveItemPickedUp ()
+local function ActiveItemPickedUp ()
     for i=0, Game():GetNumPlayers() -1 do
         local player = Isaac.GetPlayer(i)
         if not player:IsItemQueueEmpty() then
@@ -60,7 +60,7 @@ function ActiveItemPickedUp ()
     return false
 end
 
-function GetClosestPlayer(pickup)
+local function GetClosestPlayer(pickup)
     local closestPlayer = nil
     local closestDistance = math.huge
 
@@ -76,6 +76,14 @@ function GetClosestPlayer(pickup)
 end
 
 local function PostUpdate() 
+    for i = 0, Game():GetNumPlayers() - 1 do
+        local player = Isaac.GetPlayer(i)
+        if player:GetCollectibleNum(fallen_angel) > 0 then
+            local level = Game():GetLevel()
+            level:AddAngelRoomChance(1-level:GetAngelRoomChance())
+        end
+    end
+
     if not FallenAngelActive() then return end
 
     if #pending_morhped_items > 0 then
@@ -117,7 +125,7 @@ end
 
 local morphed_item_devil = false
 
-local function PrePickupMorph(
+local function PrePickupMorph(_,
     pickup,     ---@param pickup EntityPickup
     entityType, ---@param entityType EntityType
     variant,    ---@param variant PickupVariant
@@ -135,7 +143,7 @@ local function PrePickupMorph(
 end
 
 
-local function PostPickupMorph(
+local function PostPickupMorph(_,
     pickup,     ---@param pickup EntityPickup
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
@@ -148,19 +156,11 @@ local function PostPickupMorph(
     
 end
 
-local function PickupCollision(pickup, entity, low) 
+local function PickupCollision(_, pickup, entity, low) 
     devil_pickups[pickup.Index] = nil
-
-    if pickup.SubType == fallen_angel then
-        print("Picked up Fallen Angel !")
-    end
 end
 
-local function OnNewFloor ()
-    
-end
-
-local function EntityKilled(
+local function EntityKilled(_,
     npc ---@param npc EntityNPC
 )
     if not FallenAngelActive() then return end
@@ -193,5 +193,13 @@ Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, PickupCollision)
 -- Killed an entity
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, EntityKilled)
 
--- On New Floors
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, OnNewFloor)
+local function PreLevelInit()
+    for i = 0, Game():GetNumPlayers() - 1 do
+        local player = Isaac.GetPlayer(i)
+        if player:GetCollectibleNum(fallen_angel) > 0 then
+            local level = Game():GetLevel()
+            level:AddAngelRoomChance(1-level:GetAngelRoomChance())
+        end
+    end
+end
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, PreLevelInit)
