@@ -1,6 +1,6 @@
 local item_config = Isaac.GetItemConfig()
 local pending_morhped_items = {}
-local devil_pedestals = {}
+local devil_pickups = {}
 local fallen_angel = Isaac.GetItemIdByName("Fallen Angel")
 
 local function FallenAngelActive ()
@@ -28,19 +28,23 @@ function GetPedestalsInRoom()
 end
 
 function Mod:InitPedestals()
-    if not Game():GetRoom():IsFirstVisit() then return end
-
+    devil_pickups = {}
     if FallenAngelActive() then
         local pedestals = GetPedestalsInRoom()
         
         for i=1, #pedestals do
             local pickup = pedestals[i]:ToPickup()
             if pickup then
-                local item_id = pickup.SubType
-                local pickup_item_config = item_config:GetCollectible(item_id)
-                pickup.Price = -pickup_item_config.DevilPrice
-                pickup.AutoUpdatePrice = false
-                pickup.OptionsPickupIndex = 0
+                if Game():GetRoom():IsFirstVisit() then
+                    local item_id = pickup.SubType
+                    local pickup_item_config = item_config:GetCollectible(item_id)
+                    pickup.Price = -pickup_item_config.DevilPrice
+                    pickup.AutoUpdatePrice = false
+                    pickup.OptionsPickupIndex = 0
+                    devil_pickups[#devil_pickups+1] = pickup
+                elseif pickup.Price < 0 then
+                    devil_pickups[#devil_pickups+1] = pickup
+                end
             end
         end
     end
@@ -57,6 +61,21 @@ local function ActiveItemPickedUp ()
     return false
 end
 
+local function GetClosestPlayer(pickup)
+    local closestPlayer = nil
+    local closestDistance = math.huge
+
+    for i = 0, Game():GetNumPlayers() - 1 do
+        local player = Isaac.GetPlayer(i)
+        local distance = player.Position:Distance(pickup.Position)
+        if distance < closestDistance then
+            closestDistance = distance
+            closestPlayer = player
+        end
+    end
+
+    return closestPlayer
+end
 
 function Mod:PostUpdate() 
     if not FallenAngelActive() then return end
@@ -72,6 +91,36 @@ function Mod:PostUpdate()
             end
         end
         pending_morhped_items = {}
+    end
+
+    print("=== UPDATE ===")
+    for _,pickup in pairs(devil_pickups) do ---@param pickup EntityPickup  
+        local closestPlayer = GetClosestPlayer(pickup)
+        if closestPlayer and pickup then
+            local playerHearts = closestPlayer:GetHearts()
+            print(pickup)
+            local pickup_devil_price = item_config:GetCollectible(pickup.SubType).DevilPrice
+            if pickup_devil_price == -PickupPrice.PRICE_ONE_HEART then
+                if playerHearts >= 2 then
+                    pickup.Price = PickupPrice.PRICE_ONE_HEART
+                    print("1 red")
+                else
+                    pickup.Price = PickupPrice.PRICE_TWO_SOUL_HEARTS
+                    print("2 blue")
+                end
+            elseif pickup_devil_price == -PickupPrice.PRICE_TWO_HEARTS then
+                if playerHearts >= 4 then
+                    pickup.Price = PickupPrice.PRICE_TWO_HEARTS
+                    print("2 red")
+                elseif playerHearts >= 2 then
+                    pickup.Price = PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS
+                    print("1 red 2 blue")
+                else
+                    pickup.Price = PickupPrice.PRICE_THREE_SOULHEARTS
+                    print("3 blue")
+                end 
+            end
+        end
     end
 end
 
