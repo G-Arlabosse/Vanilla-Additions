@@ -91,7 +91,6 @@ function Mod:PostUpdate()
         pending_morhped_items = {}
     end
 
-    print("=== UPDATE ===")
     for _,pickup in pairs(devil_pickups) do ---@param pickup EntityPickup  
         local closestPlayer = GetClosestPlayer(pickup)
         if closestPlayer and pickup then
@@ -100,21 +99,16 @@ function Mod:PostUpdate()
             if pickup_devil_price == -PickupPrice.PRICE_ONE_HEART then
                 if playerHearts >= 2 then
                     pickup.Price = PickupPrice.PRICE_ONE_HEART
-                    print("1 red")
                 else
                     pickup.Price = PickupPrice.PRICE_TWO_SOUL_HEARTS
-                    print("2 blue")
                 end
             elseif pickup_devil_price == -PickupPrice.PRICE_TWO_HEARTS then
                 if playerHearts >= 4 then
                     pickup.Price = PickupPrice.PRICE_TWO_HEARTS
-                    print("2 red")
                 elseif playerHearts >= 2 then
                     pickup.Price = PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS
-                    print("1 red 2 blue")
                 else
                     pickup.Price = PickupPrice.PRICE_THREE_SOULHEARTS
-                    print("3 blue")
                 end 
             end
         end
@@ -130,8 +124,6 @@ function Mod:PrePickupMorph(
     subtype
 )
     if not FallenAngelActive() then return end
-    print("=== Pre Morph ===")
-    print("Item: ", pickup.SubType, "ShopId: ", pickup.Index)
     if pickup.Price < 0 then
         morphed_item_devil = true
         pickup:GetData().priceReset = true
@@ -149,7 +141,6 @@ function Mod:PostPickupMorph(
     variant    ---@param variant PickupVariant
 )
     if not FallenAngelActive() then return end
-    print("=== POST MORPH ===")
     if entityType == EntityType.ENTITY_PICKUP and variant == PickupVariant.PICKUP_COLLECTIBLE and morphed_item_devil then
         pending_morhped_items[#pending_morhped_items + 1] = pickup
         morphed_item_devil = false
@@ -157,18 +148,39 @@ function Mod:PostPickupMorph(
     
 end
 
+function Mod:PickupCollision(pickup, entity, low) 
+    devil_pickups[pickup.Index] = nil
+end
 
+function Mod:EntityKilled(
+    npc ---@param npc EntityNPC
+)
+    if not FallenAngelActive() then return end
+    if npc.Type == EntityType.ENTITY_URIEL or npc.Type == EntityType.ENTITY_GABRIEL then
+        local entity = Game():Spawn(
+            EntityType.ENTITY_PICKUP, 
+            PickupVariant.PICKUP_COLLECTIBLE, 
+            npc.Position, 
+            Vector.Zero, 
+            nil,
+            0,
+            Game():GetRoom():GetSpawnSeed())
+    end
+end
+
+-- Before a morph
 Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, Mod.PrePickupMorph)
+-- After a morph
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, Mod.PostPickupMorph)
 
 -- On room enter
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.InitPedestals)
 
+-- Update every frame
 Mod:AddCallback(ModCallbacks.MC_POST_UPDATE , Mod.PostUpdate)
 
-
-function Mod:PickupCollision(pickup, entity, low) 
-    devil_pickups[pickup.Index] = nil
-end
-
+-- Picking up an item
 Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, Mod.PickupCollision)
+
+-- Killed an entity
+Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, Mod.EntityKilled)
