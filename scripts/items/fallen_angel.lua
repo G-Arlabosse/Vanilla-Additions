@@ -136,7 +136,9 @@ function Mod:PrePickupMorph(
         morphed_item_devil = true
         pickup:GetData().priceReset = true
         pickup.Price = 0
-        devil_pickups[pickup.Index] = pickup
+        pickup.AutoUpdatePrice = true
+        
+        devil_pickups[pickup.Index] = nil
     end
 end
 
