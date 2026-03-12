@@ -88,10 +88,9 @@ function Mod:PrePickupMorph(
     print("Item: ", pickup.SubType, "ShopId: ", pickup.Index)
     if pickup.Price < 0 then
         morphed_item_devil = true
+        pickup:GetData().priceReset = true
+        pickup.Price = 0
     end
-    pickup:GetData().priceReset = true
-    pickup.Price = 0
-    
 end
 
 
