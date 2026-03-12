@@ -15,7 +15,7 @@ local function FallenAngelActive ()
     return false
 end
 
-function GetPedestalsInRoom()
+local function GetPedestalsInRoom()
     local pedestals = Isaac.FindByType(
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_COLLECTIBLE,
@@ -26,7 +26,7 @@ function GetPedestalsInRoom()
     return pedestals
 end
 
-function Mod:InitPedestals()
+local function InitPedestals()
     devil_pickups = {}
     if FallenAngelActive() then
         local pedestals = GetPedestalsInRoom()
@@ -50,7 +50,7 @@ function Mod:InitPedestals()
 end
 
 
-local function ActiveItemPickedUp ()
+function ActiveItemPickedUp ()
     for i=0, Game():GetNumPlayers() -1 do
         local player = Isaac.GetPlayer(i)
         if not player:IsItemQueueEmpty() then
@@ -60,7 +60,7 @@ local function ActiveItemPickedUp ()
     return false
 end
 
-local function GetClosestPlayer(pickup)
+function GetClosestPlayer(pickup)
     local closestPlayer = nil
     local closestDistance = math.huge
 
@@ -75,7 +75,7 @@ local function GetClosestPlayer(pickup)
     return closestPlayer
 end
 
-function Mod:PostUpdate() 
+local function PostUpdate() 
     if not FallenAngelActive() then return end
 
     if #pending_morhped_items > 0 then
@@ -117,7 +117,7 @@ end
 
 local morphed_item_devil = false
 
-function Mod:PrePickupMorph(
+local function PrePickupMorph(
     pickup,     ---@param pickup EntityPickup
     entityType, ---@param entityType EntityType
     variant,    ---@param variant PickupVariant
@@ -135,7 +135,7 @@ function Mod:PrePickupMorph(
 end
 
 
-function Mod:PostPickupMorph(
+local function PostPickupMorph(
     pickup,     ---@param pickup EntityPickup
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
@@ -148,11 +148,19 @@ function Mod:PostPickupMorph(
     
 end
 
-function Mod:PickupCollision(pickup, entity, low) 
+local function PickupCollision(pickup, entity, low) 
     devil_pickups[pickup.Index] = nil
+
+    if pickup.SubType == fallen_angel then
+        print("Picked up Fallen Angel !")
+    end
 end
 
-function Mod:EntityKilled(
+local function OnNewFloor ()
+    
+end
+
+local function EntityKilled(
     npc ---@param npc EntityNPC
 )
     if not FallenAngelActive() then return end
@@ -169,18 +177,21 @@ function Mod:EntityKilled(
 end
 
 -- Before a morph
-Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, Mod.PrePickupMorph)
+Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, PrePickupMorph)
 -- After a morph
-Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, Mod.PostPickupMorph)
+Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, PostPickupMorph)
 
 -- On room enter
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.InitPedestals)
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, InitPedestals)
 
 -- Update every frame
-Mod:AddCallback(ModCallbacks.MC_POST_UPDATE , Mod.PostUpdate)
+Mod:AddCallback(ModCallbacks.MC_POST_UPDATE , PostUpdate)
 
 -- Picking up an item
-Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, Mod.PickupCollision)
+Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, PickupCollision)
 
 -- Killed an entity
-Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, Mod.EntityKilled)
+Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, EntityKilled)
+
+-- On New Floors
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, OnNewFloor)
