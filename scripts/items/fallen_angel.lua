@@ -23,7 +23,6 @@ function GetPedestalsInRoom()
         false,
         false
     )
-
     return pedestals
 end
 
@@ -41,9 +40,9 @@ function Mod:InitPedestals()
                     pickup.Price = -pickup_item_config.DevilPrice
                     pickup.AutoUpdatePrice = false
                     pickup.OptionsPickupIndex = 0
-                    devil_pickups[#devil_pickups+1] = pickup
+                    devil_pickups[pickup.Index] = pickup
                 elseif pickup.Price < 0 then
-                    devil_pickups[#devil_pickups+1] = pickup
+                    devil_pickups[pickup.Index] = pickup
                 end
             end
         end
@@ -73,7 +72,6 @@ local function GetClosestPlayer(pickup)
             closestPlayer = player
         end
     end
-
     return closestPlayer
 end
 
@@ -85,8 +83,8 @@ function Mod:PostUpdate()
             for _,pickup in pairs(pending_morhped_items) do
                 local config = Isaac.GetItemConfig():GetCollectible(pickup.SubType)
                 if config then
-                    pickup.Price = -config.DevilPrice
                     pickup.AutoUpdatePrice = false
+                    devil_pickups[pickup.Index] = pickup
                 end
             end
         end
@@ -98,7 +96,6 @@ function Mod:PostUpdate()
         local closestPlayer = GetClosestPlayer(pickup)
         if closestPlayer and pickup then
             local playerHearts = closestPlayer:GetHearts()
-            print(pickup)
             local pickup_devil_price = item_config:GetCollectible(pickup.SubType).DevilPrice
             if pickup_devil_price == -PickupPrice.PRICE_ONE_HEART then
                 if playerHearts >= 2 then
@@ -139,6 +136,7 @@ function Mod:PrePickupMorph(
         morphed_item_devil = true
         pickup:GetData().priceReset = true
         pickup.Price = 0
+        devil_pickups[pickup.Index] = pickup
     end
 end
 
@@ -158,7 +156,6 @@ function Mod:PostPickupMorph(
 end
 
 
-
 Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, Mod.PrePickupMorph)
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, Mod.PostPickupMorph)
 
@@ -166,3 +163,10 @@ Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, Mod.PostPickupMorph)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.InitPedestals)
 
 Mod:AddCallback(ModCallbacks.MC_POST_UPDATE , Mod.PostUpdate)
+
+
+function Mod:PickupCollision(pickup, entity, low) 
+    devil_pickups[pickup.Index] = nil
+end
+
+Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, Mod.PickupCollision)
