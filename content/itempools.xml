@@ -6,16 +6,80 @@
         <Item Name="Bell Baby" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
-    <Pool Name="curse">
-		<Item Name="Cursed Floors" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
-    </Pool>
-
     <Pool Name="shop">
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
 
+    <!-- boss -->
+
+    <Pool Name="devil">
+        <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
+
+    <!-- angel -->
+
+    <Pool Name="secret">
+        <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
+
+    <!-- library -->
+
+    <!-- shellGame -->
+
+    <!-- goldenChest -->
+
+    <!-- redChest -->
+
     <Pool Name="beggar">
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
+
+    <!-- demonBeggar -->
+
+    <Pool Name="curse">
+		<Item Name="Cursed Floors" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+    </Pool>
+
+    <!-- keyMaster -->
+
+    <!-- batteryBum -->
+
+    <!-- momsChest -->
+
+    <!-- greedTreasure -->
+
+    <!-- greedBoss -->
+
+    <!-- greedShop -->
+
+    <!-- greedCurse -->
+
+    <!-- greedDevil -->
+    <Pool Name="greedDevil">
+        <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
+
+    <!-- greedAngel -->
+
+    <!-- greedSecret -->
+    <Pool Name="greedSecret">
+        <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
+
+    <!-- craneGame -->
+
+    <!-- ultraSecret -->
+
+    <!-- bombBum -->
+
+    <!-- planetarium -->
+
+    <!-- oldChest -->
+
+    <!-- babyShop -->
+
+    <!-- woodenChest -->
+
+    <!-- rottenBeggar -->
 
 </ItemPools>

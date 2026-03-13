@@ -44,4 +44,13 @@ if EID then
     #40% chance to dig a treasure from the ground when clearing a room
     #{{Luck}} Caps at 80% at 20 luck]]
     EID:addCollectible(myItemId, description)
+    
+
+    --- Life Orb ---
+    myItemId = Isaac.GetItemIdByName("Life Orb");
+    description = 
+    [[#When losing a heart container, recieve permanently:
+    #{{ArrowUp}} +1 Damage
+    #Lose a heart container on pickup and at the start of every floor]]
+    EID:addCollectible(myItemId, description)
 end
