@@ -1,10 +1,22 @@
 local blind_floors = Isaac.GetItemIdByName("Blind Floors")
 
 local function OnNewLevel ()
+    print("NEW LEVEL")
     if Mod:PlayersHaveItem(blind_floors) then
         local level = Game():GetLevel()
         level:AddCurse(LevelCurse.CURSE_OF_BLIND, false) 
+        
+        for i=0, Game():GetNumPlayers()-1 do
+            local player = Game():GetPlayer(i)
+            print("Player:"..i)
+            for i,j in pairs(player:GetCollectiblesList()) do
+                if j>0 then
+                    print(i,j)
+                end
+            end
+        end
     end
+    print("END LEVEL")
 end
 
 local function AddCollectible(_,
@@ -19,6 +31,7 @@ local function AddCollectible(_,
         Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_BLIND, true)
     end
 end
+
 
 local function GetRandomCollectibleByQuality(
     quality,    ---@param quality integer
@@ -54,7 +67,7 @@ local function GeneratePedestal (_,
 
     local rng = RNG(seed, 35)
     local r = rng:RandomFloat()
-    
+
     print("Quality before:".. quality.. ", randomfloat=".. r)
     if quality == 4 and r < 0.9 then
         quality = rng:RandomInt(4)
