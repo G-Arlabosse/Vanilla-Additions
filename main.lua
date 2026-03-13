@@ -3,6 +3,7 @@ Mod = RegisterMod("Vanilla Additions", 1)
 --- Utilities ---
 include("scripts.utility.EID")
 include("scripts.utility.utils")
+include("scripts.utility.shop_costs")
 
 --- Items ---
 include("scripts.items.calcium")
@@ -10,6 +11,7 @@ include("scripts.items.big_rock")
 include("scripts.items.cursed_floors")
 include("scripts.items.rare_candy")
 include("scripts.items.bell_baby")
+include("scripts.items.fallen_angel")
 include("scripts.items.life_orb")
 
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
