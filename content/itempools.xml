@@ -14,6 +14,10 @@
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
 
+    <Pool Name="devil">
+		<Item Name="Fallen Angel" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
+
     <Pool Name="beggar">
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
