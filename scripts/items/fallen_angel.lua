@@ -239,3 +239,19 @@ local function PreLevelInit()
     end
 end
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, PreLevelInit)
+
+
+
+local function OnNPCInit (_, npc)
+    if FallenAngelActive() then
+        if npc.Type == EntityType.ENTITY_URIEL then
+            npc:Morph(EntityType.ENTITY_URIEL, 1, 0, -1)
+        end
+
+        if npc.Type == EntityType.ENTITY_GABRIEL then
+            npc:Morph(EntityType.ENTITY_GABRIEL, 1, 0, -1)
+        end
+    end
+end
+
+Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, OnNPCInit)
