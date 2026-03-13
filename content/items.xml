@@ -4,5 +4,5 @@
     <active id="3" name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor" />
     <passive id="4" name="Cursed Floors" gfx="cursed_floors.png" description="Cursed... for the best ???" quality="2" />
     <active id="5" name="Rare Candy" gfx="rare_candy.png" description="Level Up !" quality="3" cache="offensive" chargetype="special" />
-    <passive id="7" name="Fallen Angel" gfx="rare_candy.png" description="He needs some milk" quality="2" cache="offensive summonable" /> 
+    <passive id="7" name="Fallen Angel" gfx="fallen_angel.png" description="He is falling for you" quality="3" cache="offensive summonable" /> 
 </items>
