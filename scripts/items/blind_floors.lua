@@ -20,13 +20,55 @@ local function AddCollectible(_,
     end
 end
 
+local function GetRandomCollectibleByQuality(
+    quality,    ---@param quality integer
+    item_pool,  ---@param item_pool ItemPoolType
+    rng         ---@param rng RNG
+)
+    local itemConfig = Isaac.GetItemConfig()
+    local validItems = {}
+    for i,j in pairs(Game():GetItemPool():GetCollectiblesFromPool(item_pool)) do
+        local item = itemConfig:GetCollectible(j.itemID)
+
+        if item and item.Quality == quality then
+            validItems[#validItems+1] = item.ID
+        end
+    end
+
+    if #validItems > 0 then
+        return validItems[rng:RandomInt(#validItems)+1]
+    end
+
+    return nil
+end
+
 local function GeneratePedestal (_,
     type,       ---@param type CollectibleType 
     item_pool,  ---@param item_pool ItemPoolType
     decrease,   ---@param decrease boolean
     seed        ---@param seed integer
 )
-    return 1
+    local itemConfig = Isaac.GetItemConfig()
+    local item = itemConfig:GetCollectible(type)
+    local quality = item.Quality
+
+    local rng = RNG(seed, 35)
+    local r = rng:RandomFloat()
+    
+    print("Quality before:".. quality.. ", randomfloat=".. r)
+    if quality == 4 and r < 0.9 then
+        quality = rng:RandomInt(4)
+        print("Rerolled quality 4 into quality ".. quality)
+        return GetRandomCollectibleByQuality(quality, item_pool, rng)
+    elseif quality == 3 and r < 0.5 then
+        quality = rng:RandomInt(3)
+        print("Rerolled quality 3 into quality ".. quality)
+        return GetRandomCollectibleByQuality(quality, item_pool, rng)
+    elseif quality == 2 and r < 0.1 then
+        quality = rng:RandomInt(2)
+        print("Rerolled quality 2 into quality ".. quality)
+        return GetRandomCollectibleByQuality(quality, item_pool, rng)
+    end
 end
 
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, OnNewLevel)
