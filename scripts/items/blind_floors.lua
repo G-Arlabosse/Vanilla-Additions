@@ -4,6 +4,11 @@ local UPGRADE_TYPE = {
     ACTIVE = 2
 }
 
+local UPGRADE_CHANCE = 0.1
+local QUALITY_4_DOWNGRADE_CHANCE = 0.9
+local QUALITY_3_DOWNGRADE_CHANCE = 0.5
+local QUALITY_2_DOWNGRADE_CHANCE = 0.1
+
 local blind_floors = Isaac.GetItemIdByName("Blind Floors")
 local itemConfig = Isaac.GetItemConfig()
 local tracked_item_pools = {}
@@ -20,7 +25,7 @@ local function GetRandomCollectibleByQuality(
     for _,item_data in pairs(Game():GetItemPool():GetCollectiblesFromPool(item_pool)) do
         local item = itemConfig:GetCollectible(item_data.itemID)
 
-        if (item and item.Quality == quality) then
+        if (item and item.Quality == quality and item.Tags and not (item.Tags & ItemConfig.TAG_QUEST == ItemConfig.TAG_QUEST)) then
             if upgrade_type == UPGRADE_TYPE.ANY or
                 ( upgrade_type == UPGRADE_TYPE.PASSIVE_OR_FAMILIAR and (item.Type == ItemType.ITEM_FAMILIAR or item.Type == ItemType.ITEM_PASSIVE) ) or 
                 ( upgrade_type == UPGRADE_TYPE.ACTIVE and item.Type == ItemType.ITEM_ACTIVE ) then
@@ -28,11 +33,9 @@ local function GetRandomCollectibleByQuality(
             end
         end
     end
-
     if #validItems > 0 then
         return validItems[rng:RandomInt(#validItems)+1]
     end
-
     return nil
 end
 
@@ -41,37 +44,33 @@ local function TryUpgradeItem (
     rng,        ---@param rng RNG
     player      ---@param player EntityPlayer
 )
-    if rng:RandomFloat() < 1 then
+    if rng:RandomFloat() < UPGRADE_CHANCE then
         local item_data = itemConfig:GetCollectible(id)
         local item_pool = tracked_item_pools[id]
-        if not item_pool then return end
+        if not item_pool or (item_data.Tags & ItemConfig.TAG_NO_EDEN == ItemConfig.TAG_NO_EDEN) then return end
+        local new_id
         -- Passive Items --
         if item_data.Type == ItemType.ITEM_PASSIVE or item_data.Type == ItemType.ITEM_FAMILIAR then 
-            local new_id = GetRandomCollectibleByQuality(item_data.Quality+1, item_pool, rng, UPGRADE_TYPE.PASSIVE_OR_FAMILIAR)
-            if new_id then
-                print("Previous id:".. id .. ", Item pool:" .. item_pool .. ", New id:".. new_id)
-                tracked_item_pools[new_id] = item_pool
-                player:RemoveCollectible(id)
-                player:AddCollectible(new_id)
-            end
-        
+            new_id = GetRandomCollectibleByQuality(item_data.Quality+1, item_pool, rng, UPGRADE_TYPE.PASSIVE_OR_FAMILIAR)
         -- Active Items --
         elseif item_data.Type == ItemType.ITEM_ACTIVE then             
-            local new_id = GetRandomCollectibleByQuality(item_data.Quality+1, item_pool, rng, UPGRADE_TYPE.ACTIVE)
-            if new_id then
-                print("Previous id:".. id .. ", Item pool:" .. item_pool .. ", New id:".. new_id)
-                tracked_item_pools[new_id] = item_pool
-                player:RemoveCollectible(id)
-                player:AddCollectible(new_id)
-            end
+            new_id = GetRandomCollectibleByQuality(item_data.Quality+1, item_pool, rng, UPGRADE_TYPE.ACTIVE)
         else 
-            print("Previous id:".. id .. ", Item pool:" .. item_pool .. ", Item type:" .. item_data.Type)
+            print("Previous:".. item_data.Name .. ", Item pool:" .. item_pool .. ", Item type:" .. item_data.Type)
+        end
+
+        -- Upgraded --
+        if new_id then
+            print("Previous:".. item_data.Name .. ", New:".. itemConfig:GetCollectible(new_id).Name .. ", Item pool:" .. item_pool )
+            tracked_item_pools[new_id] = item_pool
+            player:RemoveCollectible(id)
+            player:AddCollectible(new_id)
         end
     end
 end
 
+
 local function OnNewLevel ()
-    print("NEW LEVEL")
     if Mod:PlayersHaveItem(blind_floors) then
         local level = Game():GetLevel()
         local rng = RNG(Game():GetSeeds():GetStageSeed(level:GetStage()), 35)
@@ -87,7 +86,6 @@ local function OnNewLevel ()
             end
         end
     end
-    print("END LEVEL")
 end
 
 local function AddCollectible(_,
@@ -112,25 +110,23 @@ local function GeneratePedestal (_,
     decrease,   ---@param decrease boolean
     seed        ---@param seed integer
 )
-    local item = itemConfig:GetCollectible(type)
-    local quality = item.Quality
+    if Mod:PlayersHaveItem(blind_floors) then
+        local item = itemConfig:GetCollectible(type)
+        local quality = item.Quality
 
-    local rng = RNG(seed, 35)
-    local r = rng:RandomFloat()
+        local rng = RNG(seed, 35)
+        local r = rng:RandomFloat()
 
-    print("Quality before:".. quality.. ", randomfloat=".. r)
-    if quality == 4 and r < 0.9 then
-        quality = rng:RandomInt(4)
-        print("Rerolled quality 4 into quality ".. quality)
-        return GetRandomCollectibleByQuality(quality, item_pool, rng, UPGRADE_TYPE.ANY)
-    elseif quality == 3 and r < 0.5 then
-        quality = rng:RandomInt(3)
-        print("Rerolled quality 3 into quality ".. quality)
-        return GetRandomCollectibleByQuality(quality, item_pool, rng, UPGRADE_TYPE.ANY)
-    elseif quality == 2 and r < 0.1 then
-        quality = rng:RandomInt(2)
-        print("Rerolled quality 2 into quality ".. quality)
-        return GetRandomCollectibleByQuality(quality, item_pool, rng, UPGRADE_TYPE.ANY)
+        if quality == 4 and r < QUALITY_4_DOWNGRADE_CHANCE then
+            quality = rng:RandomInt(4)
+            return GetRandomCollectibleByQuality(quality, item_pool, rng, UPGRADE_TYPE.ANY)
+        elseif quality == 3 and r < QUALITY_3_DOWNGRADE_CHANCE then
+            quality = rng:RandomInt(3)
+            return GetRandomCollectibleByQuality(quality, item_pool, rng, UPGRADE_TYPE.ANY)
+        elseif quality == 2 and r < QUALITY_2_DOWNGRADE_CHANCE then
+            quality = rng:RandomInt(2)
+            return GetRandomCollectibleByQuality(quality, item_pool, rng, UPGRADE_TYPE.ANY)
+        end
     end
 end
 
