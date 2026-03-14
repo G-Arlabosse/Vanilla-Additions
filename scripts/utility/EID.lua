@@ -44,4 +44,13 @@ if EID then
     #40% chance to dig a treasure from the ground when clearing a room
     #{{Luck}} Caps at 80% at 20 luck]]
     EID:addCollectible(myItemId, description)
+
+    --- Corrupted Flower ---
+    myItemId = Isaac.GetItemIdByName("Corrupted Clover");
+    description = 
+    [[{{CurseBlind}} Receive Curse of the Blind permanently
+    #Prevents quality {{Quality4}} items from spawning
+    #Quality {{Quality3}} items have a 66% chance to be rerolled
+    #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
+    EID:addCollectible(myItemId, description)
 end

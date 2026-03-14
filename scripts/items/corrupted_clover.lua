@@ -5,11 +5,11 @@ local UPGRADE_TYPE = {
 }
 
 local UPGRADE_CHANCE = 0.1
-local QUALITY_4_DOWNGRADE_CHANCE = 0.9
-local QUALITY_3_DOWNGRADE_CHANCE = 0.5
-local QUALITY_2_DOWNGRADE_CHANCE = 0.1
+local QUALITY_4_DOWNGRADE_CHANCE = 1
+local QUALITY_3_DOWNGRADE_CHANCE = 0.66
+local QUALITY_2_DOWNGRADE_CHANCE = 0
 
-local blind_floors = Isaac.GetItemIdByName("Blind Floors")
+local corrupted_clover = Isaac.GetItemIdByName("Corrupted Clover")
 local itemConfig = Isaac.GetItemConfig()
 local tracked_item_pools = {}
 
@@ -71,7 +71,7 @@ end
 
 
 local function OnNewLevel ()
-    if Mod:PlayersHaveItem(blind_floors) then
+    if Mod:PlayersHaveItem(corrupted_clover) then
         local level = Game():GetLevel()
         local rng = RNG(Game():GetSeeds():GetStageSeed(level:GetStage()), 35)
         level:AddCurse(LevelCurse.CURSE_OF_BLIND, false)
@@ -96,7 +96,7 @@ local function AddCollectible(_,
     varData,    ---@param varData integer
     player      ---@param player EntityPlayer
 )
-    if type == blind_floors then
+    if type == corrupted_clover then
         Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_BLIND, true)
     else
         local item_pool = Game():GetItemPool():GetLastPool()
@@ -110,7 +110,7 @@ local function GeneratePedestal (_,
     decrease,   ---@param decrease boolean
     seed        ---@param seed integer
 )
-    if Mod:PlayersHaveItem(blind_floors) then
+    if Mod:PlayersHaveItem(corrupted_clover) then
         local item = itemConfig:GetCollectible(type)
         local quality = item.Quality
 
