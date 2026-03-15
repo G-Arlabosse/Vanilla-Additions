@@ -3,16 +3,9 @@ local pending_morhped_items = {}
 local devil_pickups = {}
 local fallen_angel = Isaac.GetItemIdByName("Fallen Angel")
 
-local function FallenAngelActive ()
+local function InAngelRoom ()
     local roomDesc = Game():GetLevel():GetCurrentRoomDesc().Data
-    if not (roomDesc.Type == RoomType.ROOM_ANGEL) then return false end
-    for i=0, Game():GetNumPlayers() -1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(fallen_angel) > 0 then
-            return true
-        end
-    end
-    return false
+    return roomDesc.Type == RoomType.ROOM_ANGEL
 end
 
 local function GetPedestalsInRoom()
@@ -95,7 +88,7 @@ end
 
 local function InitPedestals()
     devil_pickups = {}
-    if FallenAngelActive() then
+    if InAngelRoom() and Mod:PlayersHaveItem(fallen_angel) then
         local pedestals = GetPedestalsInRoom()
         
         for i=1, #pedestals do
@@ -126,15 +119,7 @@ end
 
 
 local function PostUpdate() 
-    for i = 0, Game():GetNumPlayers() - 1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(fallen_angel) > 0 then
-            local level = Game():GetLevel()
-            level:AddAngelRoomChance(1-level:GetAngelRoomChance())
-        end
-    end
-
-    if not FallenAngelActive() then return end
+    if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
 
     -- Used to check if morph is from a reroll or an active swap
     if #pending_morhped_items > 0 then
@@ -164,7 +149,7 @@ local function PrePickupMorph(_,
     variant,    ---@param variant PickupVariant
     subtype
 )
-    if not FallenAngelActive() then return end
+    if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
     -- Reset Price
     if pickup.Price < 0 then
         morphed_item_devil = true
@@ -182,7 +167,7 @@ local function PostPickupMorph(_,
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
 )
-    if not FallenAngelActive() then return end
+    if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
     -- Add pickup to reroll list
     if entityType == EntityType.ENTITY_PICKUP and variant == PickupVariant.PICKUP_COLLECTIBLE and morphed_item_devil then
         pending_morhped_items[#pending_morhped_items + 1] = pickup
@@ -199,7 +184,7 @@ end
 local function EntityKilled(_,
     npc ---@param npc EntityNPC
 )
-    if not FallenAngelActive() then return end
+    if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
 
     -- Spawn item on Angel kill
     if npc.Type == EntityType.ENTITY_URIEL or npc.Type == EntityType.ENTITY_GABRIEL then
@@ -211,6 +196,39 @@ local function EntityKilled(_,
             nil,
             0,
             Game():GetRoom():GetSpawnSeed())
+    end
+end
+
+local function PreLevelInit()
+    if Mod:PlayersHaveItem(fallen_angel) then
+        local level = Game():GetLevel()
+        level:AddAngelRoomChance(1-level:GetAngelRoomChance())
+    end
+end
+
+local function OnNPCInit (_, npc)
+    if InAngelRoom() and Mod:PlayersHaveItem(fallen_angel) then
+        if npc.Type == EntityType.ENTITY_URIEL then
+            npc:Morph(EntityType.ENTITY_URIEL, 1, 0, -1)
+        end
+
+        if npc.Type == EntityType.ENTITY_GABRIEL then
+            npc:Morph(EntityType.ENTITY_GABRIEL, 1, 0, -1)
+        end
+    end
+end
+
+local function AddCollectible (_,
+    type,       ---@param type CollectibleType
+    charge,     ---@param charge integer
+    firstTime,  ---@param firstTime boolean
+    slot,       ---@param slot integer
+    varData,    ---@param varData integer
+    player      ---@param player EntityPlayer
+)
+    if type == fallen_angel then
+        local level = Game():GetLevel()
+        level:AddAngelRoomChance(1-level:GetAngelRoomChance())
     end
 end
 
@@ -228,32 +246,14 @@ Mod:AddCallback(ModCallbacks.MC_POST_UPDATE , PostUpdate)
 -- Picking up an item
 Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, PickupCollision)
 
--- Killed an entity
+-- Killed an Angel
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, EntityKilled)
 
-local function PreLevelInit()
-    for i = 0, Game():GetNumPlayers() - 1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(fallen_angel) > 0 then
-            local level = Game():GetLevel()
-            level:AddAngelRoomChance(1-level:GetAngelRoomChance())
-        end
-    end
-end
+-- Update Angel Chance
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, PreLevelInit)
 
-
-
-local function OnNPCInit (_, npc)
-    if FallenAngelActive() then
-        if npc.Type == EntityType.ENTITY_URIEL then
-            npc:Morph(EntityType.ENTITY_URIEL, 1, 0, -1)
-        end
-
-        if npc.Type == EntityType.ENTITY_GABRIEL then
-            npc:Morph(EntityType.ENTITY_GABRIEL, 1, 0, -1)
-        end
-    end
-end
-
+-- Spawn Dark Uriel/Gabriel
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, OnNPCInit)
+
+-- Update Angel Chance after picking up Fallen Angel
+Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddCollectible)
