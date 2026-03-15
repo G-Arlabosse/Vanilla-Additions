@@ -14,6 +14,7 @@ include("scripts.items.bell_baby")
 include("scripts.items.fallen_angel")
 include("scripts.items.life_orb")
 include("scripts.items.corrupted_clover")
+include("scripts.items.secrets_of_the_lost")
 
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
 local damagePotionDamage = 1
