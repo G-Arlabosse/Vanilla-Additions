@@ -2,6 +2,7 @@ local item_config = Isaac.GetItemConfig()
 local pending_morhped_items = {}
 local devil_pickups = {}
 local fallen_angel = Isaac.GetItemIdByName("Fallen Angel")
+local collisions = {}
 
 local function InAngelRoom ()
     local roomDesc = Game():GetLevel():GetCurrentRoomDesc().Data
@@ -34,9 +35,17 @@ local function GetClosestPlayer(pickup)
     return closestPlayer
 end
 
-local function ChangePrice (pickup)
+local function ChangePrice (
+    pickup ---@param pickup EntityPickup
+)
     local closestPlayer = GetClosestPlayer(pickup)
-    if closestPlayer and pickup then
+    if closestPlayer and pickup and 
+        (devil_pickups[pickup.Index].player ~= closestPlayer.Index) and
+        pickup.Price ~= 0 then
+
+        print("ChangePrice")
+        devil_pickups[pickup.Index].player = closestPlayer.Index
+
         local playerHearts = closestPlayer:GetHearts()
         local pickup_devil_price = item_config:GetCollectible(pickup.SubType).DevilPrice
         local playerType = closestPlayer:GetPlayerType()
@@ -89,6 +98,8 @@ local function ChangePrice (pickup)
                 end 
             end
         end
+    elseif pickup.Price == 0 then
+        print("Price = 0")
     end
 end
 
@@ -101,11 +112,15 @@ local function InitPedestals()
             local pickup = pedestals[i]:ToPickup()
             if pickup then
                 if Game():GetRoom():IsFirstVisit() then
-                    ChangePrice(pickup)
                     pickup.OptionsPickupIndex = 0
-                    devil_pickups[pickup.Index] = pickup
+                    pickup.Price = -1
+                    devil_pickups[pickup.Index] = {}
+                    devil_pickups[pickup.Index].pickup = pickup
+                    --devil_pickups[pickup.Index].player = 42
+                    --print(devil_pickups[pickup.Index].player)
+                    ChangePrice(pickup)
                 elseif pickup.Price < 0 then
-                    devil_pickups[pickup.Index] = pickup
+                    devil_pickups[pickup.Index].pickup = pickup
                 end
             end
         end
@@ -126,25 +141,28 @@ end
 
 
 local function PostUpdate() 
+    print("--- UPDATE ---")
     if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
 
     -- Used to check if morph is from a reroll or an active swap
     if #pending_morhped_items > 0 then
         if not ActiveItemPickedUp() then
             for _,pickup in pairs(pending_morhped_items) do
-                local config = Isaac.GetItemConfig():GetCollectible(pickup.SubType)
-                if config then
-                    pickup.AutoUpdatePrice = false
-                    devil_pickups[pickup.Index] = pickup
-                end
+                print(pickup.Price)
+
+                pickup.AutoUpdatePrice = false
+                pickup.Price = -1
+                   
+                devil_pickups[pickup.Index] = {} 
+                devil_pickups[pickup.Index].pickup = pickup
             end
         end
         pending_morhped_items = {}
     end
 
     -- Update price according to player data
-    for _,pickup in pairs(devil_pickups) do ---@param pickup EntityPickup  
-        ChangePrice(pickup)
+    for _,data in pairs(devil_pickups) do 
+        ChangePrice(data.pickup)
     end
 end
 
@@ -156,9 +174,11 @@ local function PrePickupMorph(_,
     variant,    ---@param variant PickupVariant
     subtype
 )
+    print("--- PRE MORHP ---")
+    print(pickup.Price)
     if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
     -- Reset Price
-    if pickup.Price < 0 then
+    if pickup.Price ~=0 then
         morphed_item_devil = true
         pickup:GetData().priceReset = true
         pickup.Price = 0
@@ -174,6 +194,9 @@ local function PostPickupMorph(_,
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
 )
+    print("--- POST MORHP ---")
+    print(pickup.Price)
+    print(ActiveItemPickedUp())
     if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
     -- Add pickup to reroll list
     if entityType == EntityType.ENTITY_PICKUP and variant == PickupVariant.PICKUP_COLLECTIBLE and morphed_item_devil then
@@ -185,6 +208,7 @@ end
 
 local function PickupCollision(_, pickup, entity, low)
     -- Remove collectible from update list 
+    print("-- PICKUP COLLISION --")
     devil_pickups[pickup.Index] = nil
 end
 
@@ -239,17 +263,6 @@ local function AddCollectible (_,
     end
 end
 
-
-local function UseCard(_,
-    card,   ---@param card Card
-    player, ---@param player EntityPlayer
-    flags   ---@param flags integer
-)
-    if card == Card.CARD_CREDIT then
-        devil_pickups = {}
-    end
-end
-
 -- Before a morph
 Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, PrePickupMorph)
 -- After a morph
@@ -276,5 +289,15 @@ Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, OnNPCInit)
 -- Update Angel Chance after picking up Fallen Angel
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddCollectible)
 
--- Credit Card
-Mod:AddCallback(ModCallbacks.MC_USE_CARD, UseCard)
+
+local function HealthUpdate (_,
+    player, --EntityPlayer 
+    string, ---CustomCacheTag 
+    value ---float
+)
+    for _,data in pairs(devil_pickups) do
+        data.player = nil
+    end
+end
+
+Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_ADD_HEARTS, HealthUpdate)
