@@ -47,6 +47,8 @@ local function ChangePrice (pickup)
         local playerHearts = closestPlayer:GetHearts()
         local pickup_devil_price = item_config:GetCollectible(pickup.SubType).DevilPrice
         local playerType = closestPlayer:GetPlayerType()
+        
+        pickup.OptionsPickupIndex = 0
         -- KEEPER/T KEEPER --
         if playerType == PlayerType.PLAYER_KEEPER or playerType == playerType == PlayerType.PLAYER_KEEPER_B then
             pickup.AutoUpdatePrice = true

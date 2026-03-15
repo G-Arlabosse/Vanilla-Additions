@@ -39,4 +39,12 @@ if EID then
     [[{{Timer}} On use:
     #{{Indent}} Completes the transformation Isaac last progressed on.]]
     EID:addCollectible(myItemId, description)
+
+    --- Fallen Angel ---
+    myItemId = Isaac.GetItemIdByName("Fallen Angel");
+    description = 
+    [[{{AngelChance}} Converts devil deals chance to angel
+    #Angel room items now cost health
+    #Uriel and Gabriel now spawn as their dark version but drop items on death]]
+    EID:addCollectible(myItemId, description)
 end
