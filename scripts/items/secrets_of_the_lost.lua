@@ -143,16 +143,24 @@ for k, room in pairs(ROOM_WEIGHS) do
     room.TOTAL_WEIGHT = table.sum(room.WEIGHTS)
 end
 
+local function TryApplyCurses ()
+    if not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+        local level = Game():GetLevel()
+        level:AddCurse(LevelCurse.CURSE_OF_THE_LOST, false)
+        level:AddCurse(LevelCurse.CURSE_OF_MAZE, false)
+    end
+end
 
-local function PickupItem(_,
-    type, ---@param type CollectibleType
-    charge, ---@param charge integer
-    firstTime, ---@param firstTime boolean
-    slot, ---@param slot integer
-    data, ---@param data integer
-    player ---@param player EntityPlayer
-)
-    
+local function PickupItem(_,type) ---@param type CollectibleType
+    if type == secrets_of_the_lost then
+        TryApplyCurses()
+    end
+end
+
+local function NewLevel ()
+    if Mod:PlayersHaveItem(secrets_of_the_lost) then
+        TryApplyCurses()
+    end
 end
 
 local function PickRandomVariant(
@@ -169,17 +177,6 @@ local function PickRandomVariant(
     print('Error')
 end
 
-local function PickRandomVariantTest(
-    room_variants
-) 
-    local r = math.random() * room_variants.TOTAL_WEIGHT
-    local acc = 0
-    for variant, weight in pairs(room_variants.WEIGHTS) do
-        acc = acc + weight
-        if r < acc then return variant end
-    end
-    print('Error')
-end
 
 local function ReplaceRoom(_,
     slot,       ---@param slot LevelGeneratorRoom 
@@ -205,6 +202,20 @@ end
 
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, PickupItem)
 Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, ReplaceRoom)
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, NewLevel)
+
+--[[
+local function PickRandomVariantTest(
+    room_variants
+) 
+    local r = math.random() * room_variants.TOTAL_WEIGHT
+    local acc = 0
+    for variant, weight in pairs(room_variants.WEIGHTS) do
+        acc = acc + weight
+        if r < acc then return variant end
+    end
+    print('Error')
+end
 
 local result = {
     [ROOM_QUALITY.BAD] = 0,
@@ -226,3 +237,4 @@ print("BAD: "       .. result[ROOM_QUALITY.BAD]         .. " (" .. 100*result[RO
     "\nGOOD: "      .. result[ROOM_QUALITY.GOOD]        .. " (" .. 100*result[ROOM_QUALITY.GOOD]/N      .. "%)" ..
     "\nVERY_GOOD: " .. result[ROOM_QUALITY.VERY_GOOD]   .. " (" .. 100*result[ROOM_QUALITY.VERY_GOOD]/N .. "%)"
 )
+]]
