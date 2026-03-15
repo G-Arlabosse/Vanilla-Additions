@@ -2,7 +2,7 @@ local item_config = Isaac.GetItemConfig()
 local pending_morhped_items = {}
 local devil_pickups = {}
 local fallen_angel = Isaac.GetItemIdByName("Fallen Angel")
-local collisions = {}
+local collision = false
 
 local function InAngelRoom ()
     local roomDesc = Game():GetLevel():GetCurrentRoomDesc().Data
@@ -43,7 +43,6 @@ local function ChangePrice (
         (devil_pickups[pickup.Index].player ~= closestPlayer.Index) and
         pickup.Price ~= 0 then
 
-        print("ChangePrice")
         devil_pickups[pickup.Index].player = closestPlayer.Index
 
         local playerHearts = closestPlayer:GetHearts()
@@ -98,8 +97,6 @@ local function ChangePrice (
                 end 
             end
         end
-    elseif pickup.Price == 0 then
-        print("Price = 0")
     end
 end
 
@@ -116,8 +113,6 @@ local function InitPedestals()
                     pickup.Price = -1
                     devil_pickups[pickup.Index] = {}
                     devil_pickups[pickup.Index].pickup = pickup
-                    --devil_pickups[pickup.Index].player = 42
-                    --print(devil_pickups[pickup.Index].player)
                     ChangePrice(pickup)
                 elseif pickup.Price < 0 then
                     devil_pickups[pickup.Index].pickup = pickup
@@ -127,38 +122,10 @@ local function InitPedestals()
     end
 end
 
-
-local function ActiveItemPickedUp ()
-    for i=0, Game():GetNumPlayers() -1 do
-        local player = Isaac.GetPlayer(i)
-        if not player:IsItemQueueEmpty() then
-            return true
-        end
-    end
-    return false
-end
-
-
-
 local function PostUpdate() 
-    print("--- UPDATE ---")
     if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
 
-    -- Used to check if morph is from a reroll or an active swap
-    if #pending_morhped_items > 0 then
-        if not ActiveItemPickedUp() then
-            for _,pickup in pairs(pending_morhped_items) do
-                print(pickup.Price)
-
-                pickup.AutoUpdatePrice = false
-                pickup.Price = -1
-                   
-                devil_pickups[pickup.Index] = {} 
-                devil_pickups[pickup.Index].pickup = pickup
-            end
-        end
-        pending_morhped_items = {}
-    end
+    collision = false
 
     -- Update price according to player data
     for _,data in pairs(devil_pickups) do 
@@ -174,11 +141,9 @@ local function PrePickupMorph(_,
     variant,    ---@param variant PickupVariant
     subtype
 )
-    print("--- PRE MORHP ---")
-    print(pickup.Price)
     if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
     -- Reset Price
-    if pickup.Price ~=0 then
+    if not (pickup.Price == 0) then
         morphed_item_devil = true
         pickup:GetData().priceReset = true
         pickup.Price = 0
@@ -194,22 +159,31 @@ local function PostPickupMorph(_,
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
 )
-    print("--- POST MORHP ---")
-    print(pickup.Price)
-    print(ActiveItemPickedUp())
     if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
-    -- Add pickup to reroll list
-    if entityType == EntityType.ENTITY_PICKUP and variant == PickupVariant.PICKUP_COLLECTIBLE and morphed_item_devil then
-        pending_morhped_items[#pending_morhped_items + 1] = pickup
-        morphed_item_devil = false
+
+    --- d6 reroll (or other)
+    if entityType == EntityType.ENTITY_PICKUP and 
+            variant == PickupVariant.PICKUP_COLLECTIBLE and 
+            morphed_item_devil and 
+            not collision then
+
+        pickup.AutoUpdatePrice = false
+        pickup.Price = -1
+                   
+        devil_pickups[pickup.Index] = {} 
+        devil_pickups[pickup.Index].pickup = pickup
+        ChangePrice(pickup)
     end
+    morphed_item_devil = false
     
 end
 
 local function PickupCollision(_, pickup, entity, low)
     -- Remove collectible from update list 
-    print("-- PICKUP COLLISION --")
-    devil_pickups[pickup.Index] = nil
+    if devil_pickups[pickup.Index] ~= nil then
+        collision = true
+        devil_pickups[pickup.Index] = nil
+    end
 end
 
 local function EntityKilled(_,
