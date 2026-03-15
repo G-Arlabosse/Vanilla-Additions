@@ -72,7 +72,7 @@ local function ChangePrice (pickup)
                     pickup.Price = PickupPrice.PRICE_ONE_HEART
                     pickup.AutoUpdatePrice = false
                 else
-                    pickup.Price = PickupPrice.PRICE_TWO_SOUL_HEARTS
+                    pickup.Price = PickupPrice.PRICE_THREE_SOULHEARTS
                     pickup.AutoUpdatePrice = false
                 end
             -- TWO HEARTS COST --
@@ -239,6 +239,17 @@ local function AddCollectible (_,
     end
 end
 
+
+local function UseCard(_,
+    card,   ---@param card Card
+    player, ---@param player EntityPlayer
+    flags   ---@param flags integer
+)
+    if card == Card.CARD_CREDIT then
+        devil_pickups = {}
+    end
+end
+
 -- Before a morph
 Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, PrePickupMorph)
 -- After a morph
@@ -248,7 +259,7 @@ Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, PostPickupMorph)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, InitPedestals)
 
 -- Update every frame
-Mod:AddCallback(ModCallbacks.MC_POST_UPDATE , PostUpdate)
+Mod:AddCallback(ModCallbacks.MC_POST_UPDATE, PostUpdate)
 
 -- Picking up an item
 Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, PickupCollision)
@@ -265,14 +276,5 @@ Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, OnNPCInit)
 -- Update Angel Chance after picking up Fallen Angel
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddCollectible)
 
-local function UseCard(_,
-    card,   ---@param card Card
-    player, ---@param player EntityPlayer
-    flags   ---@param flags integer
-)
-    if card == Card.CARD_CREDIT then
-        devil_pickups = {}
-    end
-end
-
+-- Credit Card
 Mod:AddCallback(ModCallbacks.MC_USE_CARD, UseCard)
