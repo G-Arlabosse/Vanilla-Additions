@@ -60,4 +60,11 @@ if EID then
     #Quality {{Quality3}} items have a 66% chance to be rerolled
     #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(myItemId, description)
+
+    --- Cursed Map ---
+    myItemId = Isaac.GetItemIdByName("Cursed Map");
+    description = 
+    [[#{{CurseMazeSmall}} Receive Curse of the Blind and Curse of the Maze permanently
+    #{{UltraSecretRoom}} Better Secret, Super Secret and Ultra Secret rooms layouts have a higher change to appear]]
+    EID:addCollectible(myItemId, description)
 end
