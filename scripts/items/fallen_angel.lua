@@ -41,10 +41,16 @@ local function ChangePrice (pickup)
         local pickup_devil_price = item_config:GetCollectible(pickup.SubType).DevilPrice
         local playerType = closestPlayer:GetPlayerType()
         
-        pickup.OptionsPickupIndex = 0
         -- KEEPER/T KEEPER --
         if playerType == PlayerType.PLAYER_KEEPER or playerType == playerType == PlayerType.PLAYER_KEEPER_B then
             pickup.AutoUpdatePrice = true
+            if Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_STEAM_SALE) then
+                pickup.Price = math.floor(15*pickup_devil_price/2)
+                pickup.ShopItemId = -2
+            else
+                pickup.Price = 15*pickup_devil_price
+                pickup.ShopItemId = -1
+            end
         -- T BLUE BABY/T JUDAS --
         elseif playerType == PlayerType.PLAYER_BLUEBABY_B or playerType == PlayerType.PLAYER_JUDAS_B or playerType == PlayerType.PLAYER_BETHANY_B then
             pickup.Price = PickupPrice.PRICE_THREE_SOULHEARTS
@@ -96,6 +102,7 @@ local function InitPedestals()
             if pickup then
                 if Game():GetRoom():IsFirstVisit() then
                     ChangePrice(pickup)
+                    pickup.OptionsPickupIndex = 0
                     devil_pickups[pickup.Index] = pickup
                 elseif pickup.Price < 0 then
                     devil_pickups[pickup.Index] = pickup
