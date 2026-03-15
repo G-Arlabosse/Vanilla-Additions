@@ -30,14 +30,35 @@ if EID then
     #{{Luck}} Caps at 80% at 15 luck]]
     EID:addCollectible(myItemId, description)
 
-    --- Rare Candy ---
-    
-    
+    --- Rare Candy --- 
     myItemId = Isaac.GetItemIdByName("Rare Candy");
-
     description = 
     [[{{Timer}} On use:
     #{{Indent}} Completes the transformation Isaac last progressed on.]]
+    
+    --- Bell Baby ---
+    myItemId = Isaac.GetItemIdByName("Bell Baby");
+    description = 
+    [[#Chases enemies
+    #Deals 4.5 damage per second
+    #40% chance to dig a treasure from the ground when clearing a room
+    #{{Luck}} Caps at 80% at 20 luck]]
+    EID:addCollectible(myItemId, description)
+
+    --- Life Orb ---
+    myItemId = Isaac.GetItemIdByName("Life Orb");
+    description = 
+    [[#When losing a heart container, recieve permanently:
+    #{{ArrowUp}} +1 Damage
+    #Lose a heart container on pickup and at the start of every floor]]
+
+    --- Corrupted Flower ---
+    myItemId = Isaac.GetItemIdByName("Corrupted Clover");
+    description = 
+    [[{{CurseBlind}} Receive Curse of the Blind permanently
+    #Prevents quality {{Quality4}} items from spawning
+    #Quality {{Quality3}} items have a 66% chance to be rerolled
+    #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(myItemId, description)
 
     --- Fallen Angel ---
