@@ -1,4 +1,4 @@
-local secrets_of_the_lost = Isaac.GetItemIdByName("Secrets of the Lost")
+local cursed_map = Isaac.GetItemIdByName("Cursed Map")
 
 local ROOM_QUALITY = {
     BAD = 0.1,
@@ -152,13 +152,13 @@ local function TryApplyCurses ()
 end
 
 local function PickupItem(_,type) ---@param type CollectibleType
-    if type == secrets_of_the_lost then
+    if type == cursed_map then
         TryApplyCurses()
     end
 end
 
 local function NewLevel ()
-    if Mod:PlayersHaveItem(secrets_of_the_lost) then
+    if Mod:PlayersHaveItem(cursed_map) then
         TryApplyCurses()
     end
 end
@@ -183,7 +183,7 @@ local function ReplaceRoom(_,
     roomConfig, ---@param roomConfig RoomConfigRoom
     seed        ---@param seed integer
 )
-    if Mod:PlayersHaveItem(secrets_of_the_lost) then
+    if Mod:PlayersHaveItem(cursed_map) then
         if roomConfig.Type == RoomType.ROOM_SECRET then
             local variant = PickRandomVariant(ROOM_WEIGHS.secret, seed)
             local room = RoomConfig.GetRoomByStageTypeAndVariant(0, roomConfig.Type, variant)
