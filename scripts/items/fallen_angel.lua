@@ -264,3 +264,15 @@ Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, OnNPCInit)
 
 -- Update Angel Chance after picking up Fallen Angel
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddCollectible)
+
+local function UseCard(_,
+    card,   ---@param card Card
+    player, ---@param player EntityPlayer
+    flags   ---@param flags integer
+)
+    if card == Card.CARD_CREDIT then
+        devil_pickups = {}
+    end
+end
+
+Mod:AddCallback(ModCallbacks.MC_USE_CARD, UseCard)
