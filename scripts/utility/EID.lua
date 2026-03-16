@@ -28,6 +28,7 @@ if EID then
     [[{{CurseCursed}} Receive Curse of the Cursed at the start of each floor
     #42.5% to reroll a normal small room into a special room
     #{{Luck}} Caps at 80% at 15 luck]]
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
     EID:addCollectible(myItemId, description)
 
     --- Rare Candy --- 

@@ -126,7 +126,7 @@ function Mod:UnlockSpecialRooms ()
 end
 
 function Mod:AddLevelCurse ()
-    if players_have_cursed_floors then
+    if players_have_cursed_floors and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         game:GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_CURSED, false)
     end
 end
