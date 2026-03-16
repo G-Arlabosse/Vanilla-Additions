@@ -68,4 +68,5 @@ if EID then
     #Angel room items now cost health
     #Uriel and Gabriel now spawn as their dark version but drop items on death]]
     EID:addCollectible(myItemId, description)
+    EID:addPlayerCondition(myItemId, PlayerType.PLAYER_KEEPER, "Items cost coins instead", nil, nil, nil, true)
 end
