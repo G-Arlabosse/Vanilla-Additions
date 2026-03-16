@@ -66,5 +66,9 @@ if EID then
     description = 
     [[#{{CurseMazeSmall}} Receive Curse of the Blind and Curse of the Maze permanently
     #{{UltraSecretRoom}} Better Secret, Super Secret and Ultra Secret rooms layouts have a higher change to appear]]
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
+    
+
+    
 end
