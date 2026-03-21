@@ -15,6 +15,9 @@ include("scripts.items.fallen_angel")
 include("scripts.items.life_orb")
 include("scripts.items.corrupted_clover")
 
+--- Trinkets ---
+include("scripts.trinkets.broken_scissors")
+
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
 local damagePotionDamage = 1
 
