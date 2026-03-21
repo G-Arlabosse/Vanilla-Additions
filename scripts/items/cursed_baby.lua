@@ -2,7 +2,10 @@ local cursed_baby = Isaac.GetItemIdByName("Cursed Baby")
 
 
 local function PreLevelGen()
-    
+    if Mod:PlayersHaveItem(cursed_baby) and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+        Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_GIANT, false)
+        print("OK")
+    end
 end
 
 local function PostNPCInit (_,
@@ -49,7 +52,6 @@ local function PostPickupInit(_,
 end
 
 function PreEntitySpawn(_, type, variant, subtype, position, velocity, spawner, seed)
-    print(type, variant, subtype)
     if type == EntityType.ENTITY_BOMB and variant == BombVariant.BOMB_TROLL then
         return {type, BombVariant.BOMB_GIGA, 0, seed}
     end
@@ -60,13 +62,49 @@ function PreEntitySpawn(_, type, variant, subtype, position, velocity, spawner, 
         return {type, variant, BombSubType.BOMB_GIGA, seed}
     end
 
-    if type == EntityType.ENTITY_PICKUP and
-        variant == PickupVariant.PICKUP_PILL then
-            return {type, variant, subtype + 2048, seed}
+    if type == EntityType.ENTITY_PICKUP 
+       and variant == PickupVariant.PICKUP_PILL then
+        
+        local itemPool = Game():GetItemPool()
+        if subtype == 0 then
+            subtype = itemPool:GetPill(seed)
         end
+
+        subtype = subtype | PillColor.PILL_GIANT_FLAG
+        return {type, variant, subtype, seed}
+    end
+
 end
 
-Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, PreLevelGen)
+local function PickedCollectible(_,
+    type,       ---@param type CollectibleType 
+    charge,     ---@param charge integer
+    firstTime,  ---@param firstTime boolean
+    slot,       ---@param slot integer
+    varData,    ---@param varData integer
+    player      ---@param player EntityPlayer
+)
+    if not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+        Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_GIANT, false)
+    end
+    player:AddCacheFlags(CacheFlag.CACHE_SIZE)
+    player:EvaluateItems()
+end
+
+function EvaluateCache(_, 
+    player,     ---@param player EntityPlayer
+    cacheFlag
+)
+    if cacheFlag == CacheFlag.CACHE_SIZE then
+        local size_mult = 0.512^player:GetCollectibleNum(cursed_baby)
+        player.SpriteScale = player.SpriteScale * size_mult
+        player.Size = player.Size * size_mult
+    end
+end
+
+Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateCache)
+
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, PreLevelGen)
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, PostNPCInit)
 
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_SELECTION, PickupSelection)
@@ -74,3 +112,5 @@ Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_SELECTION, PickupSelection)
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, PostPickupInit)
 
 Mod:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, PreEntitySpawn)
+
+Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, PickedCollectible, cursed_baby)
