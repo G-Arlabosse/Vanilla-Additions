@@ -5,8 +5,13 @@ local function PreLevelGen()
     
 end
 
-local function PreEntitySpawn ()
-    
+local function PostNPCInit (_,
+    entity  ---@param entity EntityNPC
+)
+    --print(entity.Type, entity.SubType)
+    if entity.Type ~= 0 then
+        entity:MakeChampion(Game():GetRoom():GetSpawnSeed(), ChampionColor.GIANT, false)
+    end
 end
 
 local function PickupSelection (_,
@@ -24,7 +29,29 @@ local function PickupSelection (_,
     end
 end
 
+local function PostPickupInit(_, 
+    pickup
+)
+    if pickup.Variant == PickupVariant.PICKUP_PILL then
+        
+        local spawner = pickup.SpawnerEntity
+        if spawner and spawner:ToNPC() then
+
+            local npc = spawner:ToNPC()    
+            if npc:GetChampionColorIdx() == ChampionColor.GIANT then
+                local itemPool = Game():GetItemPool()
+                local pillEffect = itemPool:GetPillEffect(pickup.SubType)
+                if pillEffect == PillEffect.PILLEFFECT_LARGER then
+                    pickup:Remove()
+                end
+            end
+        end
+    end
+end
+
 Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, PreLevelGen)
-Mod:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, PreEntitySpawn)
+Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, PostNPCInit)
 
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_SELECTION, PickupSelection)
+
+Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, PostPickupInit)
