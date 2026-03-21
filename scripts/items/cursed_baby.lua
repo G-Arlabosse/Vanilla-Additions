@@ -32,15 +32,14 @@ local function PickupSelection (_,
 end
 
 local function PostPickupInit(_, 
-    pickup
+    pickup  ---@param pickup EntityPickup
 )
     if pickup.Variant == PickupVariant.PICKUP_PILL then
-        
         local spawner = pickup.SpawnerEntity
-        if spawner and spawner:ToNPC() then
+        if spawner then
 
-            local npc = spawner:ToNPC()    
-            if npc:GetChampionColorIdx() == ChampionColor.GIANT then
+            local npc = spawner:ToNPC()  
+            if npc and npc:GetChampionColorIdx() == ChampionColor.GIANT then
                 local itemPool = Game():GetItemPool()
                 local pillEffect = itemPool:GetPillEffect(pickup.SubType)
                 if pillEffect == PillEffect.PILLEFFECT_LARGER then
@@ -49,31 +48,60 @@ local function PostPickupInit(_,
             end
         end
     end
+
+    --- Giga Bombs (Ingnited)
+    if pickup.Variant == PickupVariant.PICKUP_BOMB and
+        (pickup.SubType == BombSubType.BOMB_TROLL or pickup.SubType == BombSubType.BOMB_SUPERTROLL) then
+        Game():Spawn(
+            EntityType.ENTITY_BOMB, 
+            BombVariant.BOMB_GIGA, 
+            pickup.Position, 
+            pickup.Velocity, 
+            pickup.SpawnerEntity, 
+            0, 
+            0
+        )
+        pickup:Remove()
+
+    --- Giga Bombs (Non ignited)
+    elseif pickup.Variant == PickupVariant.PICKUP_BOMB and
+        (pickup.SubType == BombSubType.BOMB_NORMAL or pickup.SubType == BombSubType.BOMB_DOUBLEPACK) then
+        Game():Spawn(
+            EntityType.ENTITY_PICKUP, 
+            PickupVariant.PICKUP_BOMB, 
+            pickup.Position, 
+            pickup.Velocity, 
+            pickup.SpawnerEntity, 
+            BombSubType.BOMB_GIGA, 
+            0
+        )
+        pickup:Remove()
+    end
+
+    --- Horse Pills
+    if pickup.Variant == PickupVariant.PICKUP_PILL then
+        local itemPool = Game():GetItemPool()
+        if (pickup.SubType & PillColor.PILL_GIANT_FLAG) == 0 then
+            Game():Spawn(
+                EntityType.ENTITY_PICKUP, 
+                PickupVariant.PICKUP_PILL, 
+                pickup.Position, 
+                pickup.Velocity, 
+                pickup.SpawnerEntity, 
+                pickup.SubType | PillColor.PILL_GIANT_FLAG, 
+                0
+            )
+            pickup:Remove()
+        end
+    end
 end
 
 function PreEntitySpawn(_, type, variant, subtype, position, velocity, spawner, seed)
-    if type == EntityType.ENTITY_BOMB and variant == BombVariant.BOMB_TROLL then
+    --- Giga Bombs (from red chests)
+    if type == EntityType.ENTITY_BOMB and 
+    (variant == BombVariant.BOMB_TROLL or variant == BombVariant.BOMB_SUPERTROLL) then
         return {type, BombVariant.BOMB_GIGA, 0, seed}
     end
-
-    if type == EntityType.ENTITY_PICKUP and
-        variant == PickupVariant.PICKUP_BOMB and
-        (subtype == 0 or subtype == BombSubType.BOMB_NORMAL or subtype == BombSubType.BOMB_DOUBLEPACK) then
-        return {type, variant, BombSubType.BOMB_GIGA, seed}
-    end
-
-    if type == EntityType.ENTITY_PICKUP 
-       and variant == PickupVariant.PICKUP_PILL then
-        
-        local itemPool = Game():GetItemPool()
-        if subtype == 0 then
-            subtype = itemPool:GetPill(seed)
-        end
-
-        subtype = subtype | PillColor.PILL_GIANT_FLAG
-        return {type, variant, subtype, seed}
-    end
-
 end
 
 local function PickedCollectible(_,
@@ -104,7 +132,7 @@ end
 
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateCache)
 
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, PreLevelGen)
+Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, PreLevelGen)
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, PostNPCInit)
 
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_SELECTION, PickupSelection)
