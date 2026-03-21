@@ -8,7 +8,6 @@ end
 local function PostNPCInit (_,
     entity  ---@param entity EntityNPC
 )
-    --print(entity.Type, entity.SubType)
     if entity.Type ~= 0 then
         entity:MakeChampion(Game():GetRoom():GetSpawnSeed(), ChampionColor.GIANT, false)
     end
@@ -49,9 +48,24 @@ local function PostPickupInit(_,
     end
 end
 
+function PreEntitySpawn(_, type, variant, subtype, position, velocity, spawner, seed)
+    print(type, variant, subtype)
+    if type == EntityType.ENTITY_BOMB and variant == BombVariant.BOMB_TROLL then
+        return {type, BombVariant.BOMB_GIGA, 0, seed}
+    end
+
+    if type == EntityType.ENTITY_PICKUP and
+        variant == PickupVariant.PICKUP_BOMB and
+        (subtype == 0 or subtype == BombSubType.BOMB_NORMAL or subtype == BombSubType.BOMB_DOUBLEPACK) then
+        return {type, variant, BombSubType.BOMB_GIGA, seed}
+    end
+end
+
 Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, PreLevelGen)
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, PostNPCInit)
 
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_SELECTION, PickupSelection)
 
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, PostPickupInit)
+
+Mod:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, PreEntitySpawn)
