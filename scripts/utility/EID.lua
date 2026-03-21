@@ -1,7 +1,7 @@
 if EID then
     local myItemId
     local description
-
+--- ITEMS ---
     --- Big Rock ---
     myItemId = Isaac.GetItemIdByName("Big Rock");
     description = 
@@ -61,4 +61,13 @@ if EID then
     #Quality {{Quality3}} items have a 66% chance to be rerolled
     #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(myItemId, description)
+
+--- TRINKETS ---
+    local myTrinketId
+
+    myTrinketId = Isaac.GetTrinketIdByName("Broken Scissors")
+    description =
+    [[{{Bomb}} Turns all Bombs into Troll Bombs
+    #{{Key}} Turns all Keys into Charged Keys]]
+    EID:addTrinket(myTrinketId, description)
 end
