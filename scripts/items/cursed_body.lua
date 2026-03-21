@@ -1,5 +1,6 @@
 local cursed_body = Isaac.GetItemIdByName("Cursed Body")
 local rng = RNG()
+local rng_shift = 0
 
 local function toTearsPerSecond(maxFireDelay)
   return 30 / (maxFireDelay + 1)
@@ -18,7 +19,7 @@ local PLAYER_STATS = {
     luck = 0,
 }
 
-local DROP_PROBABILITY = 0.5
+local DROP_PROBABILITY = 0.5 * 2
 local DROP_TYPES = {
     PICKUP_HEART    = 1,
     PICKUP_COIN     = 2,
@@ -39,7 +40,7 @@ local DROP_TYPES = {
 }
 
 local DROP_WEIGHTS = {
-    [DROP_TYPES.PICKUP_HEART]   = 15, --pickupHeart
+    [DROP_TYPES.PICKUP_HEART]   = 15 + 100000, --pickupHeart
     [DROP_TYPES.PICKUP_COIN]    = 15, --pickupCoin
     [DROP_TYPES.PICKUP_BOMB]    = 10, --pickupBomb 
     [DROP_TYPES.PICKUP_KEY]     = 10, --pickupKey
@@ -72,7 +73,6 @@ local function AddCollectible (_,
 )
     if type == cursed_body and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_UNKNOWN, false)
-        rng:SetSeed(Game():GetSeeds():GetStartSeed(), 35)
     end
 end
 
@@ -81,20 +81,25 @@ local function applyDrop(
     player, ---@param player EntityPlayer
     drop_type
 ) 
-
     if drop_type == DROP_TYPES.PICKUP_HEART then
-        Isaac.Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_HEART,0,player.Position,Vector.Zero,nil)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_HEART,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        rng_shift = rng_shift + 1
     elseif drop_type == DROP_TYPES.PICKUP_COIN then
-        Isaac.Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COIN,0,player.Position,Vector.Zero,nil)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COIN,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        rng_shift = rng_shift + 1
     elseif drop_type == DROP_TYPES.PICKUP_BOMB then
-        Isaac.Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_BOMB,0,player.Position,Vector.Zero,nil)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_BOMB,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        rng_shift = rng_shift + 1
     elseif drop_type == DROP_TYPES.PICKUP_KEY then
-        Isaac.Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_KEY,0,player.Position,Vector.Zero,nil)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_KEY,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        rng_shift = rng_shift + 1
     elseif drop_type == DROP_TYPES.PICKUP_CARD then
-        Isaac.Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TAROTCARD,0,player.Position,Vector.Zero,nil)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TAROTCARD,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        rng_shift = rng_shift + 1
     elseif drop_type == DROP_TYPES.PICKUP_PILL then
-        Isaac.Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_PILL,0,player.Position,Vector.Zero,nil)
-    
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_PILL,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        rng_shift = rng_shift + 1
+
     elseif drop_type == DROP_TYPES.STAT_SPEED then
         PLAYER_STATS.speed = PLAYER_STATS.speed + 0.05
         player:AddCacheFlags(CacheFlag.CACHE_SPEED)
@@ -139,8 +144,10 @@ local function TakeDamage (_,
     
     if Mod:PlayersHaveItem(cursed_body) then
         local rand_drop = rng:RandomFloat()
+        rng_shift = rng_shift + 1
         if rand_drop < DROP_PROBABILITY then
             local rand_weight = rng:RandomFloat() * TOTAL_WEIGHTS
+            rng_shift = rng_shift + 1
             local acc = 0
             for drop_type, weight in pairs(DROP_WEIGHTS) do
                 acc = acc + weight
@@ -189,6 +196,8 @@ local function CalculateStat (_,
 end
 
 local function OnNewGame ()
+    rng:SetSeed(Game():GetSeeds():GetStartSeed(), 35)
+    
     PLAYER_STATS.speed = 0
     PLAYER_STATS.damage = 0
     PLAYER_STATS.range = 0
@@ -203,6 +212,21 @@ local function NewLevel ()
     end
     
 end
+
+
+local function NewRoom ()
+    rng_shift = 0
+    print(rng:PhantomFloat())
+end
+
+local function UseGlowingHourglass ()
+    print("=== SHIFTS === ", rng_shift)
+    for i=1, rng_shift do
+        print(rng:Previous())
+    end
+    print(rng:PhantomFloat())
+end
+
 Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, OnNewGame)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, NewLevel)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, CalculateCache)
@@ -210,3 +234,6 @@ Mod:AddCallback(ModCallbacks.MC_EVALUATE_STAT, CalculateStat)
 
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddCollectible)
 Mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, TakeDamage, EntityType.ENTITY_PLAYER)
+
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, NewRoom)
+Mod:AddCallback(ModCallbacks.MC_USE_ITEM, UseGlowingHourglass, CollectibleType.COLLECTIBLE_GLOWING_HOUR_GLASS)

@@ -61,4 +61,16 @@ if EID then
     #Quality {{Quality3}} items have a 66% chance to be rerolled
     #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(myItemId, description)
+
+    --- Cursed Body ---
+    myItemId = Isaac.GetItemIdByName("Cursed Body");
+    description = 
+    [[{{CurseUnknown}} Receive Curse of the Unknown permanently
+    #On a hit, 50% to:
+    #{{Coin}} spawn a random pickup
+    #{{ArrowUp}} give a small permanent stat up
+    #{{Trinket}} spawn a trinket
+    #{{CurseRoom}} spawn a curse room item]]
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
+    EID:addCollectible(myItemId, description)
 end
