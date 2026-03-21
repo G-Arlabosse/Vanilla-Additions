@@ -70,4 +70,14 @@ if EID then
     #Uriel and Gabriel now spawn as their dark version but drop angel items on death]]
     EID:addCollectible(myItemId, description)
     EID:addPlayerCondition(myItemId, PlayerType.PLAYER_KEEPER, "Items cost coins instead", nil, nil, nil, true)
+    --- Cursed Map ---
+    myItemId = Isaac.GetItemIdByName("Cursed Map");
+    description = 
+    [[#{{CurseMazeSmall}} Receive Curse of the Blind and Curse of the Maze permanently
+    #{{UltraSecretRoom}} Secret, Super Secret and Ultra Secret rooms have a higher chance to have good layouts]]
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
+    EID:addCollectible(myItemId, description)
+    
+
+    
 end
