@@ -65,7 +65,7 @@ if EID then
     myItemId = Isaac.GetItemIdByName("Cursed Map");
     description = 
     [[#{{CurseMazeSmall}} Receive Curse of the Blind and Curse of the Maze permanently
-    #{{UltraSecretRoom}} Better Secret, Super Secret and Ultra Secret rooms layouts have a higher change to appear]]
+    #{{UltraSecretRoom}} Secret, Super Secret and Ultra Secret rooms have a higher chance to have good layouts]]
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
     
