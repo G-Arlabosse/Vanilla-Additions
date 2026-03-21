@@ -64,9 +64,9 @@ if EID then
     --- Fallen Angel ---
     myItemId = Isaac.GetItemIdByName("Fallen Angel");
     description = 
-    [[{{AngelChance}} Converts devil deals chance to angel
+    [[{{AngelChance}} Converts devil deal chance to angel 
     #Angel room items now cost health
-    #Uriel and Gabriel now spawn as their dark version but drop items on death]]
+    #Uriel and Gabriel now spawn as their dark version but drop angel items on death]]
     EID:addCollectible(myItemId, description)
     EID:addPlayerCondition(myItemId, PlayerType.PLAYER_KEEPER, "Items cost coins instead", nil, nil, nil, true)
 end
