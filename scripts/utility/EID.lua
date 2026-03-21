@@ -61,4 +61,14 @@ if EID then
     #Quality {{Quality3}} items have a 66% chance to be rerolled
     #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(myItemId, description)
+
+    --- Poison Mush ---
+    myItemId = Isaac.GetItemIdByName("Poison Mush");
+    description = 
+    [[{{ArrowUp}} Major Size Down
+    #{{BossRoom}} All enemies are in their giant form
+    #{{Bomb}} Bombs are turned into Giga Bombs
+    #{{Pill}} Pills are turned into Horse Pills
+    #{{GoldenChest}} Golden Chests are turned into Giant Chests]]
+    EID:addCollectible(myItemId, description)
 end
