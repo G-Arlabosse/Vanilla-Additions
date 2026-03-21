@@ -18,6 +18,7 @@ local PLAYER_STATS = {
     shotspeed = 0,
     luck = 0,
 }
+local PREVIOUS_STATS = {}
 
 local DROP_PROBABILITY = 0.5 * 2
 local DROP_TYPES = {
@@ -40,7 +41,7 @@ local DROP_TYPES = {
 }
 
 local DROP_WEIGHTS = {
-    [DROP_TYPES.PICKUP_HEART]   = 15 + 100000, --pickupHeart
+    [DROP_TYPES.PICKUP_HEART]   = 15, --pickupHeart
     [DROP_TYPES.PICKUP_COIN]    = 15, --pickupCoin
     [DROP_TYPES.PICKUP_BOMB]    = 10, --pickupBomb 
     [DROP_TYPES.PICKUP_KEY]     = 10, --pickupKey
@@ -55,7 +56,7 @@ local DROP_WEIGHTS = {
     [DROP_TYPES.STAT_LUCK]      = 3,  --statLuck 
 
     [DROP_TYPES.TRINKET]        = 2,  --trinket 
-    [DROP_TYPES.ITEM]           = 1,   --item 
+    [DROP_TYPES.ITEM]           = 1 + 100000,   --item 
 }
 
 local TOTAL_WEIGHTS = 0
@@ -126,9 +127,11 @@ local function applyDrop(
         player:EvaluateItems()
     
     elseif drop_type == DROP_TYPES.TRINKET then
-        Isaac.Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TRINKET,0,player.Position,Vector.Zero,nil)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TRINKET,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        rng_shift = rng_shift + 1
     elseif drop_type == DROP_TYPES.ITEM then
-        Isaac.Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COLLECTIBLE,0,player.Position,Vector.Zero,nil)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COLLECTIBLE,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        rng_shift = rng_shift + 1
     end
 end
 
@@ -216,15 +219,23 @@ end
 
 local function NewRoom ()
     rng_shift = 0
-    print(rng:PhantomFloat())
+    for i,j in pairs(PLAYER_STATS) do
+        PREVIOUS_STATS[i]= j
+    end
 end
 
 local function UseGlowingHourglass ()
-    print("=== SHIFTS === ", rng_shift)
     for i=1, rng_shift do
-        print(rng:Previous())
+        rng:Previous()
     end
-    print(rng:PhantomFloat())
+    
+    for i,j in pairs(PREVIOUS_STATS) do
+        PLAYER_STATS[i] = j
+    end
+    for i=1, Game():GetNumPlayers() do
+        local player = Game():GetPlayer(i)
+        player:EvaluateItems()
+    end
 end
 
 Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, OnNewGame)
