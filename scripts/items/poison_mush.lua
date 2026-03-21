@@ -1,8 +1,9 @@
-local proportion_curse = Isaac.GetItemIdByName("Proportion Curse")
+local poison_mush = Isaac.GetItemIdByName("Poison Mush")
 
 
 local function PostCurses(_, curses)
-    if Mod:PlayersHaveItem(proportion_curse) and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+    print(curses)
+    if Mod:PlayersHaveItem(poison_mush) and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         return curses | LevelCurse.CURSE_OF_GIANT
     end
     return curses
@@ -11,7 +12,7 @@ end
 local function PostNPCInit (_,
     entity  ---@param entity EntityNPC
 )
-    if entity.Type ~= 0 then
+    if Mod:PlayersHaveItem(poison_mush) then
         entity:MakeChampion(Game():GetRoom():GetSpawnSeed(), ChampionColor.GIANT, false)
     end
 end
@@ -24,7 +25,7 @@ local function PickupSelection (_,
     requestedSubType,   ---@param requestedSubType integer
     rng                 ---@param rng RNG
 )
-    if Mod:PlayersHaveItem(proportion_curse) then
+    if Mod:PlayersHaveItem(poison_mush) then
         if variant == PickupVariant.PICKUP_LOCKEDCHEST then
             return {PickupVariant.PICKUP_MEGACHEST, 1}
         end
@@ -34,7 +35,7 @@ end
 local function PostPickupInit(_, 
     pickup  ---@param pickup EntityPickup
 )
-    if not Mod:PlayersHaveItem(proportion_curse) then return end
+    if not Mod:PlayersHaveItem(poison_mush) then return end
 
     if pickup.Variant == PickupVariant.PICKUP_PILL then
         local spawner = pickup.SpawnerEntity
@@ -102,7 +103,7 @@ local function PostPickupInit(_,
 end
 
 function PreEntitySpawn(_, type, variant, subtype, position, velocity, spawner, seed)
-    if not Mod:PlayersHaveItem(proportion_curse) then return end
+    if not Mod:PlayersHaveItem(poison_mush) then return end
     
     --- Giga Bombs (from red chests)
     if type == EntityType.ENTITY_BOMB and 
@@ -131,7 +132,7 @@ function EvaluateCache(_,
     cacheFlag
 )
     if cacheFlag == CacheFlag.CACHE_SIZE then
-        local size_mult = 0.512^player:GetCollectibleNum(proportion_curse)
+        local size_mult = 0.512^player:GetCollectibleNum(poison_mush)
         player.SpriteScale = player.SpriteScale * size_mult
         player.Size = player.Size * size_mult
     end
@@ -148,4 +149,4 @@ Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, PostPickupInit)
 
 Mod:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, PreEntitySpawn)
 
-Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, PickedCollectible, proportion_curse)
+Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, PickedCollectible, poison_mush)
