@@ -27,3 +27,15 @@ function Mod:PlayersHaveItem (
     end
     return false
 end
+
+function Mod:PlayersHaveTrinket (
+    trinket    ---@param trinket TrinketType
+)
+    for i=0, Game():GetNumPlayers() -1 do
+        local player = Isaac.GetPlayer(i)
+        if player:HasTrinket(trinket) then
+            return true
+        end
+    end
+    return false
+end
