@@ -59,6 +59,11 @@ function PreEntitySpawn(_, type, variant, subtype, position, velocity, spawner, 
         (subtype == 0 or subtype == BombSubType.BOMB_NORMAL or subtype == BombSubType.BOMB_DOUBLEPACK) then
         return {type, variant, BombSubType.BOMB_GIGA, seed}
     end
+
+    if type == EntityType.ENTITY_PICKUP and
+        variant == PickupVariant.PICKUP_PILL then
+            return {type, variant, subtype + 2048, seed}
+        end
 end
 
 Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, PreLevelGen)
