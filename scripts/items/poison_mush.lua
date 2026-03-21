@@ -1,14 +1,5 @@
 local poison_mush = Isaac.GetItemIdByName("Poison Mush")
 
-
-local function PostCurses(_, curses)
-    print(curses)
-    if Mod:PlayersHaveItem(poison_mush) and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
-        return curses | LevelCurse.CURSE_OF_GIANT
-    end
-    return curses
-end
-
 local function PostNPCInit (_,
     entity  ---@param entity EntityNPC
 )
@@ -120,9 +111,6 @@ local function PickedCollectible(_,
     varData,    ---@param varData integer
     player      ---@param player EntityPlayer
 )
-    if not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
-        Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_GIANT, false)
-    end
     player:AddCacheFlags(CacheFlag.CACHE_SIZE)
     player:EvaluateItems()
 end
@@ -139,8 +127,6 @@ function EvaluateCache(_,
 end
 
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateCache)
-
-Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurses)
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, PostNPCInit)
 
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_SELECTION, PickupSelection)
