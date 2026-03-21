@@ -61,4 +61,13 @@ if EID then
     #Quality {{Quality3}} items have a 66% chance to be rerolled
     #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(myItemId, description)
+
+    --- Fallen Angel ---
+    myItemId = Isaac.GetItemIdByName("Fallen Angel");
+    description = 
+    [[{{AngelChance}} Converts devil deal chance to angel 
+    #Angel room items now cost health
+    #Uriel and Gabriel now spawn as their dark version but drop angel items on death]]
+    EID:addCollectible(myItemId, description)
+    EID:addPlayerCondition(myItemId, PlayerType.PLAYER_KEEPER, "Items cost coins instead", nil, nil, nil, true)
 end

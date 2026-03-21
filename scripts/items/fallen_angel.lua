@@ -2,17 +2,11 @@ local item_config = Isaac.GetItemConfig()
 local pending_morhped_items = {}
 local devil_pickups = {}
 local fallen_angel = Isaac.GetItemIdByName("Fallen Angel")
+local collision = false
 
-local function FallenAngelActive ()
+local function InAngelRoom ()
     local roomDesc = Game():GetLevel():GetCurrentRoomDesc().Data
-    if not (roomDesc.Type == RoomType.ROOM_ANGEL) then return false end
-    for i=0, Game():GetNumPlayers() -1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(fallen_angel) > 0 then
-            return true
-        end
-    end
-    return false
+    return roomDesc.Type == RoomType.ROOM_ANGEL
 end
 
 local function GetPedestalsInRoom()
@@ -41,15 +35,30 @@ local function GetClosestPlayer(pickup)
     return closestPlayer
 end
 
-local function ChangePrice (pickup)
+local function ChangePrice (
+    pickup ---@param pickup EntityPickup
+)
     local closestPlayer = GetClosestPlayer(pickup)
-    if closestPlayer and pickup then
+    if closestPlayer and pickup and 
+        (devil_pickups[pickup.Index].player ~= closestPlayer.Index) and
+        pickup.Price ~= 0 then
+
+        devil_pickups[pickup.Index].player = closestPlayer.Index
+
         local playerHearts = closestPlayer:GetHearts()
         local pickup_devil_price = item_config:GetCollectible(pickup.SubType).DevilPrice
         local playerType = closestPlayer:GetPlayerType()
+        
         -- KEEPER/T KEEPER --
         if playerType == PlayerType.PLAYER_KEEPER or playerType == playerType == PlayerType.PLAYER_KEEPER_B then
             pickup.AutoUpdatePrice = true
+            if Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_STEAM_SALE) then
+                pickup.Price = math.floor(15*pickup_devil_price/2)
+                pickup.ShopItemId = -2
+            else
+                pickup.Price = 15*pickup_devil_price
+                pickup.ShopItemId = -1
+            end
         -- T BLUE BABY/T JUDAS --
         elseif playerType == PlayerType.PLAYER_BLUEBABY_B or playerType == PlayerType.PLAYER_JUDAS_B or playerType == PlayerType.PLAYER_BETHANY_B then
             pickup.Price = PickupPrice.PRICE_THREE_SOULHEARTS
@@ -71,7 +80,7 @@ local function ChangePrice (pickup)
                     pickup.Price = PickupPrice.PRICE_ONE_HEART
                     pickup.AutoUpdatePrice = false
                 else
-                    pickup.Price = PickupPrice.PRICE_TWO_SOUL_HEARTS
+                    pickup.Price = PickupPrice.PRICE_THREE_SOULHEARTS
                     pickup.AutoUpdatePrice = false
                 end
             -- TWO HEARTS COST --
@@ -93,64 +102,34 @@ end
 
 local function InitPedestals()
     devil_pickups = {}
-    if FallenAngelActive() then
+    if InAngelRoom() and Mod:PlayersHaveItem(fallen_angel) then
         local pedestals = GetPedestalsInRoom()
         
         for i=1, #pedestals do
             local pickup = pedestals[i]:ToPickup()
             if pickup then
                 if Game():GetRoom():IsFirstVisit() then
+                    pickup.OptionsPickupIndex = 0
+                    pickup.Price = -1
+                    devil_pickups[pickup.Index] = {}
+                    devil_pickups[pickup.Index].pickup = pickup
                     ChangePrice(pickup)
-                    devil_pickups[pickup.Index] = pickup
                 elseif pickup.Price < 0 then
-                    devil_pickups[pickup.Index] = pickup
+                    devil_pickups[pickup.Index].pickup = pickup
                 end
             end
         end
     end
 end
-
-
-local function ActiveItemPickedUp ()
-    for i=0, Game():GetNumPlayers() -1 do
-        local player = Isaac.GetPlayer(i)
-        if not player:IsItemQueueEmpty() then
-            return true
-        end
-    end
-    return false
-end
-
-
 
 local function PostUpdate() 
-    for i = 0, Game():GetNumPlayers() - 1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(fallen_angel) > 0 then
-            local level = Game():GetLevel()
-            level:AddAngelRoomChance(1-level:GetAngelRoomChance())
-        end
-    end
+    if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
 
-    if not FallenAngelActive() then return end
-
-    -- Used to check if morph is from a reroll or an active swap
-    if #pending_morhped_items > 0 then
-        if not ActiveItemPickedUp() then
-            for _,pickup in pairs(pending_morhped_items) do
-                local config = Isaac.GetItemConfig():GetCollectible(pickup.SubType)
-                if config then
-                    pickup.AutoUpdatePrice = false
-                    devil_pickups[pickup.Index] = pickup
-                end
-            end
-        end
-        pending_morhped_items = {}
-    end
+    collision = false
 
     -- Update price according to player data
-    for _,pickup in pairs(devil_pickups) do ---@param pickup EntityPickup  
-        ChangePrice(pickup)
+    for _,data in pairs(devil_pickups) do 
+        ChangePrice(data.pickup)
     end
 end
 
@@ -162,9 +141,9 @@ local function PrePickupMorph(_,
     variant,    ---@param variant PickupVariant
     subtype
 )
-    if not FallenAngelActive() then return end
+    if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
     -- Reset Price
-    if pickup.Price < 0 then
+    if not (pickup.Price == 0) then
         morphed_item_devil = true
         pickup:GetData().priceReset = true
         pickup.Price = 0
@@ -180,24 +159,37 @@ local function PostPickupMorph(_,
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
 )
-    if not FallenAngelActive() then return end
-    -- Add pickup to reroll list
-    if entityType == EntityType.ENTITY_PICKUP and variant == PickupVariant.PICKUP_COLLECTIBLE and morphed_item_devil then
-        pending_morhped_items[#pending_morhped_items + 1] = pickup
-        morphed_item_devil = false
+    if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
+
+    --- d6 reroll (or other)
+    if entityType == EntityType.ENTITY_PICKUP and 
+            variant == PickupVariant.PICKUP_COLLECTIBLE and 
+            morphed_item_devil and 
+            not collision then
+
+        pickup.AutoUpdatePrice = false
+        pickup.Price = -1
+                   
+        devil_pickups[pickup.Index] = {} 
+        devil_pickups[pickup.Index].pickup = pickup
+        ChangePrice(pickup)
     end
+    morphed_item_devil = false
     
 end
 
 local function PickupCollision(_, pickup, entity, low)
     -- Remove collectible from update list 
-    devil_pickups[pickup.Index] = nil
+    if devil_pickups[pickup.Index] ~= nil then
+        collision = true
+        devil_pickups[pickup.Index] = nil
+    end
 end
 
 local function EntityKilled(_,
     npc ---@param npc EntityNPC
 )
-    if not FallenAngelActive() then return end
+    if not (InAngelRoom() or Mod:PlayersHaveItem(fallen_angel)) then return end
 
     -- Spawn item on Angel kill
     if npc.Type == EntityType.ENTITY_URIEL or npc.Type == EntityType.ENTITY_GABRIEL then
@@ -212,38 +204,15 @@ local function EntityKilled(_,
     end
 end
 
--- Before a morph
-Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, PrePickupMorph)
--- After a morph
-Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, PostPickupMorph)
-
--- On room enter
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, InitPedestals)
-
--- Update every frame
-Mod:AddCallback(ModCallbacks.MC_POST_UPDATE , PostUpdate)
-
--- Picking up an item
-Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, PickupCollision)
-
--- Killed an entity
-Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, EntityKilled)
-
 local function PreLevelInit()
-    for i = 0, Game():GetNumPlayers() - 1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(fallen_angel) > 0 then
-            local level = Game():GetLevel()
-            level:AddAngelRoomChance(1-level:GetAngelRoomChance())
-        end
+    if Mod:PlayersHaveItem(fallen_angel) then
+        local level = Game():GetLevel()
+        level:AddAngelRoomChance(1-level:GetAngelRoomChance())
     end
 end
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, PreLevelInit)
-
-
 
 local function OnNPCInit (_, npc)
-    if FallenAngelActive() then
+    if InAngelRoom() and Mod:PlayersHaveItem(fallen_angel) then
         if npc.Type == EntityType.ENTITY_URIEL then
             npc:Morph(EntityType.ENTITY_URIEL, 1, 0, -1)
         end
@@ -254,4 +223,55 @@ local function OnNPCInit (_, npc)
     end
 end
 
+local function AddCollectible (_,
+    type,       ---@param type CollectibleType
+    charge,     ---@param charge integer
+    firstTime,  ---@param firstTime boolean
+    slot,       ---@param slot integer
+    varData,    ---@param varData integer
+    player      ---@param player EntityPlayer
+)
+    if type == fallen_angel then
+        local level = Game():GetLevel()
+        level:AddAngelRoomChance(1-level:GetAngelRoomChance())
+    end
+end
+
+-- Before a morph
+Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_MORPH, PrePickupMorph)
+-- After a morph
+Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_MORPH, PostPickupMorph)
+
+-- On room enter
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, InitPedestals)
+
+-- Update every frame
+Mod:AddCallback(ModCallbacks.MC_POST_UPDATE, PostUpdate)
+
+-- Picking up an item
+Mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, PickupCollision)
+
+-- Killed an Angel
+Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, EntityKilled)
+
+-- Update Angel Chance
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, PreLevelInit)
+
+-- Spawn Dark Uriel/Gabriel
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, OnNPCInit)
+
+-- Update Angel Chance after picking up Fallen Angel
+Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddCollectible)
+
+
+local function HealthUpdate (_,
+    player, --EntityPlayer 
+    string, ---CustomCacheTag 
+    value ---float
+)
+    for _,data in pairs(devil_pickups) do
+        data.player = nil
+    end
+end
+
+Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_ADD_HEARTS, HealthUpdate)
