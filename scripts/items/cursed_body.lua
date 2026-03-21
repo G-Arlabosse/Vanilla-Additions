@@ -56,7 +56,7 @@ local DROP_WEIGHTS = {
     [DROP_TYPES.STAT_LUCK]      = 3,  --statLuck 
 
     [DROP_TYPES.TRINKET]        = 2,  --trinket 
-    [DROP_TYPES.ITEM]           = 1 + 100000,   --item 
+    [DROP_TYPES.ITEM]           = 1,   --item 
 }
 
 local TOTAL_WEIGHTS = 0
@@ -145,7 +145,7 @@ local function TakeDamage (_,
     local player = entity:ToPlayer()
     if not player then return end
     
-    if Mod:PlayersHaveItem(cursed_body) then
+    if player:GetCollectibleNum(cursed_body) > 0 then
         local rand_drop = rng:RandomFloat()
         rng_shift = rng_shift + 1
         if rand_drop < DROP_PROBABILITY then
