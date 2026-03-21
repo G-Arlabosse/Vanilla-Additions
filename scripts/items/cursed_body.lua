@@ -18,7 +18,7 @@ local PLAYER_STATS = {
     luck = 0,
 }
 
-local DROP_PROBABILITY = 1
+local DROP_PROBABILITY = 0.5
 local DROP_TYPES = {
     PICKUP_HEART    = 1,
     PICKUP_COIN     = 2,
@@ -70,7 +70,7 @@ local function AddCollectible (_,
     varData,    ---@param varData integer
     player      ---@param player EntityPlayer
 )
-    if type == cursed_body then
+    if type == cursed_body and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_UNKNOWN, false)
         rng:SetSeed(Game():GetSeeds():GetStartSeed(), 35)
     end
