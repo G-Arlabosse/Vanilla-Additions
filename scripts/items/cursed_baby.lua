@@ -1,11 +1,11 @@
 local cursed_baby = Isaac.GetItemIdByName("Cursed Baby")
 
 
-local function PreLevelGen()
+local function PostCurses(_, curses)
     if Mod:PlayersHaveItem(cursed_baby) and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
-        Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_GIANT, false)
-        print("OK")
+        return curses | LevelCurse.CURSE_OF_GIANT
     end
+    return curses
 end
 
 local function PostNPCInit (_,
@@ -34,6 +34,8 @@ end
 local function PostPickupInit(_, 
     pickup  ---@param pickup EntityPickup
 )
+    if not Mod:PlayersHaveItem(cursed_baby) then return end
+
     if pickup.Variant == PickupVariant.PICKUP_PILL then
         local spawner = pickup.SpawnerEntity
         if spawner then
@@ -65,8 +67,9 @@ local function PostPickupInit(_,
 
     --- Giga Bombs (Non ignited)
     elseif pickup.Variant == PickupVariant.PICKUP_BOMB and
-        (pickup.SubType == BombSubType.BOMB_NORMAL or pickup.SubType == BombSubType.BOMB_DOUBLEPACK) then
-        Game():Spawn(
+        (pickup.SubType == BombSubType.BOMB_NORMAL or pickup.SubType == BombSubType.BOMB_DOUBLEPACK) 
+        and pickup.Price == 0 then
+        local new_pickup = Game():Spawn(
             EntityType.ENTITY_PICKUP, 
             PickupVariant.PICKUP_BOMB, 
             pickup.Position, 
@@ -75,6 +78,7 @@ local function PostPickupInit(_,
             BombSubType.BOMB_GIGA, 
             0
         )
+        new_pickup:ToPickup().Price = pickup.Price
         pickup:Remove()
     end
 
@@ -82,7 +86,7 @@ local function PostPickupInit(_,
     if pickup.Variant == PickupVariant.PICKUP_PILL then
         local itemPool = Game():GetItemPool()
         if (pickup.SubType & PillColor.PILL_GIANT_FLAG) == 0 then
-            Game():Spawn(
+            local new_pickup = Game():Spawn(
                 EntityType.ENTITY_PICKUP, 
                 PickupVariant.PICKUP_PILL, 
                 pickup.Position, 
@@ -91,12 +95,15 @@ local function PostPickupInit(_,
                 pickup.SubType | PillColor.PILL_GIANT_FLAG, 
                 0
             )
+            new_pickup:ToPickup().Price = pickup.Price
             pickup:Remove()
         end
     end
 end
 
 function PreEntitySpawn(_, type, variant, subtype, position, velocity, spawner, seed)
+    if not Mod:PlayersHaveItem(cursed_baby) then return end
+    
     --- Giga Bombs (from red chests)
     if type == EntityType.ENTITY_BOMB and 
     (variant == BombVariant.BOMB_TROLL or variant == BombVariant.BOMB_SUPERTROLL) then
@@ -132,7 +139,7 @@ end
 
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateCache)
 
-Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, PreLevelGen)
+Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurses)
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, PostNPCInit)
 
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_SELECTION, PickupSelection)
