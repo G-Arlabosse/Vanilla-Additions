@@ -1,5 +1,16 @@
 local mimics_favor = Isaac.GetTrinketIdByName("Mimic's Favor")
 local rng = RNG()
+local previous_rng_seed = 0
+local rerolled = false
+
+local COINS_WEIGHTS = {
+    [CoinSubType.COIN_PENNY]        = 75,
+    [CoinSubType.COIN_NICKEL]         = 15,
+    [CoinSubType.COIN_LUCKYPENNY]   = 4,
+    [CoinSubType.COIN_DIME]       = 3,
+    [CoinSubType.COIN_GOLDEN]       = 2,
+    [CoinSubType.COIN_STICKYNICKEL] = 1,
+}
 
 
 local function PostPickupInit(_, 
@@ -18,26 +29,58 @@ local function PostPickupInit(_,
                 pickup.Position,
                 pickup.Velocity,
                 nil,
-                1,
-                1
+                0,
+                rng:Next()
             )
             pickup:Remove()
-        
-        elseif pickup.Variant == PickupVariant.PICKUP_COIN then
-            if pickup.SubType == CoinSubType.COIN_PENNY then
-                local new_pickup = Game():Spawn(
-                    EntityType.ENTITY_PICKUP,
-                    PickupVariant.PICKUP_COIN,
-                    pickup.Position,
-                    pickup.Velocity,
-                    nil,
-                    -1,
-                    1
-                )
-                pickup:Remove()
+        end
+    end
+end
+
+local function PostNewRoom ()
+    previous_rng_seed = rng:GetSeed()
+    print(rng:GetSeed())
+end
+
+local function OnGlowingHourglass ()
+    rng:SetSeed(previous_rng_seed)
+    print(rng:GetSeed())
+end
+
+local function NewGame ()
+    local start_seed = Game():GetSeeds():GetNextSeed()
+    print("Start seed ".. start_seed)
+    rng:SetSeed(start_seed, 35)
+end
+
+local function PrePickupInit (_,
+    type,
+    variant,
+    subType,
+    position,
+    velocity,
+    spawner,
+    seed
+)
+    if Mod:PlayersHaveTrinket(mimics_favor) then
+        if type == EntityType.ENTITY_PICKUP and
+                variant == PickupVariant.PICKUP_COIN and
+                subType == 0 then
+            local random_value = rng:RandomInt(100)
+            local acc = 0
+            for random_subtype, weight in pairs(COINS_WEIGHTS) do
+                acc = acc + weight
+                if acc > random_value then
+                    print(random_subtype)
+                    return {type, variant, random_subtype}
+                end
             end
         end
     end
 end
 
+Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, NewGame)
+Mod:AddCallback(ModCallbacks.MC_USE_ITEM, OnGlowingHourglass, CollectibleType.COLLECTIBLE_GLOWING_HOUR_GLASS)
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, PostNewRoom)
 Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, PostPickupInit)
+Mod:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, PrePickupInit)
