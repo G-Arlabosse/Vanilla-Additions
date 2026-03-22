@@ -35,16 +35,13 @@ local curse_chance_mod = 0  -- 1/3 or 1/5 depending on the difficulty
 local function PostCurseEval(_, 
     curses  ---@param curses LevelCurse
 )
-    print("CURSE: "..curses)
     for i=1, #CURSES do
         if curses & CURSES[i] == 0 then
             floor_free_curses[CURSES[i]] = true
         else
-            print("Had Curse: "..CURSES[i])
             curse_chance = curse_chance - curse_chance_mod
         end
     end
-    print("Reduced chance: "..curse_chance)
 
     local game = Game()
     local absolute_stage = game:GetLevel():GetAbsoluteStage()
@@ -56,13 +53,10 @@ local function PostCurseEval(_,
     if curse_chance > 0 then
         nb_curses = curse_chance // 1
         p = curse_chance % 1
+        if (rng:RandomFloat() < p) then
+            nb_curses = nb_curses + 1
+        end    
     end
-    print("Nb curses:" .. nb_curses .. ", Proba curse:".. p)
-
-    if (rng:RandomFloat() < p) then
-        nb_curses = nb_curses + 1
-        print("Additional Curse ! ")
-    end    
 
     for i=1, nb_curses do
         local random = rng:RandomInt(#floor_free_curses)
@@ -72,7 +66,6 @@ local function PostCurseEval(_,
             if acc > random then
                 floor_free_curses[new_curse] = nil
                 curses = curses | new_curse
-                print("Added Curse: "..new_curse)
                 break
             end
         end
@@ -86,6 +79,7 @@ local function PostCurseEval(_,
 end
 
 local function NewGame()
+    curse_chance = 0
     local difficulty = Game().Difficulty
     if difficulty == Difficulty.DIFFICULTY_NORMAL or difficulty == Difficulty.DIFFICULTY_GREED then
         curse_chance_mod = 1/5
@@ -123,39 +117,10 @@ local function UseCursedD6(_,
 end
 
 local function OnRender()
-    --[[
-    if effectTimer - EFFECTS_TIMER_OUT > 0 then
-        local t = (effectTimer - EFFECTS_TIMER_OUT -1) / EFFECTS_TIMER_IN 
-
-        purpleMod.R             = COLOR_MOD_TARGET.R * (1 - t) + previousMod.R * t
-        purpleMod.G             = COLOR_MOD_TARGET.G * (1 - t) + previousMod.G * t
-        purpleMod.B             = COLOR_MOD_TARGET.B * (1 - t) + previousMod.B * t
-        purpleMod.A             = COLOR_MOD_TARGET.A * (1 - t) + previousMod.A * t
-        purpleMod.Brightness    = COLOR_MOD_TARGET.Brightness * (1 - t) + previousMod.Brightness * t
-        purpleMod.Contrast      = COLOR_MOD_TARGET.Contrast * (1 - t) + previousMod.Contrast * t
-
-        Game():SetColorModifier(purpleMod, false)
-        effectTimer = effectTimer - 1
-    elseif effectTimer > 0 then
-        local t = (effectTimer-1) / EFFECTS_TIMER_OUT
-
-        purpleMod.R             = COLOR_MOD_TARGET.R * t + previousMod.R * (1 - t)
-        purpleMod.G             = COLOR_MOD_TARGET.G * t + previousMod.G * (1 - t)
-        purpleMod.B             = COLOR_MOD_TARGET.B * t + previousMod.B * (1 - t)
-        purpleMod.A             = COLOR_MOD_TARGET.A * t + previousMod.A * (1 - t)
-        purpleMod.Brightness    = COLOR_MOD_TARGET.Brightness * t + previousMod.Brightness * (1 - t)
-        purpleMod.Contrast      = COLOR_MOD_TARGET.Contrast * t + previousMod.Contrast * (1 - t)
-
-        Game():SetColorModifier(purpleMod, false)
-        effectTimer = effectTimer - 1
-    end
-    ]]
     local game = Game()
     if activated_d6 then
         game:SetColorModifier(COLOR_MOD_TARGET, true, 1/EFFECTS_TIMER)
         activated_d6 = false
-    elseif game:GetCurrentColorModifier() == COLOR_MOD_TARGET then
-        print("OK")
     end
 end
 
