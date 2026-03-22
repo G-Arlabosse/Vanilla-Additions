@@ -28,11 +28,9 @@ local COLOR_MOD_TARGET = ColorModifier(0.5, 0.1, 0.8, 0.8, 0.0, 1.15)  -- R G B 
 local EFFECTS_TIMER = 30
 
 local floor_free_curses = {}
-local previousMod = ColorModifier()
-local purpleMod = ColorModifier()
+local activated_d6 = false
 local curse_chance = 0
 local curse_chance_mod = 0  -- 1/3 or 1/5 depending on the difficulty
-local effectTimer = 0
 
 local function PostCurseEval(_, 
     curses  ---@param curses LevelCurse
@@ -104,6 +102,7 @@ local function UseCursedD6(_,
     activeSlot, -- ActiveSlot
     customVarData -- CustomVarData [int]
 )
+    activated_d6 = true
     curse_chance = curse_chance + curse_chance_mod
     --print(curse_chance)
 
@@ -114,9 +113,6 @@ local function UseCursedD6(_,
     game:ShakeScreen(EFFECTS_TIMER)
     
     SFXManager():Play(SoundEffect.SOUND_MOTHER_ANGER_SHAKE)
- 
-    effectTimer = EFFECTS_TIMER
-    previousMod = Game():GetCurrentColorModifier()
     
     player:UseActiveItem(
             CollectibleType.COLLECTIBLE_D6,
@@ -127,8 +123,9 @@ local function UseCursedD6(_,
 end
 
 local function OnRender()
-    if effectTimer > 0 then
-        local t = (effectTimer-1) / EFFECTS_TIMER
+    --[[
+    if effectTimer - EFFECTS_TIMER_OUT > 0 then
+        local t = (effectTimer - EFFECTS_TIMER_OUT -1) / EFFECTS_TIMER_IN 
 
         purpleMod.R             = COLOR_MOD_TARGET.R * (1 - t) + previousMod.R * t
         purpleMod.G             = COLOR_MOD_TARGET.G * (1 - t) + previousMod.G * t
@@ -139,6 +136,26 @@ local function OnRender()
 
         Game():SetColorModifier(purpleMod, false)
         effectTimer = effectTimer - 1
+    elseif effectTimer > 0 then
+        local t = (effectTimer-1) / EFFECTS_TIMER_OUT
+
+        purpleMod.R             = COLOR_MOD_TARGET.R * t + previousMod.R * (1 - t)
+        purpleMod.G             = COLOR_MOD_TARGET.G * t + previousMod.G * (1 - t)
+        purpleMod.B             = COLOR_MOD_TARGET.B * t + previousMod.B * (1 - t)
+        purpleMod.A             = COLOR_MOD_TARGET.A * t + previousMod.A * (1 - t)
+        purpleMod.Brightness    = COLOR_MOD_TARGET.Brightness * t + previousMod.Brightness * (1 - t)
+        purpleMod.Contrast      = COLOR_MOD_TARGET.Contrast * t + previousMod.Contrast * (1 - t)
+
+        Game():SetColorModifier(purpleMod, false)
+        effectTimer = effectTimer - 1
+    end
+    ]]
+    local game = Game()
+    if activated_d6 then
+        game:SetColorModifier(COLOR_MOD_TARGET, true, 1/EFFECTS_TIMER)
+        activated_d6 = false
+    elseif game:GetCurrentColorModifier() == COLOR_MOD_TARGET then
+        print("OK")
     end
 end
 
