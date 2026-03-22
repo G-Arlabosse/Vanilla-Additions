@@ -45,7 +45,7 @@ if EID then
     #{{Luck}} Caps at 80% at 20 luck]]
     EID:addCollectible(myItemId, description)
 
-    --- Corrupted Flower ---
+    --- Corrupted Clover ---
     myItemId = Isaac.GetItemIdByName("Corrupted Clover");
     description = 
     [[{{CurseBlind}} Receive Curse of the Blind permanently
@@ -53,4 +53,5 @@ if EID then
     #Quality {{Quality3}} items have a 66% chance to be rerolled
     #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(myItemId, description)
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
 end
