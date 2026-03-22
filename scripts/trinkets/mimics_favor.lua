@@ -5,9 +5,9 @@ local rerolled = false
 
 local COINS_WEIGHTS = {
     [CoinSubType.COIN_PENNY]        = 75,
-    [CoinSubType.COIN_NICKEL]         = 15,
+    [CoinSubType.COIN_NICKEL]       = 15,
     [CoinSubType.COIN_LUCKYPENNY]   = 4,
-    [CoinSubType.COIN_DIME]       = 3,
+    [CoinSubType.COIN_DIME]         = 3,
     [CoinSubType.COIN_GOLDEN]       = 2,
     [CoinSubType.COIN_STICKYNICKEL] = 1,
 }
@@ -39,18 +39,14 @@ end
 
 local function PostNewRoom ()
     previous_rng_seed = rng:GetSeed()
-    print(rng:GetSeed())
 end
 
 local function OnGlowingHourglass ()
     rng:SetSeed(previous_rng_seed)
-    print(rng:GetSeed())
 end
 
 local function NewGame ()
-    local start_seed = Game():GetSeeds():GetNextSeed()
-    print("Start seed ".. start_seed)
-    rng:SetSeed(start_seed, 35)
+    rng:SetSeed(Game():GetSeeds():GetNextSeed(), 35)
 end
 
 local function PrePickupInit (_,
@@ -71,7 +67,6 @@ local function PrePickupInit (_,
             for random_subtype, weight in pairs(COINS_WEIGHTS) do
                 acc = acc + weight
                 if acc > random_value then
-                    print(random_subtype)
                     return {type, variant, random_subtype}
                 end
             end
