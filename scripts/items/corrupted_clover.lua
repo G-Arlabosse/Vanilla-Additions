@@ -61,7 +61,6 @@ local function TryUpgradeItem (
 
         -- Upgraded --
         if new_id then
-            print("Previous:".. item_data.Name .. ", New:".. itemConfig:GetCollectible(new_id).Name .. ", Item pool:" .. item_pool )
             tracked_item_pools[new_id] = item_pool
             player:RemoveCollectible(id)
             player:AddCollectible(new_id)
@@ -97,7 +96,7 @@ local function AddCollectible(_,
     player      ---@param player EntityPlayer
 )
     if type == corrupted_clover then
-        Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_BLIND, true)
+        Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_BLIND, false)
     else
         local item_pool = Game():GetItemPool():GetLastPool()
         tracked_item_pools[type] = item_pool
