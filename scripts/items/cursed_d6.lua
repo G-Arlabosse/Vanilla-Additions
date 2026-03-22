@@ -34,35 +34,36 @@ local curse_chance = 0
 local curse_chance_mod = 0  -- 1/3 or 1/5 depending on the difficulty
 local effectTimer = 0
 
-local function PostCurseEval(curses)
-
-    --print("Curse chance: " .. curse_chance)
-
+local function PostCurseEval(_, 
+    curses  ---@param curses LevelCurse
+)
+    print("CURSE: "..curses)
     for i=1, #CURSES do
-        floor_free_curses[CURSES[i]] = true
+        if curses & CURSES[i] == 0 then
+            floor_free_curses[CURSES[i]] = true
+        else
+            print("Had Curse: "..CURSES[i])
+            curse_chance = curse_chance - curse_chance_mod
+        end
     end
-
-    local all_curses = LevelCurse.CURSE_NONE
-    for i=1, #curses do
-        --print("Had Curse: ".. curses[i])
-        floor_free_curses[curses[i]] = nil
-        all_curses = all_curses | curses[i]
-        curse_chance = curse_chance - curse_chance_mod
-    end
-    --print("Reduced Curse Chance: ".. curse_chance)
+    print("Reduced chance: "..curse_chance)
 
     local game = Game()
     local absolute_stage = game:GetLevel():GetAbsoluteStage()
     local level_seed = game:GetSeeds():GetStageSeed(absolute_stage)
     local rng = RNG(level_seed, 35)
 
-    local nb_curses = curse_chance // 1
-    local p = curse_chance % 1
-    --print("Nb curses:" .. nb_curses .. ", Proba curse:".. p)
+    local nb_curses = 0
+    local p = 0
+    if curse_chance > 0 then
+        nb_curses = curse_chance // 1
+        p = curse_chance % 1
+    end
+    print("Nb curses:" .. nb_curses .. ", Proba curse:".. p)
 
     if (rng:RandomFloat() < p) then
         nb_curses = nb_curses + 1
-        --print("Additional Curse ! ")
+        print("Additional Curse ! ")
     end    
 
     for i=1, nb_curses do
@@ -72,8 +73,8 @@ local function PostCurseEval(curses)
             acc = acc + 1
             if acc > random then
                 floor_free_curses[new_curse] = nil
-                all_curses = all_curses | new_curse
-                --print("Added Curse: "..new_curse)
+                curses = curses | new_curse
+                print("Added Curse: "..new_curse)
                 break
             end
         end
@@ -82,7 +83,7 @@ local function PostCurseEval(curses)
     curse_chance = 0
     floor_free_curses = {}
 
-    return all_curses
+    return curses
 
 end
 

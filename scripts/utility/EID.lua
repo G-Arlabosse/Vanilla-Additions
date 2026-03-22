@@ -78,6 +78,13 @@ if EID then
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
     
-
+    --- Cursed D6 ---
+    myItemId = Isaac.GetItemIdByName("Cursed D6");
+    description = 
+    [[{{Timer}} On use:
+    #{{Collectible105}} Rerolls pedestal items in the room
+    #{{CurseDarknessSmall}} Increases the chance to have a curse on the next floor
+    #{{Warning}} Can add up to multiple curses]]
+    EID:addCollectible(myItemId, description)
     
 end
