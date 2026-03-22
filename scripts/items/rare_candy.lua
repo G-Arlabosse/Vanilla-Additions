@@ -17,6 +17,7 @@ local TRANSFORMATION_TAGS = {
     [ItemConfig.TAG_BOOK]       = PlayerForm.PLAYERFORM_BOOK_WORM,
     [ItemConfig.TAG_SPIDER]     = PlayerForm.PLAYERFORM_SPIDERBABY
     --- Add a Stompy Advencement via an Item ??? 
+    
 }
 
 local TRANSFORMATIONS = {
@@ -52,7 +53,7 @@ local function changeTransformation(previous, new)
 end
 
 --- Checks transformation on Item Pickup ---
-function Mod:OnCollectibleAdded(
+local function OnCollectibleAdded(_,
     type,       ---@param type CollectibleType
     charge,     ---@param charge integer
     firstTime,  ---@param firstTime boolean
@@ -73,7 +74,7 @@ function Mod:OnCollectibleAdded(
 end 
 
 --- Checks transformation on PillEffect ---
-function Mod.OnPillEffect(
+local function OnPillEffect(
     _,
     selectedPillEffect, ---@param selectedPillEffect PillEffect 
     player              ---@param player EntityPlayer
@@ -90,7 +91,7 @@ function Mod.OnPillEffect(
 end
 
 --- Rare Candy is used ---
-function Mod.UseRareCandy (
+local function UseRareCandy (
     _,
     item, ---@param item CollectibleType
     rng, -- RNG
@@ -113,16 +114,16 @@ function Mod.UseRareCandy (
     end
 end
 
-function Mod.OnNewRun()
+local function OnNewRun()
     changeTransformation(LAST_RARE_CANDY_TRANSFORMAION, nil)
     LAST_RARE_CANDY_TRANSFORMAION = nil
     PLAYER_ID = nil
 end
 
 
-Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, Mod.OnCollectibleAdded)
-Mod:AddCallback(ModCallbacks.MC_USE_PILL, Mod.OnPillEffect)
-Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, Mod.OnNewRun)
+Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, OnCollectibleAdded)
+Mod:AddCallback(ModCallbacks.MC_USE_PILL, OnPillEffect)
+Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, OnNewRun)
 
-Mod:AddCallback(ModCallbacks.MC_USE_ITEM, Mod.UseRareCandy, rare_candy)
+Mod:AddCallback(ModCallbacks.MC_USE_ITEM, UseRareCandy, rare_candy)
 -- Mod:AddCallback(ModCallbacks.MC_POST_TRIGGER_COLLECTIBLE_REMOVED, Mod.ItemRemoved)
