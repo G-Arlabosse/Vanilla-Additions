@@ -9,4 +9,5 @@
     <passive id="8" name="Life Orb" gfx="life_orb.png" description="Suffering brings strength" quality="2" cache="damage" tags="nolostbr" />
     <passive id="9" name="Corrupted Clover" gfx="corrupted_clover.png" description="May the blindness be with you" quality="2" />
     <passive id="10" name="Cursed Map" gfx="cursed_map.png" description="" quality="1" />
+    <active id="11" name="Cursed D6" gfx="clover.png" description="Rerolls.. but at what cost ?" quality="3" maxcharges="4" chargetype="normal" />
 </items>
