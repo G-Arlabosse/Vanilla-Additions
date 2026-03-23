@@ -12,8 +12,20 @@ end
 
 ---@param player EntityPlayer
 local function calciumUse(_, item, rng, player)
+    local player_weapon_modifiers = player:GetWeaponModifiers()
+    local weapon = player:GetWeapon(1)
+
+    if player_weapon_modifiers & WeaponModifier.ALMOND_MILK > 0 or
+            player_weapon_modifiers & WeaponModifier.SOY_MILK > 0 then
+        return { Discharge = true, Remove = false, ShowAnim = true }
+
+    elseif player_weapon_modifiers & WeaponModifier.CHOCOLATE_MILK > 0 then
+        
+    end
     local data = player:GetData()
     data.opikoko_calcium_active = true
+
+    
 
     -- Trigger stat change
     player:AddCacheFlags(CacheFlag.CACHE_ALL)
@@ -40,22 +52,17 @@ end
 ---@param player EntityPlayer
 local function evaluateCache(_, player, cacheFlags)
     local data = player:GetData()
-
-    -- Update Damage
-    if cacheFlags == CacheFlag.CACHE_DAMAGE then
-        if data.opikoko_calcium_active then
+    if data.opikoko_calcium_active then
+        -- Update Damage
+        if cacheFlags == CacheFlag.CACHE_DAMAGE then
             player.Damage = player.Damage * DAMAGE_MULTIPLIER
-        end
-    end
-    -- Update Fire Rate with tears calculation
-    if cacheFlags == CacheFlag.CACHE_FIREDELAY then
-        if data.opikoko_calcium_active then
+
+        -- Update Fire Rate with tears calculation
+        elseif cacheFlags == CacheFlag.CACHE_FIREDELAY then
             player.MaxFireDelay = toMaxFireDelay(toTearsPerSecond(player.MaxFireDelay) * FIRE_RATE_MULTIPLIER)
-        end
-    end
-    -- Update Tear color
-    if cacheFlags == CacheFlag.CACHE_TEARCOLOR then
-        if data.opikoko_calcium_active then
+        
+            -- Update Tear color
+        elseif cacheFlags == CacheFlag.CACHE_TEARCOLOR then
             player.TearColor = Color(1,1,1,1,0.5,0.5,0.5)
         end
     end
@@ -70,9 +77,21 @@ local function changeTearProperties(_, tear)
     end
 end
 
+local function PostWeaponFire(_,
+    weapon, ---@param weapon Weapon
+    fireDirection,
+    isShooting,
+    isInterpolated
+)
+    if weapon:GetOwner():GetData().opikoko_calcium_active then
+        weapon:SetModifiers(WeaponModifier.SOY_MILK)
+    end
+end
+
 Mod:AddCallback(ModCallbacks.MC_USE_ITEM, calciumUse, calcium)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, calciumDeactivate)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_DAMAGE)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_FIREDELAY)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_TEARCOLOR)
 Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, changeTearProperties)
+Mod:AddCallback(ModCallbacks.MC_POST_WEAPON_FIRE, PostWeaponFire)

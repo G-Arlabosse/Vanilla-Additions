@@ -21,6 +21,10 @@ if EID then
     #{{Blank}} {{ArrowDown}} -0.3 Tear Size
     #{{Indent}} Drastically reduces knockback]]
     EID:addCollectible(myItemId, description)
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_SOY_MILK, "Overriden by {{ColorYellow}}Soy Milk{{ColorWhite}}")
+    EID:addCondition(CollectibleType.COLLECTIBLE_SOY_MILK, myItemId, "Overrides {{ColorYellow}}Calcium{{ColorWhite}}")
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_ALMOND_MILK, "Overriden by {{ColorYellow}}Almond Milk{{ColorWhite}}")
+    EID:addCondition(CollectibleType.COLLECTIBLE_ALMOND_MILK, myItemId, "Overrides {{ColorYellow}}Calcium{{ColorWhite}}")
 
     --- Cursed Floors ---
     myItemId = Isaac.GetItemIdByName("Cursed Floors");
