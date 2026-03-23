@@ -53,14 +53,14 @@ end
 
 -- Show Secret rooms on the map
 -- Open Secret rooms fully
-function PreLevelPlaceRoom(
+function PreLevelPlaceRoom(_,
     slot,       ---@param slot LevelGeneratorRoom 
     oldConfig,  ---@param oldConfig RoomConfigRoom
     seed        
 )
     if PlayerManager.AnyoneHasCollectible(cursed_floors) then
-        local rng = RNG()
-        rng:SetSeed(seed)
+        local rng = RNG(seed, 35)
+
         if oldConfig.Type == RoomType.ROOM_DEFAULT and slot:GenerationIndex() ~= 0 then
             if rng:RandomFloat() < replace_chance then                    
                 local level = Game():GetLevel()
@@ -76,7 +76,6 @@ function PreLevelPlaceRoom(
                     0,                      -- MinVariant
                     6                       -- MaxVariant
                 )
-                
                 if config then 
                     -- Convert Colum,Row to GetRoomByIdx(index)
                     local index =  slot:Column() + 13*slot:Row()
@@ -103,9 +102,9 @@ function PostNewRoom()
     local game = Game()
     -- Room Isaac just Got in
     local room = game:GetRoom()
+    
     local roomDescriptor = game:GetLevel():GetCurrentRoomDesc()
-
-    local isSecret = roomDescriptor.Data.Type == RoomType.ROOM_SECRET|RoomType.ROOM_SUPERSECRET|RoomType.ROOM_ULTRASECRET
+ 
     for doorSlot, neighborDesc in pairs(roomDescriptor:GetNeighboringRooms()) do
         if RoomNeedsToBeOpened(neighborDesc.GridIndex)
         then
@@ -122,6 +121,8 @@ function PostCurseEval(_, curses)
 end
 
 function PreInitLevel()
+    SpecialRooms = {}
+
     --- Compute Replace Chance
     local luck = 0
     for i=0, Game():GetNumPlayers() -1 do
