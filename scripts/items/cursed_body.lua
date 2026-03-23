@@ -10,15 +10,8 @@ local function toMaxFireDelay(tearsPerSecond)
   return (30 / tearsPerSecond) - 1
 end
 
-local PLAYER_STATS = {
-    speed = 0,
-    damage = 0,
-    tears = 0,
-    range = 0,
-    shotspeed = 0,
-    luck = 0,
-}
-local PREVIOUS_STATS = {}
+local PLAYER_STAT_BONUSES = {}
+local PREVIOUS_STAT_BONUSES = {}
 
 local DROP_PROBABILITY = 0.5 * 2
 local DROP_TYPES = {
@@ -43,21 +36,28 @@ local DROP_TYPES = {
 local DROP_WEIGHTS = {
     [DROP_TYPES.PICKUP_HEART]   = 15, --pickupHeart
     [DROP_TYPES.PICKUP_COIN]    = 15, --pickupCoin
-    [DROP_TYPES.PICKUP_BOMB]    = 10, --pickupBomb 
-    [DROP_TYPES.PICKUP_KEY]     = 10, --pickupKey
-    [DROP_TYPES.PICKUP_CARD]    = 5, --pickupCard 
-    [DROP_TYPES.PICKUP_PILL]    = 5, --pickupPill 
+    [DROP_TYPES.PICKUP_BOMB]    = 11, --pickupBomb 
+    [DROP_TYPES.PICKUP_KEY]     = 11, --pickupKey
+    [DROP_TYPES.PICKUP_CARD]    = 7, --pickupCard 
+    [DROP_TYPES.PICKUP_PILL]    = 7, --pickupPill 
 
-    [DROP_TYPES.STAT_SPEED]     = 3,  --statSpeed
-    [DROP_TYPES.STAT_DAMAGE]    = 3,  --statDamage
-    [DROP_TYPES.STAT_TEARS]     = 3,  --statTears 
-    [DROP_TYPES.STAT_RANGE]     = 3,  --statRange 
-    [DROP_TYPES.STAT_SHOTSPEED] = 3,  --statShotspeed 
-    [DROP_TYPES.STAT_LUCK]      = 3,  --statLuck 
+    [DROP_TYPES.STAT_SPEED]     = 5,  --statSpeed
+    [DROP_TYPES.STAT_DAMAGE]    = 5,  --statDamage
+    [DROP_TYPES.STAT_TEARS]     = 5,  --statTears 
+    [DROP_TYPES.STAT_RANGE]     = 5,  --statRange 
+    [DROP_TYPES.STAT_SHOTSPEED] = 5,  --statShotspeed 
+    [DROP_TYPES.STAT_LUCK]      = 5,  --statLuck 
 
-    [DROP_TYPES.TRINKET]        = 2,  --trinket 
+    [DROP_TYPES.TRINKET]        = 3,  --trinket 
     [DROP_TYPES.ITEM]           = 1,   --item 
 }
+
+local SPEED_BONUS = 0.1
+local DAMAGE_BONUS = 1
+local TEAR_BONUS = 0.25
+local RANGE_BONUS = 40 -- 40 equal 1 tile
+local SHOT_SPEED_BONUS = 0.1
+local LUCK_BONUS = 1
 
 local TOTAL_WEIGHTS = 0
 for i,j in pairs(DROP_WEIGHTS) do
@@ -75,6 +75,17 @@ local function AddCollectible (_,
     if type == cursed_body and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_UNKNOWN, false)
     end
+    
+    if PLAYER_STAT_BONUSES[player:GetPlayerIndex()+1] then return end
+    PLAYER_STAT_BONUSES[player:GetPlayerIndex()+1] = {
+        speed = 0,
+        damage = 0,
+        tears = 0,
+        range = 0,
+        shotspeed = 0,
+        luck = 0,
+    }
+    print("Player index:", player:GetPlayerIndex())
 end
 
 
@@ -82,6 +93,7 @@ local function applyDrop(
     player, ---@param player EntityPlayer
     drop_type
 ) 
+    local index = player:GetPlayerIndex()+1
     if drop_type == DROP_TYPES.PICKUP_HEART then
         Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_HEART,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
         rng_shift = rng_shift + 1
@@ -102,28 +114,28 @@ local function applyDrop(
         rng_shift = rng_shift + 1
 
     elseif drop_type == DROP_TYPES.STAT_SPEED then
-        PLAYER_STATS.speed = PLAYER_STATS.speed + 0.05
+        PLAYER_STAT_BONUSES[index].speed = PLAYER_STAT_BONUSES[index].speed + SPEED_BONUS
         player:AddCacheFlags(CacheFlag.CACHE_SPEED)
         player:EvaluateItems()
     elseif drop_type == DROP_TYPES.STAT_DAMAGE then
-        PLAYER_STATS.damage = PLAYER_STATS.damage + 0.05
+        PLAYER_STAT_BONUSES[index].damage = PLAYER_STAT_BONUSES[index].damage + DAMAGE_BONUS
         player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
         player:EvaluateItems()
     elseif drop_type == DROP_TYPES.STAT_TEARS then
-        PLAYER_STATS.tears = PLAYER_STATS.tears + 0.1
+        PLAYER_STAT_BONUSES[index].tears = PLAYER_STAT_BONUSES[index].tears + TEAR_BONUS
         player:AddCacheFlags(CacheFlag.CACHE_FIREDELAY)
         player:EvaluateItems()
     elseif drop_type == DROP_TYPES.STAT_RANGE then
         player:AddCacheFlags(CacheFlag.CACHE_RANGE)
-        PLAYER_STATS.range = PLAYER_STATS.range + 0.2
+        PLAYER_STAT_BONUSES[index].range = PLAYER_STAT_BONUSES[index].range + RANGE_BONUS
         player:EvaluateItems()
     elseif drop_type == DROP_TYPES.STAT_SHOTSPEED then
         player:AddCacheFlags(CacheFlag.CACHE_SHOTSPEED)
-        PLAYER_STATS.shotspeed = PLAYER_STATS.shotspeed + 0.05
+        PLAYER_STAT_BONUSES[index].shotspeed = PLAYER_STAT_BONUSES[index].shotspeed + SHOT_SPEED_BONUS
         player:EvaluateItems()
     elseif drop_type == DROP_TYPES.STAT_LUCK then
         player:AddCacheFlags(CacheFlag.CACHE_LUCK)
-        PLAYER_STATS.luck = PLAYER_STATS.luck + 0.1
+        PLAYER_STAT_BONUSES[index].luck = PLAYER_STAT_BONUSES[index].luck + LUCK_BONUS
         player:EvaluateItems()
     
     elseif drop_type == DROP_TYPES.TRINKET then
@@ -145,7 +157,7 @@ local function TakeDamage (_,
     local player = entity:ToPlayer()
     if not player then return end
     
-    if player:GetCollectibleNum(cursed_body) > 0 then
+    for _=0, player:GetCollectibleNum(cursed_body)-1 do
         local rand_drop = rng:RandomFloat()
         rng_shift = rng_shift + 1
         if rand_drop < DROP_PROBABILITY then
@@ -156,10 +168,11 @@ local function TakeDamage (_,
                 acc = acc + weight
                 if acc > rand_weight then
                     applyDrop(player, drop_type)
-                    return
+                    goto continue
                 end
             end
         end
+        ::continue::
     end
 end
 
@@ -167,18 +180,20 @@ local function CalculateCache (_,
     player, ---@param player EntityPlayer
     flags   ---@param flags CacheFlag
 )
-    if Mod:PlayersHaveItem(cursed_body) then
+    if player:HasCollectible(cursed_body) then
+        local index = player:GetPlayerIndex()+1
+        print(index)
         if flags == CacheFlag.CACHE_SPEED then
-            player.MoveSpeed = player.MoveSpeed + PLAYER_STATS.speed
+            player.MoveSpeed = player.MoveSpeed + PLAYER_STAT_BONUSES[index].speed
         end
         if flags == CacheFlag.CACHE_RANGE then
-            player.TearRange = player.TearRange + PLAYER_STATS.range
+            player.TearRange = player.TearRange + PLAYER_STAT_BONUSES[index].range
         end
         if flags == CacheFlag.CACHE_SHOTSPEED then
-            player.ShotSpeed = player.ShotSpeed + PLAYER_STATS.shotspeed
+            player.ShotSpeed = player.ShotSpeed + PLAYER_STAT_BONUSES[index].shotspeed
         end
         if flags == CacheFlag.CACHE_LUCK then
-            player.Luck = player.Luck + PLAYER_STATS.luck
+            player.Luck = player.Luck + PLAYER_STAT_BONUSES[index].luck
         end
     end
 end
@@ -188,25 +203,19 @@ local function CalculateStat (_,
     stat,           ---@param stat EvaluateStatStage
     currentValue    ---@param currentValue number
 )
-    if Mod:PlayersHaveItem(cursed_body) then
+    if player:HasCollectible(cursed_body) then
+        local index = player:GetPlayerIndex()+1
         if stat == EvaluateStatStage.DAMAGE_UP then
-            return currentValue + PLAYER_STATS.damage
+            return currentValue + PLAYER_STAT_BONUSES[index].damage
         end
         if stat == EvaluateStatStage.TEARS_UP then
-            return toMaxFireDelay(toTearsPerSecond(currentValue + PLAYER_STATS.tears))
+            return toMaxFireDelay(toTearsPerSecond(currentValue + PLAYER_STAT_BONUSES[index].tears))
         end
     end
 end
 
 local function OnNewGame ()
     rng:SetSeed(Game():GetSeeds():GetStartSeed(), 35)
-    
-    PLAYER_STATS.speed = 0
-    PLAYER_STATS.damage = 0
-    PLAYER_STATS.range = 0
-    PLAYER_STATS.tears = 0
-    PLAYER_STATS.shotspeed = 0
-    PLAYER_STATS.luck = 0
 end
 
 local function NewLevel ()
@@ -219,8 +228,12 @@ end
 
 local function NewRoom ()
     rng_shift = 0
-    for i,j in pairs(PLAYER_STATS) do
-        PREVIOUS_STATS[i]= j
+    for p,_ in pairs(PLAYER_STAT_BONUSES) do
+        PREVIOUS_STAT_BONUSES[p] = {}
+        for i,j in pairs(PLAYER_STAT_BONUSES[p]) do
+            print("a")
+            PREVIOUS_STAT_BONUSES[p][i] = j
+        end
     end
 end
 
@@ -229,8 +242,10 @@ local function UseGlowingHourglass ()
         rng:Previous()
     end
     
-    for i,j in pairs(PREVIOUS_STATS) do
-        PLAYER_STATS[i] = j
+    for p,_ in pairs(PREVIOUS_STAT_BONUSES) do
+        for i,j in pairs(PREVIOUS_STAT_BONUSES[p]) do
+            PLAYER_STAT_BONUSES[p][i] = j
+        end
     end
     for i=1, Game():GetNumPlayers() do
         local player = Game():GetPlayer(i)

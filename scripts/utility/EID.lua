@@ -66,11 +66,11 @@ if EID then
     myItemId = Isaac.GetItemIdByName("Cursed Body");
     description = 
     [[{{CurseUnknown}} Receive Curse of the Unknown permanently
-    #On a hit, 50% to:
-    #{{Coin}} spawn a random pickup
-    #{{ArrowUp}} give a small permanent stat up
-    #{{Trinket}} spawn a trinket
-    #{{CurseRoom}} spawn a curse room item]]
+    #On a hit, 50% to trigger one of the following effects:
+    #{{Coin}} Spawn a random pickup
+    #{{ArrowUp}} Give a permanent stat up
+    #{{Trinket}} Spawn a trinket
+    #{{CurseRoom}} Spawn a curse room item]]
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
     EID:addCollectible(myItemId, description)
 end
