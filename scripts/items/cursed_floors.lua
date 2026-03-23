@@ -9,35 +9,33 @@ local MIN_RC = 0.3 -- 30%
 local MAX_RC = 0.8 -- 80 %
 
 local SPECIAL_ROOMS = {
-    {type = RoomType.ROOM_SHOP , weight =  19, minVariant =  0, maxVariant =  6}, -- 90% of Shops
-    {type = RoomType.ROOM_SHOP , weight =  2, minVariant =  14, maxVariant =  17}, 
+    {type = RoomType.ROOM_SHOP,         weight = 19,   minVariant = 0,     maxVariant = 6}, -- 90% of Shops
+    {type = RoomType.ROOM_SHOP,         weight = 2,    minVariant = 14,    maxVariant = 17}, 
+    {type = RoomType.ROOM_TREASURE,     weight = 21,   minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_CURSE,        weight = 12,   minVariant = 0,     maxVariant = 30}, --Or 31-40 with Voodoo Head ?
+    {type = RoomType.ROOM_ARCADE,       weight = 9,    minVariant = 0,     maxVariant = 40}, --Or 41-51 with Cain Birthright ?
+    {type = RoomType.ROOM_CHEST,        weight = 6,    minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_DICE,         weight = 6,    minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_LIBRARY,      weight = 6,    minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_DEVIL,        weight = 5,    minVariant = 0,     maxVariant = 24}, --Or 25-36 with Number Magnet
+    {type = RoomType.ROOM_ANGEL,        weight = 5,    minVariant = 0,     maxVariant = 21},
+    {type = RoomType.ROOM_ISAACS,       weight = 3,    minVariant = -1,    maxVariant = 29},
+    {type = RoomType.ROOM_BARREN,       weight = 3,    minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_PLANETARIUM,  weight = 3,    minVariant = -1,    maxVariant = -1},
 
-    {type = RoomType.ROOM_TREASURE , weight =  21, minVariant = -1, maxVariant = -1},
-    {type = RoomType.ROOM_CURSE , weight =  12, minVariant =  0, maxVariant = 30}, --Or 31-40 with Voodoo Head ?
-    {type = RoomType.ROOM_ARCADE , weight =  9, minVariant =  0, maxVariant = 40}, --Or 41-51 with Cain Birthright ?
-    {type = RoomType.ROOM_CHEST , weight =  6, minVariant = -1, maxVariant = -1},
-    {type = RoomType.ROOM_DICE , weight =  6, minVariant = -1, maxVariant = -1},
-    {type = RoomType.ROOM_LIBRARY , weight =  6, minVariant = -1, maxVariant = -1},
-    {type = RoomType.ROOM_DEVIL , weight =  5, minVariant =  0, maxVariant = 24}, --Or 25-36 with Number Magnet
-    {type = RoomType.ROOM_ANGEL , weight =  5, minVariant =  0, maxVariant = 21},
-    {type = RoomType.ROOM_ISAACS , weight =  3, minVariant = -1, maxVariant = 29},
-    {type = RoomType.ROOM_BARREN , weight =  3, minVariant = -1, maxVariant = -1},
-    {type = RoomType.ROOM_PLANETARIUM , weight =  3, minVariant = -1, maxVariant = -1},
---[RoomType.ROOM_ULTRASECRET] = 1
---[RoomType.ROOM_SECRET] = 5,
---[RoomType.ROOM_SUPERSECRET] = 3,
+    --[RoomType.ROOM_ULTRASECRET] = 1
+    --[RoomType.ROOM_SECRET] = 5,
+    --[RoomType.ROOM_SUPERSECRET] = 3,
 }
 
 local TOTAL_SPECIAL_ROOMS_WEIGHT = 0
 for i, data in pairs(SPECIAL_ROOMS) do
     TOTAL_SPECIAL_ROOMS_WEIGHT = TOTAL_SPECIAL_ROOMS_WEIGHT + data.weight
 end
-print(TOTAL_SPECIAL_ROOMS_WEIGHT)
 
 
 local function getRandomSpecialRoom(rng)
     local value = rng:RandomInt(TOTAL_SPECIAL_ROOMS_WEIGHT)+1
-    -- Change math.random to a seeded random later ?
 
     local weightIndex = 0
     for i, data in pairs(SPECIAL_ROOMS) do
@@ -49,8 +47,6 @@ local function getRandomSpecialRoom(rng)
     return nil
 end
 
--- Show Secret rooms on the map
--- Open Secret rooms fully
 function PreLevelPlaceRoom(_,
     slot,       ---@param slot LevelGeneratorRoom 
     oldConfig,  ---@param oldConfig RoomConfigRoom
