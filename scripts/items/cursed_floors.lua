@@ -1,8 +1,6 @@
-local game = Game()
-
 local cursed_floors = Isaac.GetItemIdByName("Cursed Floors")
-local LibraryRooms = {}
-local players_have_cursed_floors = false
+local SpecialRooms = {}
+
 -- Chance to replace a normal room
 local replace_chance = 0
 local MIN_LUCK = -5
@@ -11,86 +9,75 @@ local MIN_RC = 0.3 -- 30%
 local MAX_RC = 0.8 -- 80 %
 
 local SPECIAL_ROOMS = {
-    [RoomType.ROOM_SHOP] = 7,
-    [RoomType.ROOM_TREASURE] = 7,
-    
-    --[RoomType.ROOM_SECRET] = 5,
-    [RoomType.ROOM_CURSE] = 4,
+    {type = RoomType.ROOM_SHOP,         weight = 19,   minVariant = 0,     maxVariant = 6}, -- 90% of Shops
+    {type = RoomType.ROOM_SHOP,         weight = 2,    minVariant = 14,    maxVariant = 17}, 
+    {type = RoomType.ROOM_TREASURE,     weight = 21,   minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_CURSE,        weight = 12,   minVariant = 0,     maxVariant = 30}, --Or 31-40 with Voodoo Head ?
+    {type = RoomType.ROOM_ARCADE,       weight = 9,    minVariant = 0,     maxVariant = 40}, --Or 41-51 with Cain Birthright ?
+    {type = RoomType.ROOM_CHEST,        weight = 6,    minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_DICE,         weight = 6,    minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_LIBRARY,      weight = 6,    minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_DEVIL,        weight = 5,    minVariant = 0,     maxVariant = 24}, --Or 25-36 with Number Magnet
+    {type = RoomType.ROOM_ANGEL,        weight = 5,    minVariant = 0,     maxVariant = 21},
+    {type = RoomType.ROOM_ISAACS,       weight = 3,    minVariant = -1,    maxVariant = 29},
+    {type = RoomType.ROOM_BARREN,       weight = 3,    minVariant = -1,    maxVariant = -1},
+    {type = RoomType.ROOM_PLANETARIUM,  weight = 3,    minVariant = -1,    maxVariant = -1},
 
-    --[RoomType.ROOM_SUPERSECRET] = 3,
-    [RoomType.ROOM_ARCADE] = 3,
-
-    [RoomType.ROOM_CHEST] = 2,
-    [RoomType.ROOM_DICE] = 2,
-    [RoomType.ROOM_LIBRARY] = 2,
-    [RoomType.ROOM_DEVIL] = 2,
-    [RoomType.ROOM_ANGEL] = 2,
-
-    [RoomType.ROOM_ISAACS] = 1,
-    [RoomType.ROOM_BARREN] = 1,
-    [RoomType.ROOM_PLANETARIUM] = 1,
     --[RoomType.ROOM_ULTRASECRET] = 1
+    --[RoomType.ROOM_SECRET] = 5,
+    --[RoomType.ROOM_SUPERSECRET] = 3,
 }
 
 local TOTAL_SPECIAL_ROOMS_WEIGHT = 0
-for roomType, weight in pairs(SPECIAL_ROOMS) do
-    TOTAL_SPECIAL_ROOMS_WEIGHT = TOTAL_SPECIAL_ROOMS_WEIGHT + weight
+for i, data in pairs(SPECIAL_ROOMS) do
+    TOTAL_SPECIAL_ROOMS_WEIGHT = TOTAL_SPECIAL_ROOMS_WEIGHT + data.weight
 end
 
-local function playersHaveCursedFloors ()
-    for i=0, Game():GetNumPlayers() -1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(cursed_floors) >= 1 then
-            return true
-        end
-    end
-    return false
-end
 
 local function getRandomSpecialRoom(rng)
     local value = rng:RandomInt(TOTAL_SPECIAL_ROOMS_WEIGHT)+1
-    -- Change math.random to a seeded random later ?
 
     local weightIndex = 0
-    for room, weight in pairs(SPECIAL_ROOMS) do
-        weightIndex = weightIndex + weight
+    for i, data in pairs(SPECIAL_ROOMS) do
+        weightIndex = weightIndex + data.weight
         if weightIndex >= value then
-            return room
+            return data
         end 
     end
-    return RoomType.ROOM_DEFAULT
+    return nil
 end
 
--- Show Secret rooms on the map
--- Open Secret rooms fully
-function Mod:ReplaceRoomsFloorGen(
+function PreLevelPlaceRoom(_,
     slot,       ---@param slot LevelGeneratorRoom 
     oldConfig,  ---@param oldConfig RoomConfigRoom
     seed        
 )
-    if players_have_cursed_floors then
-        local rng = RNG()
-        rng:SetSeed(seed)
+    if PlayerManager.AnyoneHasCollectible(cursed_floors) then
+        local rng = RNG(seed, 35)
+
         if oldConfig.Type == RoomType.ROOM_DEFAULT and slot:GenerationIndex() ~= 0 then
             if rng:RandomFloat() < replace_chance then                    
                 local level = Game():GetLevel()
                 -- pick a special room config
-                local randomRoomType = getRandomSpecialRoom(rng)
+                local randomData = getRandomSpecialRoom(rng)
+                if not randomData then return end
 
                 local config = RoomConfig.GetRandomRoom(
-                    seed,                   -- Seed
-                    true,                   -- ReduceWeight
-                    0,                      -- Stage
-                    randomRoomType,         -- Type
+                    seed,                   
+                    true,                   
+                    0,                      
+                    randomData.type,         
                     oldConfig.Shape,
-                    0,                      -- MinVariant
-                    6                       -- MaxVariant
+                    randomData.minVariant,
+                    randomData.maxVariant,
+                    0,
+                    10,
+                    oldConfig.Doors
                 )
-                
                 if config then 
                     -- Convert Colum,Row to GetRoomByIdx(index)
                     local index =  slot:Column() + 13*slot:Row()
-                    LibraryRooms[index] = true
+                    SpecialRooms[index] = true
                     return config
                 end
 
@@ -100,23 +87,22 @@ function Mod:ReplaceRoomsFloorGen(
 end
 
 local bool function RoomNeedsToBeOpened(roomIdx)
-    local level = game:GetLevel()
-    for index, _ in pairs(LibraryRooms) do
+    local level = Game():GetLevel()
+    for index, _ in pairs(SpecialRooms) do
         if roomIdx==index then
-            -- LibraryRooms[index] = nil
             return true
         end
     end
     return false
 end
 
-function Mod:UnlockSpecialRooms ()
+function PostNewRoom()
+    local game = Game()
     -- Room Isaac just Got in
     local room = game:GetRoom()
-    -- RoomDescriptor --
+    
     local roomDescriptor = game:GetLevel():GetCurrentRoomDesc()
-
-    local isSecret = roomDescriptor.Data.Type == RoomType.ROOM_SECRET|RoomType.ROOM_SUPERSECRET|RoomType.ROOM_ULTRASECRET
+ 
     for doorSlot, neighborDesc in pairs(roomDescriptor:GetNeighboringRooms()) do
         if RoomNeedsToBeOpened(neighborDesc.GridIndex)
         then
@@ -125,15 +111,15 @@ function Mod:UnlockSpecialRooms ()
     end
 end
 
-function Mod:AddLevelCurse ()
-    if players_have_cursed_floors and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
-        game:GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_CURSED, false)
+function PostCurseEval(_, curses)
+    if PlayerManager.AnyoneHasCollectible(cursed_floors) and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+        curses = curses | LevelCurse.CURSE_OF_THE_CURSED
     end
+    return curses
 end
 
-function Mod:ComputeValuesBeforeLevel ()
-    --- Compute if players have Cursed Floors
-    players_have_cursed_floors = playersHaveCursedFloors()
+function PreInitLevel()
+    SpecialRooms = {}
 
     --- Compute Replace Chance
     local luck = 0
@@ -146,7 +132,8 @@ function Mod:ComputeValuesBeforeLevel ()
     replace_chance = MIN_RC + (MAX_RC-MIN_RC)*(luck-MIN_LUCK)/(MAX_LUCK-MIN_LUCK)
 end
 
-Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, Mod.ReplaceRoomsFloorGen)
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.UnlockSpecialRooms)
-Mod:AddCallback(ModCallbacks.MC_POST_LEVEL_LAYOUT_GENERATED, Mod.AddLevelCurse)
-Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, Mod.ComputeValuesBeforeLevel)
+
+Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, PreLevelPlaceRoom)
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, PostNewRoom)
+Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurseEval)
+Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, PreInitLevel)
