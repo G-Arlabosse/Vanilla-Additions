@@ -1,8 +1,6 @@
-local game = Game()
-
 local cursed_floors = Isaac.GetItemIdByName("Cursed Floors")
-local LibraryRooms = {}
-local players_have_cursed_floors = false
+local SpecialRooms = {}
+
 -- Chance to replace a normal room
 local replace_chance = 0
 local MIN_LUCK = -5
@@ -37,15 +35,7 @@ for roomType, weight in pairs(SPECIAL_ROOMS) do
     TOTAL_SPECIAL_ROOMS_WEIGHT = TOTAL_SPECIAL_ROOMS_WEIGHT + weight
 end
 
-local function playersHaveCursedFloors ()
-    for i=0, Game():GetNumPlayers() -1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(cursed_floors) >= 1 then
-            return true
-        end
-    end
-    return false
-end
+
 
 local function getRandomSpecialRoom(rng)
     local value = rng:RandomInt(TOTAL_SPECIAL_ROOMS_WEIGHT)+1
@@ -63,12 +53,12 @@ end
 
 -- Show Secret rooms on the map
 -- Open Secret rooms fully
-function Mod:ReplaceRoomsFloorGen(
+function PreLevelPlaceRoom(
     slot,       ---@param slot LevelGeneratorRoom 
     oldConfig,  ---@param oldConfig RoomConfigRoom
     seed        
 )
-    if players_have_cursed_floors then
+    if PlayerManager.AnyoneHasCollectible(cursed_floors) then
         local rng = RNG()
         rng:SetSeed(seed)
         if oldConfig.Type == RoomType.ROOM_DEFAULT and slot:GenerationIndex() ~= 0 then
@@ -90,7 +80,7 @@ function Mod:ReplaceRoomsFloorGen(
                 if config then 
                     -- Convert Colum,Row to GetRoomByIdx(index)
                     local index =  slot:Column() + 13*slot:Row()
-                    LibraryRooms[index] = true
+                    SpecialRooms[index] = true
                     return config
                 end
 
@@ -100,20 +90,19 @@ function Mod:ReplaceRoomsFloorGen(
 end
 
 local bool function RoomNeedsToBeOpened(roomIdx)
-    local level = game:GetLevel()
-    for index, _ in pairs(LibraryRooms) do
+    local level = Game():GetLevel()
+    for index, _ in pairs(SpecialRooms) do
         if roomIdx==index then
-            -- LibraryRooms[index] = nil
             return true
         end
     end
     return false
 end
 
-function Mod:UnlockSpecialRooms ()
+function PostNewRoom()
+    local game = Game()
     -- Room Isaac just Got in
     local room = game:GetRoom()
-    -- RoomDescriptor --
     local roomDescriptor = game:GetLevel():GetCurrentRoomDesc()
 
     local isSecret = roomDescriptor.Data.Type == RoomType.ROOM_SECRET|RoomType.ROOM_SUPERSECRET|RoomType.ROOM_ULTRASECRET
@@ -125,16 +114,14 @@ function Mod:UnlockSpecialRooms ()
     end
 end
 
-function Mod:AddLevelCurse ()
-    if players_have_cursed_floors then
-        game:GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_CURSED, false)
+function PostCurseEval(_, curses)
+    if PlayerManager.AnyoneHasCollectible(cursed_floors) then
+        curses = curses | LevelCurse.CURSE_OF_THE_CURSED
     end
+    return curses
 end
 
-function Mod:ComputeValuesBeforeLevel ()
-    --- Compute if players have Cursed Floors
-    players_have_cursed_floors = playersHaveCursedFloors()
-
+function PreInitLevel()
     --- Compute Replace Chance
     local luck = 0
     for i=0, Game():GetNumPlayers() -1 do
@@ -146,7 +133,8 @@ function Mod:ComputeValuesBeforeLevel ()
     replace_chance = MIN_RC + (MAX_RC-MIN_RC)*(luck-MIN_LUCK)/(MAX_LUCK-MIN_LUCK)
 end
 
-Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, Mod.ReplaceRoomsFloorGen)
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.UnlockSpecialRooms)
-Mod:AddCallback(ModCallbacks.MC_POST_LEVEL_LAYOUT_GENERATED, Mod.AddLevelCurse)
-Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, Mod.ComputeValuesBeforeLevel)
+
+Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, PreLevelPlaceRoom)
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, PostNewRoom)
+Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurseEval)
+Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, PreInitLevel)
