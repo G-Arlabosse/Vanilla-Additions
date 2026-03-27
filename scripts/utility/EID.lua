@@ -23,7 +23,7 @@ if EID then
     EID:addCollectible(myItemId, description)
 
     --- Cursed Floors ---
-    myItemId = Isaac.GetItemIdByName("Cursed Floors");
+    myItemId = Isaac.GetItemIdByName("Cursed Rooms");
     description = 
     [[{{CurseCursed}} Receive Curse of the Cursed at the start of each floor
     #42.5% to reroll a normal small room into a special room
