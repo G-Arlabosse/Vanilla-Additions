@@ -8,7 +8,7 @@ include("scripts.utility.devil_costs")
 --- Items ---
 include("scripts.items.calcium")
 include("scripts.items.big_rock")
-include("scripts.items.cursed_floors")
+include("scripts.items.cursed_rooms")
 include("scripts.items.rare_candy")
 include("scripts.items.bell_baby")
 include("scripts.items.fallen_angel")
