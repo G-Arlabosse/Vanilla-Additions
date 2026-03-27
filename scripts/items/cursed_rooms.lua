@@ -1,4 +1,4 @@
-local cursed_floors = Isaac.GetItemIdByName("Cursed Floors")
+local cursed_rooms = Isaac.GetItemIdByName("Cursed Rooms")
 local SpecialRooms = {}
 
 -- Chance to replace a normal room
@@ -52,7 +52,7 @@ function PreLevelPlaceRoom(_,
     oldConfig,  ---@param oldConfig RoomConfigRoom
     seed        
 )
-    if PlayerManager.AnyoneHasCollectible(cursed_floors) then
+    if PlayerManager.AnyoneHasCollectible(cursed_rooms) then
         local rng = RNG(seed, 35)
 
         if oldConfig.Type == RoomType.ROOM_DEFAULT and slot:GenerationIndex() ~= 0 then
@@ -112,7 +112,7 @@ function PostNewRoom()
 end
 
 function PostCurseEval(_, curses)
-    if PlayerManager.AnyoneHasCollectible(cursed_floors) and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+    if PlayerManager.AnyoneHasCollectible(cursed_rooms) and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         curses = curses | LevelCurse.CURSE_OF_THE_CURSED
     end
     return curses
