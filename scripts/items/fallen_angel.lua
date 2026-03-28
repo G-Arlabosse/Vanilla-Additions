@@ -193,10 +193,13 @@ local function EntityKilled(_,
 
     -- Spawn item on Angel kill
     if npc.Type == EntityType.ENTITY_URIEL or npc.Type == EntityType.ENTITY_GABRIEL then
+        local room = Game():GetRoom()
+        local free_pos = room:FindFreePickupSpawnPosition(npc.Position)
+        print(npc.Position.X .. ":" .. npc.Position.Y .. " , " .. free_pos.X .. ":" .. free_pos.Y)
         local entity = Game():Spawn(
             EntityType.ENTITY_PICKUP, 
             PickupVariant.PICKUP_COLLECTIBLE, 
-            npc.Position, 
+            free_pos, 
             Vector.Zero, 
             nil,
             0,
