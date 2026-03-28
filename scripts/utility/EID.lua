@@ -78,6 +78,14 @@ if EID then
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
     
-
+    --- Broken Compass ---
+    myItemId = Isaac.GetItemIdByName("Broken Compass");
+    description = 
+    [[#{{CurseLabyrinth}} Receive Curse of the Labyrinth permanently
+    # Upon Clearing a room:
+    #{{Indent}}{{SecretRoom}} 50% chance to teleport in a random room
+    #{{Indent}}{{Coin}} 33% chance to spawn an additional pickup as clear reward]]
+    --EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
+    EID:addCollectible(myItemId, description)
     
 end
