@@ -53,7 +53,7 @@ local function NpcUpdate(_, npc)
     if not closestPlayer then return end
 
     -- Compute alpha based on distance
-    local alpha = -closestDist * 0.8 / 100 + 2.2
+    local alpha = -closestDist * 0.7 / 100 + 1.7
     alpha = math.min(alpha, 1)
     alpha = math.max(alpha, 0)
     if alpha < 0.05 then
@@ -74,16 +74,7 @@ local function NpcUpdate(_, npc)
     )
     
     -- Apply slowing if close
-    if closestDist < 200 then
-        new_color = Color(
-            base_color.R,
-            base_color.G,
-            base_color.B,
-            alpha,
-            0.1,
-            -0.1,
-            0.1
-        )
+    if closestDist < 150 then
         if npc:GetSlowingCountdown() == 0 then
             npc:AddSlowing(
                 EntityRef(closestPlayer),
@@ -92,6 +83,15 @@ local function NpcUpdate(_, npc)
                 Color(0.7, 0.7, 0.7, 0, 0, 0, 0)
             )
         else
+            new_color = Color(
+                -0.1,
+                -0.3,
+                -0.1,
+                alpha,
+                0.1,
+                -0.1,
+                0.1
+            )
             npc:SetSlowingCountdown(5)
         end
     end
