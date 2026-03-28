@@ -42,20 +42,15 @@ local function NpcUpdate(_, npc)
 
     
     for _, player in pairs(PlayerManager.GetPlayers()) do ---@param player EntityPlayer
-        if player:HasCollectible(extinguished_candle) then 
-            local dist = player.Position:Distance(npc.Position)
-            if dist < closestDist then
-                closestDist = dist
-                closestPlayer = player
-            end
+        local dist = player.Position:Distance(npc.Position)
+        if dist < closestDist then
+            closestDist = dist
+            closestPlayer = player
         end
     end
 
     -- If no valid player, reset color and exit
-    if not closestPlayer then
-        return
-    end
-    print("not return")
+    if not closestPlayer then return end
 
     -- Compute alpha based on distance
     local alpha = -closestDist * 0.8 / 100 + 2.2
