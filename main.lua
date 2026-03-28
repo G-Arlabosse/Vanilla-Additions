@@ -16,6 +16,9 @@ include("scripts.items.life_orb")
 include("scripts.items.corrupted_clover")
 include("scripts.items.poison_mush")
 
+--- Unlocks ---
+include("scripts.achievements.poison_mush")
+
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
 local damagePotionDamage = 1
 
