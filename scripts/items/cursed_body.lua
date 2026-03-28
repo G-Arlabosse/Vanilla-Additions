@@ -216,10 +216,11 @@ local function OnNewGame ()
     rng:SetSeed(Game():GetSeeds():GetStartSeed(), 35)
 end
 
-local function NewLevel ()
+local function PostCurseEval (_, curses)
     if Mod:PlayersHaveItem(cursed_body) and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
-        Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_UNKNOWN, false)
+        curses = curses | LevelCurse.CURSE_OF_THE_UNKNOWN
     end 
+    return curses
 end
 
 
@@ -248,7 +249,7 @@ local function UseGlowingHourglass ()
 end
 
 Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, OnNewGame)
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, NewLevel)
+Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurseEval)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, CalculateCache)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_STAT, CalculateStat)
 
