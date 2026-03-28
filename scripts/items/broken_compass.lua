@@ -10,7 +10,8 @@ local pickups = {
 
 local function PostCurseEval(_, curses)
     if PlayerManager.AnyoneHasCollectible(broken_compass) and
-        not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+            not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) and 
+            Game():GetLevel():GetAbsoluteStage()%2 ~= 0 then 
         curses = curses | LevelCurse.CURSE_OF_LABYRINTH
     end
     return curses
@@ -19,6 +20,10 @@ end
 local function OnRoomClear()
     if PlayerManager.AnyoneHasCollectible(broken_compass) then
         local level = Game():GetLevel()
+
+        -- Check if on Home stage
+        if level:GetAbsoluteStage() == LevelStage.STAGE8 then return end
+
         local room = Game():GetRoom()
         local seed = room:GetSpawnSeed()
         local rng = RNG(seed, 35)
