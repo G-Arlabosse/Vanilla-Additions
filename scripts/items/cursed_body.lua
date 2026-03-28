@@ -49,7 +49,7 @@ local DROP_WEIGHTS = {
     [DROP_TYPES.STAT_LUCK]      = 5,  --statLuck 
 
     [DROP_TYPES.TRINKET]        = 3,  --trinket 
-    [DROP_TYPES.ITEM]           = 1,   --item 
+    [DROP_TYPES.ITEM]           = 1   --item 
 }
 
 local SPEED_BONUS = 0.1
@@ -85,7 +85,6 @@ local function AddCollectible (_,
         shotspeed = 0,
         luck = 0,
     }
-    print("Player index:", player:GetPlayerIndex())
 end
 
 
@@ -142,7 +141,9 @@ local function applyDrop(
         Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TRINKET,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
         rng_shift = rng_shift + 1
     elseif drop_type == DROP_TYPES.ITEM then
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COLLECTIBLE,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
+        local itemID = Game():GetItemPool():GetCollectible(ItemPoolType.POOL_CURSE, true, rng:RandomInt(2^31-1))
+        local pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COLLECTIBLE,pos,Vector.Zero,nil,itemID,1)
         rng_shift = rng_shift + 1
     end
 end
@@ -182,7 +183,6 @@ local function CalculateCache (_,
 )
     if player:HasCollectible(cursed_body) then
         local index = player:GetPlayerIndex()+1
-        print(index)
         if flags == CacheFlag.CACHE_SPEED then
             player.MoveSpeed = player.MoveSpeed + PLAYER_STAT_BONUSES[index].speed
         end
@@ -221,8 +221,7 @@ end
 local function NewLevel ()
     if Mod:PlayersHaveItem(cursed_body) and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_UNKNOWN, false)
-    end
-    
+    end 
 end
 
 
@@ -231,7 +230,6 @@ local function NewRoom ()
     for p,_ in pairs(PLAYER_STAT_BONUSES) do
         PREVIOUS_STAT_BONUSES[p] = {}
         for i,j in pairs(PLAYER_STAT_BONUSES[p]) do
-            print("a")
             PREVIOUS_STAT_BONUSES[p][i] = j
         end
     end
