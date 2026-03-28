@@ -1,6 +1,6 @@
 local cursed_body = Isaac.GetItemIdByName("Cursed Body")
 local rng = RNG()
-local rng_shift = 0
+local previous_rng = 0
 
 local function toTearsPerSecond(maxFireDelay)
   return 30 / (maxFireDelay + 1)
@@ -93,24 +93,25 @@ local function applyDrop(
     drop_type
 ) 
     local index = player:GetPlayerIndex()+1
+
     if drop_type == DROP_TYPES.PICKUP_HEART then
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_HEART,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
-        rng_shift = rng_shift + 1
+        local spawn_pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, false)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_HEART,spawn_pos,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
     elseif drop_type == DROP_TYPES.PICKUP_COIN then
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COIN,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
-        rng_shift = rng_shift + 1
+        local spawn_pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, false)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COIN,spawn_pos,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
     elseif drop_type == DROP_TYPES.PICKUP_BOMB then
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_BOMB,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
-        rng_shift = rng_shift + 1
+        local spawn_pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, false)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_BOMB,spawn_pos,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
     elseif drop_type == DROP_TYPES.PICKUP_KEY then
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_KEY,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
-        rng_shift = rng_shift + 1
+        local spawn_pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, false)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_KEY,spawn_pos,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
     elseif drop_type == DROP_TYPES.PICKUP_CARD then
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TAROTCARD,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
-        rng_shift = rng_shift + 1
+        local spawn_pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, false)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TAROTCARD,spawn_pos,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
     elseif drop_type == DROP_TYPES.PICKUP_PILL then
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_PILL,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
-        rng_shift = rng_shift + 1
+        local spawn_pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, false)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_PILL,spawn_pos,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
 
     elseif drop_type == DROP_TYPES.STAT_SPEED then
         PLAYER_STAT_BONUSES[index].speed = PLAYER_STAT_BONUSES[index].speed + SPEED_BONUS
@@ -138,13 +139,12 @@ local function applyDrop(
         player:EvaluateItems()
     
     elseif drop_type == DROP_TYPES.TRINKET then
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TRINKET,player.Position,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
-        rng_shift = rng_shift + 1
+        local spawn_pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true)
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_TRINKET,spawn_pos,Vector.Zero,nil,0,rng:RandomInt(2^31-1))
     elseif drop_type == DROP_TYPES.ITEM then
+        local spawn_pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true)
         local itemID = Game():GetItemPool():GetCollectible(ItemPoolType.POOL_CURSE, true, rng:RandomInt(2^31-1))
-        local pos = Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true)
-        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COLLECTIBLE,pos,Vector.Zero,nil,itemID,1)
-        rng_shift = rng_shift + 1
+        Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_COLLECTIBLE,spawn_pos,Vector.Zero,nil,itemID,1)
     end
 end
 
@@ -160,10 +160,8 @@ local function TakeDamage (_,
     
     for _=0, player:GetCollectibleNum(cursed_body)-1 do
         local rand_drop = rng:RandomFloat()
-        rng_shift = rng_shift + 1
         if rand_drop < DROP_PROBABILITY then
             local rand_weight = rng:RandomFloat() * TOTAL_WEIGHTS
-            rng_shift = rng_shift + 1
             local acc = 0
             for drop_type, weight in pairs(DROP_WEIGHTS) do
                 acc = acc + weight
@@ -226,7 +224,7 @@ end
 
 
 local function NewRoom ()
-    rng_shift = 0
+    previous_rng = rng:GetSeed()
     for p,_ in pairs(PLAYER_STAT_BONUSES) do
         PREVIOUS_STAT_BONUSES[p] = {}
         for i,j in pairs(PLAYER_STAT_BONUSES[p]) do
@@ -236,9 +234,7 @@ local function NewRoom ()
 end
 
 local function UseGlowingHourglass ()
-    for i=1, rng_shift do
-        rng:Previous()
-    end
+    rng:SetSeed(previous_rng)
     
     for p,_ in pairs(PREVIOUS_STAT_BONUSES) do
         for i,j in pairs(PREVIOUS_STAT_BONUSES[p]) do
