@@ -285,56 +285,123 @@ local ITEM_FLIPS = {
     -- [""] = "",
 }
 
-if EID then
-    -- add card icon
-    local reverseIcon = Sprite()
-	reverseIcon:Load("gfx/eid_cardfronts.anm2", true)
-	EID:addIcon("Card"..CARD_ID, "Reverse Card", 0, 9, 9, -2, 1, reverseIcon)
 
-    -- add card descriptions
-    EID:addCard(CARD_ID, [[Flips tarot cards in the current room
-    #Also flips some items]])
-    
-    -- set blank card info
-    EID:addCardMetadata(CARD_ID, 12, false)
+local function authorizeCardFlip(card_subtype)
+    local isaac_config = Isaac.GetItemConfig()
+    local card_config = isaac_config:GetCard(card_subtype)
+    local card_achievement = card_config.AchievementID
+    if card_achievement == -1 then return true
+    else return Isaac.GetPersistentGameData():Unlocked(card_achievement) end
 end
 
+local function getPossibleSubtypes(all_subtypes)
+    local possible_subtypes = {}
 
--- Cache: maps player index -> last seen card ID
-local lastCardInSlot = {}
+    local isaac_config = Isaac.GetItemConfig()
+    for _, subtype in pairs(all_subtypes) do
+        local item_config = isaac_config:GetCollectible(subtype)
+        local item_achievement = item_config.AchievementID
+        if item_achievement == -1 then table.insert(possible_subtypes, subtype) end
+    end
+    return possible_subtypes
+end
 
--- Your card's standalone HUD sprite (completely separate from ui_cardfronts.anm2)
--- local myCardSprite = Sprite()
--- myCardSprite:Load("gfx/pickups/uno_reverse_card.anm2", true)
--- myCardSprite:Play("Idle", true)
+local function authorizeItemFlip(item_subtypes)
+    return #getPossibleSubtypes(item_subtypes) > 0
+end
 
-local function onHUDRender()
-    local hud = Game():GetHUD()
-    if not hud:IsVisible() then return end
+local function InitEID(_)
+    if EID then
+        -- add card icon
+        local reverseIcon = Sprite()
+        reverseIcon:Load("gfx/eid_cardfronts.anm2", true)
+        EID:addIcon("Card"..CARD_ID, "Reverse Card", 0, 9, 9, -2, 1, reverseIcon)
 
-    local hudSprite = hud:GetCardsPillsSprite()
+        -- add card descriptions
+        EID:addCard(CARD_ID, [[Flips tarot cards in the current room
+        #Also flips some items]])
+        
+        -- set blank card info
+        EID:addCardMetadata(CARD_ID, 12, false)
 
-    for i = 0, Game():GetNumPlayers() - 1 do
-        local player = Isaac.GetPlayer(i)
-        local currentCard = player:GetCard(0)
-
-        -- Only update the spritesheet when the card in the slot actually changed
-        if lastCardInSlot[i] ~= currentCard then
-            lastCardInSlot[i] = currentCard
-            print(currentCard)
-
-            if currentCard == CARD_ID then
-                print("Holding Reverse Card")
-                hudSprite:ReplaceSpritesheet(0, "gfx/uno_reverse_card.png")
-                hudSprite:LoadGraphics()
-            else
-                -- -- Restore the original spritesheet when the player no longer holds your card
-                -- hudSprite:ReplaceSpritesheet(0, "gfx/ui_cardfronts.png")
-                hudSprite:LoadGraphics()
+    --- Test Card Description ---
+        
+        --- the bool function  
+        local function AnyPlayerHasReverseCard()
+            for i = 0, Game():GetNumPlayers()-1 do
+                local p = Game():GetPlayer(i)
+                if p:GetCard(0) == CARD_ID or p:GetCard(1) == CARD_ID then
+                    --- Check wether or not item is unlocked
+                    return true
+                end
             end
+            return false
         end
+
+        EID:addDescriptionModifier(
+            "ReverseCardFlip",
+
+        --- Condition
+            function(descObj)
+                return AnyPlayerHasReverseCard()
+            end,
+
+        --- Callback
+            function(descObj)
+                if descObj.ObjType == 5 
+                and descObj.ObjVariant == PickupVariant.PICKUP_TAROTCARD then
+                    if CARD_FLIPS[descObj.ObjSubType] then
+                        local flips_into = CARD_FLIPS[descObj.ObjSubType]
+                        if authorizeCardFlip(flips_into) then
+                            local cardName = EID:getObjectName(5, PickupVariant.PICKUP_TAROTCARD, flips_into)
+                            descObj.Description = descObj.Description ..
+                            "#{{Card" .. CARD_ID .. "}} Reverse Card turns this into {{Card" .. flips_into .. "}} {{ColorYellow}}" .. cardName .. "{{ColorWhite}}"
+                        end
+                    end
+
+                elseif descObj.ObjType == 5 
+                and descObj.ObjVariant == PickupVariant.PICKUP_COLLECTIBLE then
+                    if ITEM_FLIPS[descObj.ObjSubType] then
+                        local flips_into = getPossibleSubtypes(ITEM_FLIPS[descObj.ObjSubType])
+                        if #flips_into == 1 then
+                            local item_id = flips_into[1]
+                            local itemConfig = Isaac.GetItemConfig():GetCollectible(item_id)
+                            local localizedName = Isaac.GetString("Items", itemConfig.Name)
+                            descObj.Description = descObj.Description ..
+                            "#{{Card" .. CARD_ID .. "}} Reverse Card turns this into {{Collectible" .. item_id .. "}} {{ColorYellow}}" .. localizedName .."{{ColorWhite}}"
+                
+                        elseif #flips_into > 1 then
+                            descObj.Description = descObj.Description ..
+                            "#{{Card" .. CARD_ID .. "}} Reverse Card can turn this into "
+                            for i, item_id in pairs(flips_into) do
+                                local itemConfig = Isaac.GetItemConfig():GetCollectible(item_id)
+                                if i == #flips_into then
+                                    descObj.Description = descObj.Description ..
+                                    "or {{Collectible" .. item_id .. "}}"
+                                else
+                                    descObj.Description = descObj.Description ..
+                                    "{{Collectible" .. item_id .. "}}, "
+                                end
+                                
+                            end
+                        end
+                    end
+                end
+
+                if descObj.ObjType == 5
+                and descObj.ObjVariant == PickupVariant.PICKUP_COLLECTIBLE
+                and descObj.ObjSubType == CollectibleType.COLLECTIBLE_BELT then
+
+                    descObj.Description = descObj.Description ..
+                        "#{{Card" .. Card.CARD_WILD .. "}} Wild Card eats poop"
+                end
+                return descObj
+            end
+        )    
+
     end
 end
+
 
 local function flipRoom(_, cardID, playerWhoUsedItem, useFlags)
 
@@ -345,18 +412,23 @@ local function flipRoom(_, cardID, playerWhoUsedItem, useFlags)
 
         -- Check for Card flip
         if (entity.Variant == PickupVariant.PICKUP_TAROTCARD and CARD_FLIPS[entity.SubType]) then
-            entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, CARD_FLIPS[entity.SubType])
+            if authorizeCardFlip(CARD_FLIPS[entity.SubType]) then
+                entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, CARD_FLIPS[entity.SubType])
+            end
 
         -- Check for Item flip
         elseif (entity.Variant == PickupVariant.PICKUP_COLLECTIBLE and ITEM_FLIPS[entity.SubType]) then
-            local possible_subtypes = ITEM_FLIPS[entity.SubType]
-            local selected_subtype = possible_subtypes[ math.random( #possible_subtypes ) ]
-            
-            entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, selected_subtype)
+            if authorizeItemFlip(ITEM_FLIPS[entity.SubType]) then
+                local possible_subtypes = getPossibleSubtypes(ITEM_FLIPS[entity.SubType])
+                local selected_subtype = possible_subtypes[ math.random( #possible_subtypes ) ]
+                
+                entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, selected_subtype)
+            end
         end
     end
 end
 
 
 Mod:AddCallback(ModCallbacks.MC_USE_CARD, flipRoom, CARD_ID)
+Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, InitEID)
 -- Mod:AddCallback(ModCallbacks.MC_HUD_RENDER, onHUDRender)
