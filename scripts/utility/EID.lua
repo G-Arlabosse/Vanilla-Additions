@@ -87,4 +87,10 @@ if EID then
     [[{{Bomb}} Turns all Bombs into Troll Bombs
     #{{Key}} Turns all Keys into Charged Keys]]
     EID:addTrinket(myTrinketId, description)
+
+    myTrinketId = Isaac.GetTrinketIdByName("Mimic's Favor")
+    description =
+    [[{{SpikedChest}} Turns all Chests into Trapped Chests
+    #{{Coin}} Better value coins have a higher chance to appear]]
+    EID:addTrinket(myTrinketId, description)
 end

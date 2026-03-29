@@ -11,4 +11,5 @@
     <passive id="10" name="Cursed Map" gfx="cursed_map.png" description="" quality="1" />
 
     <trinket id="10" name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
+    <trinket id="11" name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />
 </items>

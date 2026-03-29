@@ -18,6 +18,7 @@ include("scripts.items.cursed_map")
 
 --- Trinkets ---
 include("scripts.trinkets.broken_scissors")
+include("scripts.trinkets.mimics_favor")
 
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
 local damagePotionDamage = 1
