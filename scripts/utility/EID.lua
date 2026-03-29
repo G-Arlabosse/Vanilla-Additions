@@ -16,11 +16,15 @@ if EID then
     myItemId = Isaac.GetItemIdByName("Calcium");
     description = 
     [[{{Timer}} Receive for the room:
-    #{{Blank}} {{ArrowUp}} x5 Fire rate multiplier
+    #{{Blank}} {{ArrowUp}} x5.5 Fire rate multiplier
     #{{Blank}} {{ArrowDown}} x0.25 Damage multiplier
     #{{Blank}} {{ArrowDown}} -0.3 Tear Size
     #{{Indent}} Drastically reduces knockback]]
     EID:addCollectible(myItemId, description)
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_SOY_MILK, "Overrides {{ColorYellow}}Soy Milk{{ColorWhite}}'s multipliers")
+    --EID:addCondition(CollectibleType.COLLECTIBLE_SOY_MILK, myItemId, "Overridden by {{ColorYellow}}Calcium{{ColorWhite}}")
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_ALMOND_MILK, "Overrides {{ColorYellow}}Almond Milk{{ColorWhite}}'s multipliers")
+    --EID:addCondition(CollectibleType.COLLECTIBLE_ALMOND_MILK, myItemId, "Overridden by {{ColorYellow}}Calcium{{ColorWhite}}")
 
     --- Cursed Floors ---
     myItemId = Isaac.GetItemIdByName("Cursed Rooms");
