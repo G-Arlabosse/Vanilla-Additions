@@ -61,7 +61,6 @@ local function TryUpgradeItem (
 
         -- Upgraded --
         if new_id then
-            print("Previous:".. item_data.Name .. ", New:".. itemConfig:GetCollectible(new_id).Name .. ", Item pool:" .. item_pool )
             tracked_item_pools[new_id] = item_pool
             player:RemoveCollectible(id)
             player:AddCollectible(new_id)
@@ -74,7 +73,6 @@ local function OnNewLevel ()
     if Mod:PlayersHaveItem(corrupted_clover) then
         local level = Game():GetLevel()
         local rng = RNG(Game():GetSeeds():GetStageSeed(level:GetStage()), 35)
-        level:AddCurse(LevelCurse.CURSE_OF_BLIND, false)
 
         for i=0, Game():GetNumPlayers()-1 do
             local player = Game():GetPlayer(i)
@@ -97,7 +95,9 @@ local function AddCollectible(_,
     player      ---@param player EntityPlayer
 )
     if type == corrupted_clover then
-        Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_BLIND, true)
+        if not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+            Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_BLIND, false)
+        end
     else
         local item_pool = Game():GetItemPool():GetLastPool()
         tracked_item_pools[type] = item_pool
@@ -130,6 +130,14 @@ local function GeneratePedestal (_,
     end
 end
 
+local function PostCurseEval(_, curses)
+    if Mod:PlayersHaveItem(corrupted_clover) then
+        curses = curses | LevelCurse.CURSE_OF_BLIND
+    end
+    return curses
+end
+
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, OnNewLevel)
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddCollectible)
 Mod:AddCallback(ModCallbacks.MC_POST_GET_COLLECTIBLE, GeneratePedestal)
+Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurseEval)

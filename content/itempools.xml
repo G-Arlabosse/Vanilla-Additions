@@ -39,6 +39,7 @@
 
     <Pool Name="curse">
 		<Item Name="Ominous Door" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Corrupted Clover" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 
     <!-- keyMaster -->
