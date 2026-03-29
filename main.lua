@@ -16,6 +16,7 @@ include("scripts.items.life_orb")
 include("scripts.items.corrupted_clover")
 include("scripts.items.cursed_map")
 include("scripts.items.poison_mush")
+include("scripts.items.cursed_d6")
 
 --- Trinkets ---
 include("scripts.trinkets.broken_scissors")
@@ -23,6 +24,7 @@ include("scripts.trinkets.mimics_favor")
 
 --- Unlocks ---
 include("scripts.achievements.poison_mush")
+
 
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
 local damagePotionDamage = 1

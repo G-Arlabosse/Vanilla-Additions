@@ -10,7 +10,8 @@
     <passive id="9" name="Corrupted Clover" gfx="corrupted_clover.png" description="May the blindness be with you" quality="2" />
     <passive id="10" name="Cursed Map" gfx="cursed_map.png" description="" quality="1" />
     <passive id="10" name="Poison Mush" gfx="poison_mush.png" description="Everything feels bigger" quality="1" achievement="Poison Mush"/>
-    
+    <active id="11" name="Cursed D6" gfx="cursed_d6.png" description="Rerolls.. but at what cost ?" quality="3" maxcharges="4" chargetype="normal" />
+
     <trinket id="10" name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
     <trinket id="11" name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />
 </items>
