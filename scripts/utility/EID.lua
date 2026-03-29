@@ -40,6 +40,7 @@ if EID then
     description = 
     [[{{Timer}} On use:
     #{{Indent}} Completes the transformation Isaac last progressed on.]]
+    EID:addCollectible(myItemId, description)
     
     --- Bell Baby ---
     myItemId = Isaac.GetItemIdByName("Bell Baby");
@@ -56,6 +57,7 @@ if EID then
     [[#When losing a heart container, recieve permanently:
     #{{ArrowUp}} +1 Damage
     #Lose a heart container on pickup and at the start of every floor]]
+    EID:addCollectible(myItemId, description)
 
     --- Corrupted Clover ---
     myItemId = Isaac.GetItemIdByName("Corrupted Clover");
@@ -116,12 +118,14 @@ if EID then
 --- TRINKETS ---
     local myTrinketId
 
+    --- Broken Scissors ---
     myTrinketId = Isaac.GetTrinketIdByName("Broken Scissors")
     description =
     [[{{Bomb}} Turns all Bombs into Troll Bombs
     #{{Key}} Turns all Keys into Charged Keys]]
     EID:addTrinket(myTrinketId, description)
 
+    --- Mimic's Favor ---
     myTrinketId = Isaac.GetTrinketIdByName("Mimic's Favor")
     description =
     [[{{SpikedChest}} Turns all Chests into Trapped Chests
