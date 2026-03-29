@@ -46,6 +46,7 @@ local function removeHeartOnFloor()
         for j=0, player:GetCollectibleNum(ITEM_ID)-1 do
             if player:GetMaxHearts() >= 2 then
                 player:AddMaxHearts(-2, true)
+                player:TakeDamage(1, DamageFlag.DAMAGE_FAKE, EntityRef(player), 0)
             end
         end
     end
@@ -55,4 +56,4 @@ end
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_ADD_HEARTS, addDamage)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_STAT, calculateDamage, EvaluateStatStage.DAMAGE_UP)
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, removeHeartOnPickup, ITEM_ID)
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, removeHeartOnFloor)
+Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, removeHeartOnFloor)
