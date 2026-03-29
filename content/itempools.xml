@@ -4,6 +4,6 @@
     </Pool>
 
     <Pool Name="curse">
-		<Item Name="Cursed Rooms" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Ominous Door" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 </ItemPools>
