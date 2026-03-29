@@ -78,6 +78,15 @@ if EID then
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
 
+     --- Poison Mush ---
+    myItemId = Isaac.GetItemIdByName("Poison Mush");
+    description = 
+    [[{{ArrowUp}} Major Size Down
+    #{{BossRoom}} All enemies are in their giant form
+    #{{Bomb}} Bombs are turned into Giga Bombs
+    #{{Pill}} Pills are turned into Horse Pills
+    #{{GoldenChest}} Golden Chests are turned into Giant Chests]]
+    EID:addCollectible(myItemId, description)
     
 --- TRINKETS ---
     local myTrinketId
