@@ -13,19 +13,23 @@ end
 ---@param player EntityPlayer
 local function calciumUse(_, item, rng, player)
     local player_weapon_modifiers = player:GetWeaponModifiers()
-    local weapon = player:GetWeapon(1)
-
-    if player_weapon_modifiers & WeaponModifier.ALMOND_MILK > 0 or
-            player_weapon_modifiers & WeaponModifier.SOY_MILK > 0 then
-        return { Discharge = true, Remove = false, ShowAnim = true }
-
-    elseif player_weapon_modifiers & WeaponModifier.CHOCOLATE_MILK > 0 then
-        
-    end
     local data = player:GetData()
-    data.opikoko_calcium_active = true
 
-    
+    --- ALMOND_MILK ---
+    if player_weapon_modifiers & WeaponModifier.ALMOND_MILK > 0 then
+        data.opikoko_calcium_damage_mult = DAMAGE_MULTIPLIER/0.3
+        data.opikoko_calcium_fire_rate_mult = FIRE_RATE_MULTIPLIER/4
+    --- SOY_MILK ---
+    elseif player_weapon_modifiers & WeaponModifier.SOY_MILK > 0 then
+        data.opikoko_calcium_damage_mult = DAMAGE_MULTIPLIER/0.2
+        data.opikoko_calcium_fire_rate_mult = FIRE_RATE_MULTIPLIER/5.5
+
+    else
+        data.opikoko_calcium_damage_mult = DAMAGE_MULTIPLIER
+        data.opikoko_calcium_fire_rate_mult = FIRE_RATE_MULTIPLIER
+    end
+
+    data.opikoko_calcium_active = true
 
     -- Trigger stat change
     player:AddCacheFlags(CacheFlag.CACHE_ALL)
@@ -55,11 +59,11 @@ local function evaluateCache(_, player, cacheFlags)
     if data.opikoko_calcium_active then
         -- Update Damage
         if cacheFlags == CacheFlag.CACHE_DAMAGE then
-            player.Damage = player.Damage * DAMAGE_MULTIPLIER
+            player.Damage = player.Damage * data.opikoko_calcium_damage_mult
 
         -- Update Fire Rate with tears calculation
         elseif cacheFlags == CacheFlag.CACHE_FIREDELAY then
-            player.MaxFireDelay = toMaxFireDelay(toTearsPerSecond(player.MaxFireDelay) * FIRE_RATE_MULTIPLIER)
+            player.MaxFireDelay = toMaxFireDelay(toTearsPerSecond(player.MaxFireDelay) * data.opikoko_calcium_fire_rate_mult)
         
             -- Update Tear color
         elseif cacheFlags == CacheFlag.CACHE_TEARCOLOR then
