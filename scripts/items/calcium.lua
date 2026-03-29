@@ -101,8 +101,10 @@ local function PostWeaponFire(_,
 end
 
 local function PostAddCollectible(_,type,charge,firstTime,slot,varData,player)
-    if type == CollectibleType.COLLECTIBLE_SOY_MILK or type == CollectibleType.COLLECTIBLE_ALMOND_MILK then
-        calciumUse(_, calcium, RNG(), player)
+    if player:GetData().opikoko_calcium_active then
+        if type == CollectibleType.COLLECTIBLE_SOY_MILK or type == CollectibleType.COLLECTIBLE_ALMOND_MILK then
+            calciumUse(_, calcium, RNG(), player)
+        end
     end
 end
 
