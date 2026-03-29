@@ -11,8 +11,8 @@ local STATE_CHASE   = 1  -- chasing a target
 
 -- Behavior constants
 local DETECT_RANGE  = 200.0  -- how far to notice enemies (divide by 40 for tiles)
-local CHASE_SPEED   = 6.0
-local FOLLOW_SPEED  = 4.5
+local CHASE_SPEED   = 1
+local FOLLOW_SPEED  = 0.9
 local FOLLOW_DIST   = 60
 local CONTACT_DMG   = 1.5    -- per tick (like Blood Puppy)
 local DMG_COOLDOWN  = 10     -- ticks between damage applications
@@ -84,25 +84,6 @@ local function spawnTreasure(treasure, familiar)
         pickup_variant = PickupVariant.PICKUP_LOCKEDCHEST
     elseif treasure == "BOMB_CHEST" then
         pickup_variant = PickupVariant.PICKUP_BOMBCHEST
-    -- elseif treasure == "PEDESTAL" then
-    --     Game():Spawn(
-    --     EntityType.ENTITY_PICKUP, 
-    --     PickupVariant.PICKUP_COLLECTIBLE, 
-    --     familiar.Position, 
-    --     Vector.Zero, 
-    --     nil,
-    --     0,
-    --     Game():GetRoom():GetSpawnSeed())
-    --     return
-    -- elseif treasure == "PORTAL" then
-    --     Game():Spawn(
-    --     EntityType.ENTITY_PICKUP, 
-    --     51, 
-    --     familiar.Position, 
-    --     Vector.Zero, 
-    --     nil,
-    --     1,
-    --     Game():GetRoom():GetSpawnSeed())
     end
     Game():Spawn(
     EntityType.ENTITY_PICKUP, 
@@ -119,8 +100,6 @@ local function digTreasure()
     for _, entity in ipairs(familiars) do
         local familiar = entity:ToFamiliar()
         if familiar then
-            local player = familiar.Player
-            local luck = player.Luck
             local rng = RNG()
             rng:SetSeed(Random(), 1)
             if rng:RandomFloat() < dig_chance then
@@ -141,7 +120,7 @@ local function updateDigChance(_, player, cacheFlags)
         if cacheFlags == CacheFlag.CACHE_LUCK then
             local luck = player.Luck
             local clamped_luck = math.min(MAX_LUCK, math.max(MIN_LUCK, luck))
-            dig_chance = MIN_CHANCE + (MAX_CHANCE-MIN_CHANCE)*(luck-MIN_LUCK)/(MAX_LUCK-MIN_LUCK)
+            dig_chance = MIN_CHANCE + (MAX_CHANCE-MIN_CHANCE)*(clamped_luck-MIN_LUCK)/(MAX_LUCK-MIN_LUCK)
         end
     end
 end
@@ -172,17 +151,17 @@ local function chaseTarget(familiar, data, target)
     local dist = dir:Length()
 
     if dist > 10 then
-        calculateVelocity(familiar, dir, CHASE_SPEED)
+        familiar:GetPathFinder():FindGridPath(target.Position, CHASE_SPEED, 1, true)
     else
         familiar.Velocity = Vector.Zero
     end
 
-    familiar.MoveDirection = Mod:Vec2Dir(dir:Normalized())
+    familiar.MoveDirection = Mod:Vec2Dir(familiar.Velocity)
 
     -- Contact damage check
     if dist < 20.0 and data.dmgCooldown <= 0 then
         target:TakeDamage(
-            CONTACT_DMG,
+            CONTACT_DMG * familiar:GetMultiplier(),
             0,
             EntityRef(familiar),
             0
@@ -192,21 +171,20 @@ local function chaseTarget(familiar, data, target)
 end
 
 ---@param familiar EntityFamiliar
----@param target Entity
-local function followPlayer(familiar, target)
+local function followPlayer(familiar)
     -- Follow player, but stop when close enough (Leech-like idle hover)
     local player = familiar.Player
     local dir = (player.Position - familiar.Position)
     local distToPlayer = dir:Length()
 
     if distToPlayer > FOLLOW_DIST then
-        calculateVelocity(familiar, dir, FOLLOW_SPEED)
+        familiar:GetPathFinder():FindGridPath(player.Position, FOLLOW_SPEED, 1, true)
     else
         -- Gently drift to a stop
         familiar.Velocity = familiar.Velocity * 0.7
     end
-
-    familiar.MoveDirection = Mod:Vec2Dir(dir:Normalized())
+    
+    familiar.MoveDirection = Mod:Vec2Dir(familiar.Velocity)
 end
 
 ---@param familiar EntityFamiliar
@@ -218,7 +196,6 @@ local function bellBabyBehavior(_, familiar)
     -- Initialize data
     if data.dmgCooldown == nil then data.dmgCooldown = 0 end
     if data.state == nil then data.state = STATE_FOLLOW end
-    print(familiar.GridCollisionClass)
 
     -- Tick down cooldown
     data.dmgCooldown = math.max(0, data.dmgCooldown -1)
@@ -232,9 +209,8 @@ local function bellBabyBehavior(_, familiar)
         chaseTarget(familiar, data, target)
     else
         data.state = STATE_FOLLOW
-        followPlayer(familiar, familiar.Parent)
+        followPlayer(familiar)
     end
-    position = familiar.Position
     
     local sprite = familiar:GetSprite()
     local anim
@@ -286,3 +262,9 @@ Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_F
 Mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, handleInit, FAMILIAR_VARIANT)
 Mod:AddCallback(ModCallbacks.MC_POST_ROOM_TRIGGER_CLEAR, digTreasure)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, updateDigChance, CacheFlag.CACHE_LUCK)
+
+
+local function ChangeFamiliarCollisions(_, familiar)
+    familiar.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_GROUND
+end
+Mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, ChangeFamiliarCollisions, FAMILIAR_VARIANT)
