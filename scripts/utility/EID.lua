@@ -16,7 +16,7 @@ if EID then
     myItemId = Isaac.GetItemIdByName("Calcium");
     description = 
     [[{{Timer}} Receive for the room:
-    #{{Blank}} {{ArrowUp}} x5 Fire rate multiplier
+    #{{Blank}} {{ArrowUp}} x5.5 Fire rate multiplier
     #{{Blank}} {{ArrowDown}} x0.25 Damage multiplier
     #{{Blank}} {{ArrowDown}} -0.3 Tear Size
     #{{Indent}} Drastically reduces knockback]]
