@@ -1,7 +1,7 @@
 if EID then
     local myItemId
     local description
-
+--- ITEMS ---
     --- Big Rock ---
     myItemId = Isaac.GetItemIdByName("Big Rock");
     description = 
@@ -77,7 +77,14 @@ if EID then
     #{{UltraSecretRoom}} Secret, Super Secret and Ultra Secret rooms have a higher chance to have good layouts]]
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
-    
 
     
+--- TRINKETS ---
+    local myTrinketId
+
+    myTrinketId = Isaac.GetTrinketIdByName("Broken Scissors")
+    description =
+    [[{{Bomb}} Turns all Bombs into Troll Bombs
+    #{{Key}} Turns all Keys into Charged Keys]]
+    EID:addTrinket(myTrinketId, description)
 end
