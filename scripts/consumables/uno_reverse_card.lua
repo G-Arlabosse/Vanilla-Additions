@@ -462,8 +462,6 @@ end
 
 local function flipRoom(_, cardID, playerWhoUsedItem, useFlags)
 
-    print("FLIP STARTED")
-
      -- Loop over all pickups in the room
     for _, entity in pairs(Isaac.FindByType(EntityType.ENTITY_PICKUP)) do
 
@@ -471,6 +469,7 @@ local function flipRoom(_, cardID, playerWhoUsedItem, useFlags)
         if (entity.Variant == PickupVariant.PICKUP_TAROTCARD and CARD_FLIPS[entity.SubType]) then
             if authorizeCardFlip(CARD_FLIPS[entity.SubType]) then
                 entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, CARD_FLIPS[entity.SubType], true)
+                SFXManager():Play(SoundEffect.SOUND_STATIC)
             end
 
         -- Check for Item flip
@@ -480,6 +479,8 @@ local function flipRoom(_, cardID, playerWhoUsedItem, useFlags)
                 local selected_subtype = possible_subtypes[ math.random( #possible_subtypes ) ]
                 
                 entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, selected_subtype, true)
+                Isaac.Spawn(EntityType.ENTITY_EFFECT,EffectVariant.POOF01,0,entity.Position,Vector.Zero,nil)
+                SFXManager():Play(SoundEffect.SOUND_STATIC)
             end
         end
     end
