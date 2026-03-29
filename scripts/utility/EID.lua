@@ -26,8 +26,8 @@ if EID then
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_ALMOND_MILK, "Overrides {{ColorYellow}}Almond Milk{{ColorWhite}}'s multipliers")
     --EID:addCondition(CollectibleType.COLLECTIBLE_ALMOND_MILK, myItemId, "Overridden by {{ColorYellow}}Calcium{{ColorWhite}}")
 
-    --- Cursed Floors ---
-    myItemId = Isaac.GetItemIdByName("Cursed Rooms");
+    --- Ominous Door ---
+    myItemId = Isaac.GetItemIdByName("Ominous Door");
     description = 
     [[{{CurseCursed}} Receive Curse of the Cursed at the start of each floor
     #42.5% to reroll a normal small room into a special room
