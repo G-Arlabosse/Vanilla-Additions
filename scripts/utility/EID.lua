@@ -51,7 +51,7 @@ if EID then
     [[{{CurseBlind}} Receive Curse of the Blind permanently
     #Prevents quality {{Quality4}} items from spawning
     #Quality {{Quality3}} items have a 66% chance to be rerolled
-    #At the start of each floor, each of Isaac's item have a 10% chance to be rerolled into an item of the same pool of the above quality]]
+    #At the start of each floor, each of Isaac's items have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(myItemId, description)
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
 end
