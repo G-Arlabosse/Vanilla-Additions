@@ -84,7 +84,7 @@ if EID then
     EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
 
-     --- Poison Mush ---
+    --- Poison Mush ---
     myItemId = Isaac.GetItemIdByName("Poison Mush");
     description = 
     [[{{ArrowUp}} Major Size Down
@@ -92,6 +92,16 @@ if EID then
     #{{Bomb}} Bombs are turned into Giga Bombs
     #{{Pill}} Pills are turned into Horse Pills
     #{{GoldenChest}} Golden Chests are turned into Giant Chests]]
+    EID:addCollectible(myItemId, description)
+
+    --- Broken Compass ---
+    myItemId = Isaac.GetItemIdByName("Broken Compass");
+    description = 
+    [[#{{CurseLabyrinth}} Receive Curse of the Labyrinth permanently
+    # Upon Clearing a room:
+    #{{Indent}}{{SecretRoom}} 50% chance to teleport in a random room
+    #{{Indent}}{{Coin}} 33% chance to spawn an additional pickup as clear reward]]
+    --EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
     
     --- Cursed D6 ---
