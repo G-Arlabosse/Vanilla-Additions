@@ -356,7 +356,9 @@ local function getPossibleSubtypes(all_subtypes)
     for _, subtype in pairs(all_subtypes) do
         local item_config = isaac_config:GetCollectible(subtype)
         local item_achievement = item_config.AchievementID
-        if item_achievement == -1 then table.insert(possible_subtypes, subtype) end
+        if item_achievement == -1 then table.insert(possible_subtypes, subtype)
+        elseif Isaac.GetPersistentGameData():Unlocked(item_achievement) then table.insert(possible_subtypes, subtype)
+        end
     end
     return possible_subtypes
 end
