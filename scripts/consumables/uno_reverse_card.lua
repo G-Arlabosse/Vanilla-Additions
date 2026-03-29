@@ -470,7 +470,7 @@ local function flipRoom(_, cardID, playerWhoUsedItem, useFlags)
         -- Check for Card flip
         if (entity.Variant == PickupVariant.PICKUP_TAROTCARD and CARD_FLIPS[entity.SubType]) then
             if authorizeCardFlip(CARD_FLIPS[entity.SubType]) then
-                entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, CARD_FLIPS[entity.SubType])
+                entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, CARD_FLIPS[entity.SubType], true)
             end
 
         -- Check for Item flip
@@ -479,7 +479,7 @@ local function flipRoom(_, cardID, playerWhoUsedItem, useFlags)
                 local possible_subtypes = getPossibleSubtypes(ITEM_FLIPS[entity.SubType])
                 local selected_subtype = possible_subtypes[ math.random( #possible_subtypes ) ]
                 
-                entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, selected_subtype)
+                entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, selected_subtype, true)
             end
         end
     end
