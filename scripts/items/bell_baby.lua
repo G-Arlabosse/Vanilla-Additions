@@ -151,8 +151,7 @@ local function chaseTarget(familiar, data, target)
     local dist = dir:Length()
 
     if dist > 10 then
-        local emptyLine, _ = Game():GetRoom():CheckLine(familiar.Position, target.Position, 0)
-        familiar:GetPathFinder():FindGridPath(target.Position, CHASE_SPEED, 1, emptyLine)
+        familiar:GetPathFinder():FindGridPath(target.Position, CHASE_SPEED, 1, true)
     else
         familiar.Velocity = Vector.Zero
     end
@@ -179,8 +178,7 @@ local function followPlayer(familiar)
     local distToPlayer = dir:Length()
 
     if distToPlayer > FOLLOW_DIST then
-        local emptyLine, _ = Game():GetRoom():CheckLine(familiar.Position, player.Position, 0)
-        familiar:GetPathFinder():FindGridPath(player.Position, FOLLOW_SPEED, 0, emptyLine)
+        familiar:GetPathFinder():FindGridPath(player.Position, FOLLOW_SPEED, 1, true)
     else
         -- Gently drift to a stop
         familiar.Velocity = familiar.Velocity * 0.7
@@ -264,3 +262,9 @@ Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_F
 Mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, handleInit, FAMILIAR_VARIANT)
 Mod:AddCallback(ModCallbacks.MC_POST_ROOM_TRIGGER_CLEAR, digTreasure)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, updateDigChance, CacheFlag.CACHE_LUCK)
+
+
+local function ChangeFamiliarCollisions(_, familiar)
+    familiar.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_GROUND
+end
+Mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, ChangeFamiliarCollisions, FAMILIAR_VARIANT)
