@@ -203,8 +203,6 @@ local ITEM_FLIPS = {
     [CollectibleType.COLLECTIBLE_ISAACS_TOMB] = {CollectibleType.COLLECTIBLE_MR_ME},
     [CollectibleType.COLLECTIBLE_GB_BUG] = {CollectibleType.COLLECTIBLE_MISSING_NO},
     [CollectibleType.COLLECTIBLE_MISSING_NO] = {CollectibleType.COLLECTIBLE_GB_BUG},
-    [CollectibleType.COLLECTIBLE_BLANK_CARD] = {CollectibleType.COLLECTIBLE_CURSE_OF_THE_TOWER},
-    [CollectibleType.COLLECTIBLE_CURSE_OF_THE_TOWER] = {CollectibleType.COLLECTIBLE_BLANK_CARD},
     [CollectibleType.COLLECTIBLE_CIRCLE_OF_PROTECTION] = {CollectibleType.COLLECTIBLE_MAW_OF_THE_VOID},
     [CollectibleType.COLLECTIBLE_MAW_OF_THE_VOID] = {CollectibleType.COLLECTIBLE_CIRCLE_OF_PROTECTION},
     [CollectibleType.COLLECTIBLE_EYE_DROPS] = {CollectibleType.COLLECTIBLE_SULFURIC_ACID},
@@ -217,7 +215,33 @@ local ITEM_FLIPS = {
     [CollectibleType.COLLECTIBLE_AZAZELS_RAGE] = {CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN},
     [CollectibleType.COLLECTIBLE_HOLY_WATER] = {CollectibleType.COLLECTIBLE_MYSTERIOUS_LIQUID},
     [CollectibleType.COLLECTIBLE_MYSTERIOUS_LIQUID] = {CollectibleType.COLLECTIBLE_HOLY_WATER},
-    
+    [CollectibleType.COLLECTIBLE_IRON_BAR] = {CollectibleType.COLLECTIBLE_MIDAS_TOUCH},
+    [CollectibleType.COLLECTIBLE_MIDAS_TOUCH] = {CollectibleType.COLLECTIBLE_IRON_BAR},
+    [CollectibleType.COLLECTIBLE_INNER_CHILD] = {CollectibleType.COLLECTIBLE_C_SECTION},
+    [CollectibleType.COLLECTIBLE_C_SECTION] = {CollectibleType.COLLECTIBLE_INNER_CHILD},
+    [CollectibleType.COLLECTIBLE_MOMS_KEY] = {CollectibleType.COLLECTIBLE_DADS_KEY},
+    [CollectibleType.COLLECTIBLE_DADS_KEY] = {CollectibleType.COLLECTIBLE_MOMS_KEY},
+    [CollectibleType.COLLECTIBLE_SHARP_KEY] = {CollectibleType.COLLECTIBLE_RED_KEY},
+    [CollectibleType.COLLECTIBLE_RED_KEY] = {CollectibleType.COLLECTIBLE_SHARP_KEY},
+    [CollectibleType.COLLECTIBLE_GOLDEN_RAZOR] = {CollectibleType.COLLECTIBLE_RAZOR_BLADE},
+    [CollectibleType.COLLECTIBLE_RAZOR_BLADE] = {CollectibleType.COLLECTIBLE_GOLDEN_RAZOR},
+    [CollectibleType.COLLECTIBLE_BLOODY_LUST] = {CollectibleType.COLLECTIBLE_LUSTY_BLOOD},
+    [CollectibleType.COLLECTIBLE_LUSTY_BLOOD] = {CollectibleType.COLLECTIBLE_BLOODY_LUST},
+    [CollectibleType.COLLECTIBLE_FRIEND_FINDER] = {CollectibleType.COLLECTIBLE_TWISTED_PAIR},
+    [CollectibleType.COLLECTIBLE_TWISTED_PAIR] = {CollectibleType.COLLECTIBLE_FRIEND_FINDER},
+    [CollectibleType.COLLECTIBLE_POP] = {CollectibleType.COLLECTIBLE_LACHRYPHAGY},
+    [CollectibleType.COLLECTIBLE_LACHRYPHAGY] = {CollectibleType.COLLECTIBLE_POP},
+    [CollectibleType.COLLECTIBLE_TECHNOLOGY] = {CollectibleType.COLLECTIBLE_TECH_5},
+    [CollectibleType.COLLECTIBLE_TECH_5] = {CollectibleType.COLLECTIBLE_TECHNOLOGY},
+    [CollectibleType.COLLECTIBLE_HOLY_LIGHT] = {CollectibleType.COLLECTIBLE_DARK_MATTER},
+    [CollectibleType.COLLECTIBLE_DARK_MATTER] = {CollectibleType.COLLECTIBLE_HOLY_LIGHT},
+    [CollectibleType.COLLECTIBLE_JACOBS_LADDER] = {CollectibleType.COLLECTIBLE_TECHNOLOGY_ZERO},
+    [CollectibleType.COLLECTIBLE_TECHNOLOGY_ZERO] = {CollectibleType.COLLECTIBLE_JACOBS_LADDER},
+    [CollectibleType.COLLECTIBLE_DOLLAR] = {CollectibleType.COLLECTIBLE_3_DOLLAR_BILL},
+    [CollectibleType.COLLECTIBLE_3_DOLLAR_BILL] = {CollectibleType.COLLECTIBLE_DOLLAR},
+    [CollectibleType.COLLECTIBLE_QUARTER] = {CollectibleType.COLLECTIBLE_MONEY_EQUALS_POWER},
+    [CollectibleType.COLLECTIBLE_MONEY_EQUALS_POWER] = {CollectibleType.COLLECTIBLE_QUARTER},
+
     -- Syringes
     [CollectibleType.COLLECTIBLE_EXPERIMENTAL_TREATMENT] = {CollectibleType.COLLECTIBLE_EUTHANASIA},
     [CollectibleType.COLLECTIBLE_GROWTH_HORMONES] = {CollectibleType.COLLECTIBLE_EUTHANASIA},
@@ -233,7 +257,38 @@ local ITEM_FLIPS = {
         CollectibleType.COLLECTIBLE_SYNTHOIL,
         CollectibleType.COLLECTIBLE_VIRUS,
         CollectibleType.COLLECTIBLE_ADRENALINE
-    }
+    },
+
+    -- Fetus in Jar
+    [CollectibleType.COLLECTIBLE_DR_FETUS] = {CollectibleType.COLLECTIBLE_ESAU_JR},
+    [CollectibleType.COLLECTIBLE_EPIC_FETUS] = {CollectibleType.COLLECTIBLE_ESAU_JR},
+    [CollectibleType.COLLECTIBLE_ESAU_JR] = {CollectibleType.COLLECTIBLE_DR_FETUS,
+        CollectibleType.COLLECTIBLE_EPIC_FETUS
+    },
+
+    -- Blank ...
+    [CollectibleType.COLLECTIBLE_BLANK_CARD] = {CollectibleType.COLLECTIBLE_PLACEBO,
+        CollectibleType.COLLECTIBLE_CLEAR_RUNE
+    },
+    [CollectibleType.COLLECTIBLE_PLACEBO] = {CollectibleType.COLLECTIBLE_BLANK_CARD,
+        CollectibleType.COLLECTIBLE_CLEAR_RUNE
+    },
+    [CollectibleType.COLLECTIBLE_CLEAR_RUNE] = {CollectibleType.COLLECTIBLE_BLANK_CARD,
+        CollectibleType.COLLECTIBLE_PLACEBO
+    },
+    
+    -- Sacks
+    [CollectibleType.COLLECTIBLE_SACK_OF_PENNIES] = {CollectibleType.COLLECTIBLE_BLACK_POWDER},
+    [CollectibleType.COLLECTIBLE_BOMB_BAG] = {CollectibleType.COLLECTIBLE_BLACK_POWDER},
+    [CollectibleType.COLLECTIBLE_RUNE_BAG] = {CollectibleType.COLLECTIBLE_BLACK_POWDER},
+    [CollectibleType.COLLECTIBLE_MYSTERY_SACK] = {CollectibleType.COLLECTIBLE_BLACK_POWDER},
+    [CollectibleType.COLLECTIBLE_SACK_OF_SACKS] = {CollectibleType.COLLECTIBLE_BLACK_POWDER},
+    [CollectibleType.COLLECTIBLE_BLACK_POWDER] = {CollectibleType.COLLECTIBLE_SACK_OF_PENNIES,
+        CollectibleType.COLLECTIBLE_BOMB_BAG,
+        CollectibleType.COLLECTIBLE_RUNE_BAG,
+        CollectibleType.COLLECTIBLE_MYSTERY_SACK,
+        CollectibleType.COLLECTIBLE_SACK_OF_SACKS
+    },
 
     -- Mod Items
     -- ["ZodiacItems"] = "Ophiuchus",
