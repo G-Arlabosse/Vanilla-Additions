@@ -12,6 +12,8 @@
     <passive id="10" name="Poison Mush" gfx="poison_mush.png" description="Everything feels bigger" quality="1" achievement="Poison Mush"/>
     <active id="11" name="Cursed D6" gfx="cursed_d6.png" description="Rerolls.. but at what cost ?" quality="3" maxcharges="4" chargetype="normal" />
     <passive id="11" name="Broken Compass" gfx="broken_compass.png" description="The house grew larger" quality="0" />
+    <passive id="10" name="Cursed Body" gfx="cursed_body.png" description="Precious Life" quality="2" />
+
 
     <trinket id="10" name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
     <trinket id="11" name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />

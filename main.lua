@@ -18,6 +18,7 @@ include("scripts.items.cursed_map")
 include("scripts.items.poison_mush")
 include("scripts.items.cursed_d6")
 include("scripts.items.broken_compass")
+include("scripts.items.cursed_body")
 
 --- Trinkets ---
 include("scripts.trinkets.broken_scissors")

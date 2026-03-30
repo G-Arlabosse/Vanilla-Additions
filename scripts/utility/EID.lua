@@ -115,6 +115,18 @@ if EID then
     #{{Warning}} Can add up to multiple curses]]
     EID:addCollectible(myItemId, description)
 
+    --- Cursed Body ---
+    myItemId = Isaac.GetItemIdByName("Cursed Body");
+    description = 
+    [[{{CurseUnknown}} Receive Curse of the Unknown permanently
+    #On a hit, 50% to trigger one of the following effects:
+    #{{Coin}} Spawn a random pickup
+    #{{ArrowUp}} Give a permanent stat up
+    #{{Trinket}} Spawn a trinket
+    #{{CurseRoom}} Spawn a curse room item]]
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
+    EID:addCollectible(myItemId, description)
+
 --- TRINKETS ---
     local myTrinketId
 
@@ -131,5 +143,4 @@ if EID then
     [[{{SpikedChest}} Turns all Chests into Trapped Chests
     #{{Coin}} Better value coins have a higher chance to appear]]
     EID:addTrinket(myTrinketId, description)
-
 end
