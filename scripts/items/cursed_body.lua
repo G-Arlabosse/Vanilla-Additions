@@ -13,7 +13,7 @@ end
 local PLAYER_STAT_BONUSES = {}
 local PREVIOUS_STAT_BONUSES = {}
 
-local DROP_PROBABILITY = 0.5 * 2
+local DROP_PROBABILITY = 0.5
 local DROP_TYPES = {
     PICKUP_HEART    = 1,
     PICKUP_COIN     = 2,
