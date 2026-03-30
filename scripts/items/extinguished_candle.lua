@@ -31,7 +31,7 @@ local function NpcUpdate(_, npc)
     -- Store original color once
     if not npc_colors[npc.Index] then
         local c = npc:GetColor()
-        npc_colors[npc.Index] = Color(c.R, c.G, c.B, c.A, c.RO, c.GO, c.BO)
+        npc_colors[npc.Index] = Color(c.R, c.G, c.B, c.A, c.RO, c.GO, c.BO, c.A)
     end
 
     local base_color = npc_colors[npc.Index]
@@ -53,13 +53,18 @@ local function NpcUpdate(_, npc)
     if not closestPlayer then return end
 
     -- Compute alpha based on distance
-    local alpha = -closestDist * 0.7 / 100 + 1.7
-    alpha = math.min(alpha, 1)
-    alpha = math.max(alpha, 0)
-    if alpha < 0.05 then
-        npc.Visible = false
+    local alpha = 0
+    if PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+        alpha = base_color.A
     else
-        npc.Visible = true
+        alpha = -closestDist * 0.7 / 100 + 1.7
+        alpha = math.min(alpha, 1)
+        alpha = math.max(alpha, 0)
+        if alpha < 0.05 then
+            npc.Visible = false
+        else
+            npc.Visible = true
+        end
     end
 
     -- Create fresh color (IMPORTANT: no mutation)
