@@ -88,15 +88,7 @@ local function NpcUpdate(_, npc)
                 Color(0.7, 0.7, 0.7, 0, 0, 0, 0)
             )
         else
-            new_color = Color(
-                -0.1,
-                -0.3,
-                -0.1,
-                alpha,
-                0.1,
-                -0.1,
-                0.1
-            )
+            new_color = Color(1,1,1,alpha,0.2,0.2,0.2)
             npc:SetSlowingCountdown(5)
         end
     end
@@ -118,3 +110,43 @@ Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, OnNPCRemove)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, PostNewRoom)
 Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurseEval)
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddExtinguishedCandle, extinguished_candle)
+
+
+---@param player EntityPlayer
+local function PostPeffectUpdate(_, player)
+    local data = player:GetData()
+    local halo = data.extinguished_candle_halo
+
+    if player:HasCollectible(extinguished_candle) then
+        if not (halo and halo:Exists()) then
+            halo = Isaac.Spawn(
+                EntityType.ENTITY_EFFECT,
+                EffectVariant.HALO,
+                2,
+                player.Position,
+                Vector.Zero,
+                player  -- spawner = the player
+            ):ToEffect()
+
+            data.extinguished_candle_halo = halo
+            halo:FollowParent(player)       
+            halo.DepthOffset = -1    -- render behind Isaac
+        end
+        if halo then
+            local mult = 1.2
+            local color = Color(0.5, 0, 0.5, 1, 0.3, 0.3, 0.3)
+            halo:SetColor(color, 30, 1, false, false)
+            halo.SpriteScale = Vector.One * mult
+        end
+    else
+        if halo then
+            if halo:Exists() then
+                halo:SetColor(Color(0.5, 0, 0.5, 1, 0.3, 0.3, 0.3), 30, 1, false, false)
+            else
+                data.extinguished_candle_halo = nil
+            end
+        end
+    end
+end
+
+Mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, PostPeffectUpdate)
