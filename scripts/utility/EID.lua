@@ -84,7 +84,7 @@ if EID then
     [[#{{CurseDarkness}} Receive Curse of Darkness permanently
     #{{Slow}} Close enemies are slowed down
     # Distant enemies disapear in the shadows]]
-    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse and enemies stay visible")
     EID:addCollectible(myItemId, description)
     
 end
