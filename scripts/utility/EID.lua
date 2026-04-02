@@ -106,6 +106,15 @@ if EID then
     --EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(myItemId, description)
     
+    --- Extinguished Candle ---
+    myItemId = Isaac.GetItemIdByName("Extinguished Candle");
+    description = 
+    [[#{{CurseDarkness}} Receive Curse of Darkness permanently
+    #{{Slow}} Close enemies are slowed down
+    # Distant enemies disapear in the shadows]]
+    EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse and enemies stay visible")
+    EID:addCollectible(myItemId, description)
+    
     --- Cursed D6 ---
     myItemId = Isaac.GetItemIdByName("Cursed D6");
     description = 
