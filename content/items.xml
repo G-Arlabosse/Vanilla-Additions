@@ -1,21 +1,23 @@
 <items gfxroot="gfx/items/" version="1">
-    <passive id="1" name="Big Rock" gfx="big_rock_item.png" description="DAMN" quality="3" cache="damage firedelay speed" damage="1" damagemult="1.2" tears="0.4" tags="offensive summonable" />
-    <active id="2" name="Big Red Button" gfx="clover.png" description="It's a big button" quality="4" maxcharges="6" chargetype="normal" tags="offensive" />
-    <active id="3" name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor" tags="offensive" />
-    <passive id="4" name="Ominous Door" gfx="ominous_door.png" description="And he walks" quality="2" />
-    <active id="5" name="Rare Candy" gfx="rare_candy.png" description="Level Up !" quality="3" cache="offensive" chargetype="special" />
-    <familiar id="6" name="Bell Baby" gfx="bell_baby.png" description="What a cutie <3" quality="3" cache="familiars" tags="summonable monstermanual offensive" />
-    <passive id="7" name="Fallen Angel" gfx="fallen_angel.png" description="He is falling for you" quality="3" cache="offensive summonable" /> 
-    <passive id="8" name="Life Orb" gfx="life_orb.png" description="Suffering brings strength" quality="2" cache="damage" tags="nolostbr" />
-    <passive id="9" name="Corrupted Clover" gfx="corrupted_clover.png" description="May the blindness be with you" quality="2" />
-    <passive id="10" name="Cursed Map" gfx="cursed_map.png" description="" quality="1" />
-    <passive id="10" name="Poison Mush" gfx="poison_mush.png" description="Everything feels bigger" quality="1" achievement="Poison Mush"/>
-    <active id="11" name="Cursed D6" gfx="cursed_d6.png" description="Rerolls.. but at what cost ?" quality="3" maxcharges="4" chargetype="normal" />
-    <passive id="11" name="Broken Compass" gfx="broken_compass.png" description="The house grew larger" quality="0" />
-    <passive id="10" name="Cursed Body" gfx="cursed_body.png" description="Precious Life" quality="2" />
-    <passive id="10" name="Extinguished Candle" gfx="extinguished_candle.png" description="" quality="1" />
+    <passive name="Big Rock" gfx="big_rock_item.png" description="DAMN" quality="3" cache="damage firedelay speed" damage="1" damagemult="1.2" tears="0.4" tags="offensive summonable" />
+    <active name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor" tags="offensive" />
+    <active name="Rare Candy" gfx="rare_candy.png" description="Level Up !" quality="3" cache="offensive" chargetype="special" />
+    <familiar name="Bell Baby" gfx="bell_baby.png" description="What a cutie <3" quality="3" cache="familiars" tags="summonable monstermanual offensive" />
+    <passive name="Fallen Angel" gfx="fallen_angel.png" description="He is falling for you" quality="3" cache="offensive summonable" tags="summonable" /> 
+    <passive name="Life Orb" gfx="life_orb.png" description="Suffering brings strength" quality="2" cache="damage" tags="nolostbr" />
+    <passive name="Ominous Door" gfx="ominous_door.png" description="And he walks" quality="2" />
+    <passive name="Corrupted Clover" gfx="corrupted_clover.png" description="May the blindness be with you" quality="2" tags="summonable" />
+    <passive name="Cursed Map" gfx="cursed_map.png" description="" quality="1" tags="summonable" />
+    <passive name="Poison Mush" gfx="poison_mush.png" description="Everything feels bigger" quality="1" achievement="Poison Mush" tags="summonable" />
+    <active name="Cursed D6" gfx="cursed_d6.png" description="Rerolls.. but at what cost ?" quality="4" maxcharges="4" chargetype="normal" />
+    <passive name="Broken Compass" gfx="broken_compass.png" description="The house grew larger" quality="0" tags="summonable" />
+    <passive name="Cursed Body" gfx="cursed_body.png" description="Precious Life" quality="2" tags="summonable" />
+    <passive name="Extinguished Candle" gfx="extinguished_candle.png" description="" quality="1" tags="summonable" />
 
-    <trinket id="10" name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
-    <trinket id="11" name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />
+    <trinket name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
+    <trinket name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />
+    
 
+
+    <active name="Big Red Button" gfx="clover.png" description="It's a big button" quality="4" maxcharges="6" chargetype="normal" tags="offensive" />
 </items>

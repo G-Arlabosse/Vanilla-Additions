@@ -1,6 +1,5 @@
 <ItemPools>
     <Pool Name="treasure">
-        <Item Name="Big Red Button" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Calcium" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
         <Item Name="Bell Baby" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
@@ -40,6 +39,12 @@
     <Pool Name="curse">
 		<Item Name="Ominous Door" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Corrupted Clover" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Cursed Map" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Poison Mush" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Broken Compass" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Cursed Body" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Extinguished Candle" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Cursed D6" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 
     <!-- keyMaster -->
@@ -52,18 +57,24 @@
 
     <!-- greedBoss -->
 
-    <!-- greedShop -->
+    <Pool Name="greedShop">
+        <Item Name="Calcium" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
 
-    <!-- greedCurse -->
+    <Pool Name="greedCurse">
+        <Item Name="Corrupted Clover" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Poison Mush" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Cursed Body" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+		<Item Name="Extinguished Candle" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+    </Pool>
 
-    <!-- greedDevil -->
     <Pool Name="greedDevil">
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
 
     <!-- greedAngel -->
 
-    <!-- greedSecret -->
     <Pool Name="greedSecret">
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
