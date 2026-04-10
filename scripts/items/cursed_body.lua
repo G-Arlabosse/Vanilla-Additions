@@ -72,7 +72,7 @@ local function AddCollectible (_,
     varData,    ---@param varData integer
     player      ---@param player EntityPlayer
 )
-    if type == cursed_body and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+    if type == cursed_body and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_UNKNOWN, false)
     end
     
@@ -217,7 +217,7 @@ local function OnNewGame ()
 end
 
 local function PostCurseEval (_, curses)
-    if Mod:PlayersHaveItem(cursed_body) and not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+    if PlayerManager.AnyoneHasCollectible(cursed_body) and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         curses = curses | LevelCurse.CURSE_OF_THE_UNKNOWN
     end 
     return curses

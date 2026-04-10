@@ -15,19 +15,6 @@ function Mod:Vec2Dir(vector)
     end
 end
 
-
-function Mod:PlayersHaveItem (
-    item    ---@param item CollectibleType
-)
-    for i=0, Game():GetNumPlayers() -1 do
-        local player = Isaac.GetPlayer(i)
-        if player:GetCollectibleNum(item) >= 1 then
-            return true
-        end
-    end
-    return false
-end
-
 function Mod:PlayersHaveTrinket (
     trinket    ---@param trinket TrinketType
 )

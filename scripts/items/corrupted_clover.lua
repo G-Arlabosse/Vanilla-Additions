@@ -70,7 +70,7 @@ end
 
 
 local function OnNewLevel ()
-    if Mod:PlayersHaveItem(corrupted_clover) then
+    if PlayerManager.AnyoneHasCollectible(corrupted_clover) then
         local level = Game():GetLevel()
         local rng = RNG(Game():GetSeeds():GetStageSeed(level:GetStage()), 35)
 
@@ -95,7 +95,7 @@ local function AddCollectible(_,
     player      ---@param player EntityPlayer
 )
     if type == corrupted_clover then
-        if not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+        if not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
             Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_BLIND, false)
         end
     else
@@ -110,7 +110,7 @@ local function GeneratePedestal (_,
     decrease,   ---@param decrease boolean
     seed        ---@param seed integer
 )
-    if Mod:PlayersHaveItem(corrupted_clover) then
+    if PlayerManager.AnyoneHasCollectible(corrupted_clover) then
         local item = itemConfig:GetCollectible(type)
         local quality = item.Quality
 
@@ -131,7 +131,7 @@ local function GeneratePedestal (_,
 end
 
 local function PostCurseEval(_, curses)
-    if Mod:PlayersHaveItem(corrupted_clover) then
+    if PlayerManager.AnyoneHasCollectible(corrupted_clover) then
         curses = curses | LevelCurse.CURSE_OF_BLIND
     end
     return curses

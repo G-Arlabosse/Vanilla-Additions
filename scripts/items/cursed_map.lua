@@ -144,7 +144,7 @@ for k, room in pairs(ROOM_WEIGHS) do
 end
 
 local function TryApplyCurses ()
-    if not Mod:PlayersHaveItem(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+    if not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         local level = Game():GetLevel()
         level:AddCurse(LevelCurse.CURSE_OF_THE_LOST, false)
         level:AddCurse(LevelCurse.CURSE_OF_MAZE, false)
@@ -158,7 +158,7 @@ local function PickupItem(_,type) ---@param type CollectibleType
 end
 
 local function NewLevel ()
-    if Mod:PlayersHaveItem(cursed_map) then
+    if PlayerManager.AnyoneHasCollectible(cursed_map) then
         TryApplyCurses()
     end
 end
@@ -183,7 +183,7 @@ local function ReplaceRoom(_,
     roomConfig, ---@param roomConfig RoomConfigRoom
     seed        ---@param seed integer
 )
-    if Mod:PlayersHaveItem(cursed_map) then
+    if PlayerManager.AnyoneHasCollectible(cursed_map) then
         if roomConfig.Type == RoomType.ROOM_SECRET then
             local variant = PickRandomVariant(ROOM_WEIGHS.secret, seed)
             local room = RoomConfig.GetRoomByStageTypeAndVariant(0, roomConfig.Type, variant)

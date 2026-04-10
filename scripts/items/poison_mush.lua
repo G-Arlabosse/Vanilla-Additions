@@ -3,7 +3,7 @@ local poison_mush = Isaac.GetItemIdByName("Poison Mush")
 local function PostNPCInit (_,
     entity  ---@param entity EntityNPC
 )
-    if Mod:PlayersHaveItem(poison_mush) then
+    if PlayerManager.AnyoneHasCollectible(poison_mush) then
         entity:MakeChampion(Game():GetRoom():GetSpawnSeed(), ChampionColor.GIANT, false)
     end
 end
@@ -16,7 +16,7 @@ local function PickupSelection (_,
     requestedSubType,   ---@param requestedSubType integer
     rng                 ---@param rng RNG
 )
-    if Mod:PlayersHaveItem(poison_mush) then
+    if PlayerManager.AnyoneHasCollectible(poison_mush) then
         if variant == PickupVariant.PICKUP_LOCKEDCHEST then
             return {PickupVariant.PICKUP_MEGACHEST, 1}
         end
@@ -26,7 +26,7 @@ end
 local function PostPickupInit(_, 
     pickup  ---@param pickup EntityPickup
 )
-    if not Mod:PlayersHaveItem(poison_mush) then return end
+    if not PlayerManager.AnyoneHasCollectible(poison_mush) then return end
 
     if pickup.Variant == PickupVariant.PICKUP_PILL then
         local spawner = pickup.SpawnerEntity
@@ -94,7 +94,7 @@ local function PostPickupInit(_,
 end
 
 function PreEntitySpawn(_, type, variant, subtype, position, velocity, spawner, seed)
-    if not Mod:PlayersHaveItem(poison_mush) then return end
+    if not PlayerManager.AnyoneHasCollectible(poison_mush) then return end
     
     --- Giga Bombs (from red chests)
     if type == EntityType.ENTITY_BOMB and 
