@@ -123,7 +123,7 @@ local function InitPedestals()
 end
 
 local function PostUpdate() 
-    if not (InAngelRoom() or PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
 
     collision = false
 
@@ -141,7 +141,7 @@ local function PrePickupMorph(_,
     variant,    ---@param variant PickupVariant
     subtype
 )
-    if not (InAngelRoom() or PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
     -- Reset Price
     if not (pickup.Price == 0) then
         morphed_item_devil = true
@@ -159,7 +159,7 @@ local function PostPickupMorph(_,
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
 )
-    if not (InAngelRoom() or PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
 
     --- d6 reroll (or other)
     if entityType == EntityType.ENTITY_PICKUP and 
@@ -189,7 +189,7 @@ end
 local function EntityKilled(_,
     npc ---@param npc EntityNPC
 )
-    if not (InAngelRoom() or PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
 
     -- Spawn item on Angel kill
     if npc.Type == EntityType.ENTITY_URIEL or npc.Type == EntityType.ENTITY_GABRIEL then
