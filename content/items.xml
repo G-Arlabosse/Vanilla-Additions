@@ -3,8 +3,8 @@
     <active name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor" tags="offensive" />
     <active name="Rare Candy" gfx="rare_candy.png" description="Level Up !" quality="3" cache="offensive" chargetype="special" />
     <familiar name="Bell Baby" gfx="bell_baby.png" description="What a cutie <3" quality="3" cache="familiars" tags="summonable monstermanual offensive" />
-    <passive name="Fallen Angel" gfx="fallen_angel.png" description="He is falling for you" quality="3" cache="offensive summonable" tags="summonable" /> 
-    <passive name="Life Orb" gfx="life_orb.png" description="Suffering brings strength" quality="2" cache="damage" tags="nolostbr" />
+    <passive name="Fallen Angel" gfx="fallen_angel.png" description="He is falling for you" quality="3" cache="offensive summonable" tags="summonable" devilprice="2"/> 
+    <passive name="Life Orb" gfx="life_orb.png" description="Suffering brings strength" quality="2" cache="damage" tags="nolostbr" devilprice="0"/>
     <passive name="Ominous Door" gfx="ominous_door.png" description="And he walks" quality="2" />
     <passive name="Corrupted Clover" gfx="corrupted_clover.png" description="May the blindness be with you" quality="2" tags="summonable" />
     <passive name="Cursed Map" gfx="cursed_map.png" description="" quality="1" tags="summonable" />
