@@ -1,5 +1,3 @@
-local CARD_ID = Isaac.GetCardIdByName("Reverse Card")
-
 local CARD_FLIPS = {
     -- Tarot card -> Reverse Tarot Card
     [Card.CARD_FOOL] = Card.CARD_REVERSE_FOOL,
@@ -291,52 +289,32 @@ local ITEM_FLIPS = {
     },
 
     -- Mod Items
+    [BIG_ROCK_ID] = {CollectibleType.COLLECTIBLE_ROCK_BOTTOM},
+    [CollectibleType.COLLECTIBLE_ROCK_BOTTOM] = {BIG_ROCK_ID},
+    [BELL_BABY_ID] = {CollectibleType.COLLECTIBLE_BLOOD_PUPPY},
+    [CollectibleType.COLLECTIBLE_BLOOD_PUPPY] = {BELL_BABY_ID},
+    [CURSED_MAP_ID] = {CollectibleType.COLLECTIBLE_TREASURE_MAP, CollectibleType.COLLECTIBLE_BLUE_MAP},
+    [CollectibleType.COLLECTIBLE_TREASURE_MAP] = {CURSED_MAP_ID},
+    [CollectibleType.COLLECTIBLE_BLUE_MAP] = {CURSED_MAP_ID},
+    [FALLEN_ANGEL_ID] = {CollectibleType.COLLECTIBLE_SERAPHIM},
+    [CollectibleType.COLLECTIBLE_SERAPHIM] = {FALLEN_ANGEL_ID},
+    [CURSED_D6_ID] = {CollectibleType.COLLECTIBLE_D6},
+    [CollectibleType.COLLECTIBLE_D6] = {CURSED_D6_ID},
+    [CURSED_BODY_ID] = {CollectibleType.COLLECTIBLE_BODY},
+    [CollectibleType.COLLECTIBLE_BODY] = {CURSED_BODY_ID},
+    [CALCIUM_ID] = {CollectibleType.COLLECTIBLE_SULFUR},
+    [CollectibleType.COLLECTIBLE_SULFUR] = {CALCIUM_ID},
+    [BROKEN_COMPASS_ID] = {CollectibleType.COLLECTIBLE_COMPASS},
+    [CollectibleType.COLLECTIBLE_COMPASS] = {BROKEN_COMPASS_ID},
+    [LIFE_ORB_ID] = {CollectibleType.COLLECTIBLE_CRYSTAL_BALL},
+    [CollectibleType.COLLECTIBLE_CRYSTAL_BALL] = {LIFE_ORB_ID}
     -- ["ZodiacItems"] = "Ophiuchus",
-    -- [""] = "",
-    -- ["Big Rock"] = "Rock Bottom",
     -- [""] = "",
     -- ["Planetariums"] = "Nebula",
     -- [""] = "",
-    -- ["Bell Baby"] = "Blood Puppy",
-    -- [""] = "",
-    -- ["Treasure Map"] = "Cursed Map",
-    -- [""] = "",
-    -- ["Blue Map"] = "Cursed Map",
-    -- [""] = "",
     -- ["Big Fan"] = "Maurice",
     -- [""] = "",
-    -- ["Seraphim"] = "Fallen Angel",
-    -- [""] = "",
-    -- ["D6"] = "Cursed D6",
-    -- [""] = "",
     -- ["The Soul/Mind"] = "The Void",
-    -- [""] = "",
-    -- ["The Body"] = "Cursed Body",
-    -- [""] = "",
-    -- ["Calcium"] = "Sulfur",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
-    -- [""] = "",
     -- [""] = "",
 }
 
@@ -372,14 +350,14 @@ local function InitEID(_)
         -- add card icon
         local reverseIcon = Sprite()
         reverseIcon:Load("gfx/eid_cardfronts.anm2", true)
-        EID:addIcon("Card"..CARD_ID, "Reverse Card", 0, 9, 9, -2, 1, reverseIcon)
+        EID:addIcon("Card"..REVERSE_CARD_ID, "Reverse Card", 0, 9, 9, -2, 1, reverseIcon)
 
         -- add card descriptions
-        EID:addCard(CARD_ID, [[Flips tarot cards in the current room
+        EID:addCard(REVERSE_CARD_ID, [[Flips tarot cards in the current room
         #Also flips some items]])
         
         -- set blank card info
-        EID:addCardMetadata(CARD_ID, 12, false)
+        EID:addCardMetadata(REVERSE_CARD_ID, 12, false)
 
     --- Test Card Description ---
         
@@ -387,7 +365,7 @@ local function InitEID(_)
         local function AnyPlayerHasReverseCard()
             for i = 0, Game():GetNumPlayers()-1 do
                 local p = Game():GetPlayer(i)
-                if p:GetCard(0) == CARD_ID or p:GetCard(1) == CARD_ID then
+                if p:GetCard(0) == REVERSE_CARD_ID or p:GetCard(1) == REVERSE_CARD_ID then
                     --- Check wether or not item is unlocked
                     return true
                 end
@@ -412,7 +390,7 @@ local function InitEID(_)
                         if authorizeCardFlip(flips_into) then
                             local cardName = EID:getObjectName(5, PickupVariant.PICKUP_TAROTCARD, flips_into)
                             descObj.Description = descObj.Description ..
-                            "#{{Card" .. CARD_ID .. "}} Reverse Card turns this into {{Card" .. flips_into .. "}} {{ColorYellow}}" .. cardName .. "{{ColorWhite}}"
+                            "#{{Card" .. REVERSE_CARD_ID .. "}} Reverse Card turns this into {{Card" .. flips_into .. "}} {{ColorYellow}}" .. cardName .. "{{ColorWhite}}"
                         end
                     end
 
@@ -425,11 +403,11 @@ local function InitEID(_)
                             local itemConfig = Isaac.GetItemConfig():GetCollectible(item_id)
                             local localizedName = Isaac.GetString("Items", itemConfig.Name)
                             descObj.Description = descObj.Description ..
-                            "#{{Card" .. CARD_ID .. "}} Reverse Card turns this into {{Collectible" .. item_id .. "}} {{ColorYellow}}" .. localizedName .."{{ColorWhite}}"
+                            "#{{Card" .. REVERSE_CARD_ID .. "}} Reverse Card turns this into {{Collectible" .. item_id .. "}} {{ColorYellow}}" .. localizedName .."{{ColorWhite}}"
                 
                         elseif #flips_into > 1 then
                             descObj.Description = descObj.Description ..
-                            "#{{Card" .. CARD_ID .. "}} Reverse Card can turn this into "
+                            "#{{Card" .. REVERSE_CARD_ID .. "}} Reverse Card can turn this into "
                             for i, item_id in pairs(flips_into) do
                                 local itemConfig = Isaac.GetItemConfig():GetCollectible(item_id)
                                 if i == #flips_into then
@@ -487,6 +465,6 @@ local function flipRoom(_, cardID, playerWhoUsedItem, useFlags)
 end
 
 
-Mod:AddCallback(ModCallbacks.MC_USE_CARD, flipRoom, CARD_ID)
+Mod:AddCallback(ModCallbacks.MC_USE_CARD, flipRoom, REVERSE_CARD_ID)
 Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, InitEID)
 -- Mod:AddCallback(ModCallbacks.MC_HUD_RENDER, onHUDRender)

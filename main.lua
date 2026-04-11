@@ -49,7 +49,7 @@ BROKEN_SCISSORS_ID = Isaac.GetTrinketIdByName("Broken Scissors")
 MIMICS_FAVOR_ID = Isaac.GetTrinketIdByName("Mimic's Favor")
 
 --- Consumable IDs ---
--- REVERSE_CARD_ID = Isaac.GetCardIdByName("Reverse Card")
+REVERSE_CARD_ID = Isaac.GetCardIdByName("Reverse Card")
 
 
 --- Consumables ---
