@@ -10,6 +10,7 @@ local function loadItemsDescriptions()
     #{{ArrowDown}} x0.75 Speed multiplier
     #{{Warning}} Speed is capped at 1.5]]
     EID:addCollectible(BIG_ROCK_ID, description)
+    EID:addCondition(BIG_ROCK_ID, BIG_ROCK_ID, "The speed down multiplier doesn't stack")
 
     --- Calcium ---
     description = 
@@ -30,7 +31,9 @@ local function loadItemsDescriptions()
     #42.5% to reroll a normal small room into a special room
     #{{Luck}} Caps at 80% at 15 luck]]
     EID:addCondition(OMINOUS_DOOR_ID, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
+    EID:addCondition(OMINOUS_DOOR_ID, OMINOUS_DOOR_ID, "No additional effect from multiple copies")
     EID:addCollectible(OMINOUS_DOOR_ID, description)
+    
 
     --- Rare Candy --- 
     description = 
@@ -52,6 +55,7 @@ local function loadItemsDescriptions()
     #{{ArrowUp}} +1 Damage
     #Lose a heart container on pickup and at the start of every floor
     #{{Warning}} Can kill Isaac]]
+    EID:addCondition(LIFE_ORB_ID, LIFE_ORB_ID, "Isaac loses an additional heart at the start of each floor, but the damage is multiplied by each copy of the item")
     EID:addCollectible(LIFE_ORB_ID, description)
 
     --- Corrupted Clover ---
@@ -62,6 +66,7 @@ local function loadItemsDescriptions()
     #At the start of each floor, each of Isaac's items have a 10% chance to be rerolled into an item of the same pool of the above quality]]
     EID:addCollectible(CORRUPTED_CLOVER_ID, description)
     EID:addCondition(CORRUPTED_CLOVER_ID, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
+    EID:addCondition(CORRUPTED_CLOVER_ID, CORRUPTED_CLOVER_ID, "No additional effect from multiple copies")
 
     --- Fallen Angel ---
     description = 
@@ -70,13 +75,15 @@ local function loadItemsDescriptions()
     #Uriel and Gabriel now spawn as their dark version but drop angel items on death]]
     EID:addCollectible(FALLEN_ANGEL_ID, description)
     EID:addPlayerCondition(FALLEN_ANGEL_ID, PlayerType.PLAYER_KEEPER, "Items cost coins instead", nil, nil, nil, true)
-    
+    EID:addCondition(FALLEN_ANGEL_ID, FALLEN_ANGEL_ID, "No additional effect from multiple copies")
+
     --- Cursed Map ---
     description = 
     [[#{{CurseMazeSmall}} Receive Curse of the Blind and Curse of the Maze permanently
     #{{UltraSecretRoom}} Secret, Super Secret and Ultra Secret rooms have a higher chance to have good layouts]]
     EID:addCondition(CURSED_MAP_ID, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(CURSED_MAP_ID, description)
+    EID:addCondition(CURSED_MAP_ID, CURSED_MAP_ID, "No additional effect from multiple copies")
 
     --- Poison Mush ---
     description = 
@@ -86,6 +93,7 @@ local function loadItemsDescriptions()
     #{{Pill}} Pills are turned into Horse Pills
     #{{GoldenChest}} Golden Chests are turned into Giant Chests]]
     EID:addCollectible(POISON_MUSH_ID, description)
+    EID:addCondition(POISON_MUSH_ID, POISON_MUSH_ID, "No additional effect from multiple copies")
 
     --- Broken Compass ---
     description = 
@@ -95,6 +103,7 @@ local function loadItemsDescriptions()
     #{{Indent}}{{Coin}} 33% chance to spawn an additional pickup as clear reward]]
     --EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
     EID:addCollectible(BROKEN_COMPASS_ID, description)
+    EID:addCondition(BROKEN_COMPASS_ID, BROKEN_COMPASS_ID, "No additional effect from multiple copies")
     
     --- Extinguished Candle ---
     description = 
@@ -103,6 +112,7 @@ local function loadItemsDescriptions()
     # Distant enemies disapear in the shadows]]
     EID:addCondition(EXTINGUISHED_CANDLE_ID, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse and enemies stay visible")
     EID:addCollectible(EXTINGUISHED_CANDLE_ID, description)
+    EID:addCondition(EXTINGUISHED_CANDLE_ID, EXTINGUISHED_CANDLE_ID, "No additional effect from multiple copies")
     
     --- Cursed D6 ---
     description = 
@@ -122,6 +132,7 @@ local function loadItemsDescriptions()
     #{{CurseRoom}} Spawn a curse room item]]
     EID:addCondition(CURSED_BODY_ID, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
     EID:addCollectible(CURSED_BODY_ID, description)
+    EID:addCondition(CURSED_BODY_ID, CURSED_BODY_ID, "No additional effect from multiple copies")
 end
 
 local function loadTrinketsDescriptions()
