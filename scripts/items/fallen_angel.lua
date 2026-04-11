@@ -9,15 +9,19 @@ local function InAngelRoom ()
     return roomDesc.Type == RoomType.ROOM_ANGEL
 end
 
+local function FallenAngelActive ()
+    return InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)
+end
+
 local function GetPedestalsInRoom()
     local pedestals = Isaac.FindByType(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_COLLECTIBLE,
-    -1,
-    false,
-    false
-)
-return pedestals
+        EntityType.ENTITY_PICKUP,
+        PickupVariant.PICKUP_COLLECTIBLE,
+        -1,
+        false,
+        false
+    )
+    return pedestals
 end
 
 local function GetClosestPlayer(pickup)
@@ -97,17 +101,21 @@ local function ChangePrice (
                 end 
             end
         end
+
+        if pickup.Price == PickupPrice.PRICE_TWO_HEARTS and PlayerManager.AnyoneHasTrinket(TrinketType.TRINKET_JUDAS_TONGUE) then
+            pickup.Price = PickupPrice.PRICE_ONE_HEART
+        end
     end
 end
 
 local function InitPedestals()
     devil_pickups = {}
-    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID) then
+    if FallenAngelActive() then
         local pedestals = GetPedestalsInRoom()
         
         for i=1, #pedestals do
             local pickup = pedestals[i]:ToPickup()
-            if pickup then
+            if pickup and pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
                 if Game():GetRoom():IsFirstVisit() then
                     pickup.OptionsPickupIndex = 0
                     pickup.Price = -1
@@ -115,6 +123,7 @@ local function InitPedestals()
                     devil_pickups[pickup.Index].pickup = pickup
                     ChangePrice(pickup)
                 elseif pickup.Price < 0 then
+                    devil_pickups[pickup.Index] = {}
                     devil_pickups[pickup.Index].pickup = pickup
                 end
             end
@@ -123,7 +132,7 @@ local function InitPedestals()
 end
 
 local function PostUpdate() 
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)) then return end
+    if not (FallenAngelActive()) then return end
 
     collision = false
 
@@ -141,11 +150,12 @@ local function PrePickupMorph(_,
     variant,    ---@param variant PickupVariant
     subtype
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)) then return end
+    if not (FallenAngelActive()) then return end
     -- Reset Price
     if not (pickup.Price == 0) then
         morphed_item_devil = true
         pickup:GetData().priceReset = true
+---@diagnostic disable-next-line: assign-type-mismatch
         pickup.Price = 0
         pickup.AutoUpdatePrice = true
         
@@ -159,7 +169,7 @@ local function PostPickupMorph(_,
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)) then return end
+    if not (FallenAngelActive()) then return end
 
     --- d6 reroll (or other)
     if entityType == EntityType.ENTITY_PICKUP and 
@@ -189,7 +199,7 @@ end
 local function EntityKilled(_,
     npc ---@param npc EntityNPC
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)) then return end
+    if not (FallenAngelActive()) then return end
 
     -- Spawn item on Angel kill
     if npc.Type == EntityType.ENTITY_URIEL or npc.Type == EntityType.ENTITY_GABRIEL then
@@ -215,7 +225,7 @@ local function PreLevelInit()
 end
 
 local function OnNPCInit (_, npc)
-    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID) then
+    if FallenAngelActive() then
         if npc.Type == EntityType.ENTITY_URIEL then
             npc:Morph(EntityType.ENTITY_URIEL, 1, 0, -1)
         end
@@ -278,3 +288,22 @@ local function HealthUpdate (_,
 end
 
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_ADD_HEARTS, HealthUpdate)
+
+
+local function UpdateAllPrices()
+    if FallenAngelActive() then
+        print("CHANGE ALL")
+        local pedestals = GetPedestalsInRoom()
+        for i=1, #pedestals do
+            local pickup = pedestals[i]:ToPickup()
+            if pickup and pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
+                devil_pickups[pickup.Index].player = nil
+                ChangePrice(pickup)
+            end
+        end
+    end    
+end
+
+Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_DROP_TRINKET, UpdateAllPrices, TrinketType.TRINKET_JUDAS_TONGUE)
+Mod:AddCallback(ModCallbacks.MC_POST_TRIGGER_TRINKET_ADDED, UpdateAllPrices, TrinketType.TRINKET_JUDAS_TONGUE)
+
