@@ -1,5 +1,3 @@
-local CURSED_D6 = Isaac.GetItemIdByName("Cursed D6")
-
 local CURSES_TEXTS = {
     "Greed will consume you",
     "...",
@@ -125,6 +123,6 @@ local function OnRender()
 end
 
 Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurseEval)
-Mod:AddCallback(ModCallbacks.MC_USE_ITEM, UseCursedD6, CURSED_D6)
+Mod:AddCallback(ModCallbacks.MC_USE_ITEM, UseCursedD6, CURSED_D6_ID)
 Mod:AddCallback(ModCallbacks.MC_POST_RENDER, OnRender)
 Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, NewGame)

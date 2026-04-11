@@ -1,5 +1,3 @@
-local cursed_map = Isaac.GetItemIdByName("Cursed Map")
-
 local ROOM_QUALITY = {
     BAD = 0.1,
     OK = 0.25,
@@ -152,13 +150,13 @@ local function TryApplyCurses ()
 end
 
 local function PickupItem(_,type) ---@param type CollectibleType
-    if type == cursed_map then
+    if type == CURSED_MAP_ID then
         TryApplyCurses()
     end
 end
 
 local function NewLevel ()
-    if PlayerManager.AnyoneHasCollectible(cursed_map) then
+    if PlayerManager.AnyoneHasCollectible(CURSED_MAP_ID) then
         TryApplyCurses()
     end
 end
@@ -183,7 +181,7 @@ local function ReplaceRoom(_,
     roomConfig, ---@param roomConfig RoomConfigRoom
     seed        ---@param seed integer
 )
-    if PlayerManager.AnyoneHasCollectible(cursed_map) then
+    if PlayerManager.AnyoneHasCollectible(CURSED_MAP_ID) then
         if roomConfig.Type == RoomType.ROOM_SECRET then
             local variant = PickRandomVariant(ROOM_WEIGHS.secret, seed)
             local room = RoomConfig.GetRoomByStageTypeAndVariant(0, roomConfig.Type, variant)

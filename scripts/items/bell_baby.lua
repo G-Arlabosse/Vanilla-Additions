@@ -1,7 +1,6 @@
 local itemConfig = Isaac.GetItemConfig()
 
-local ITEM_ID = Isaac.GetItemIdByName("Bell Baby")
-local CONFIG_BELL_BABY = itemConfig:GetCollectible(ITEM_ID)
+local CONFIG_BELL_BABY = itemConfig:GetCollectible(BELL_BABY_ID)
 local FAMILIAR_VARIANT = Isaac.GetEntityVariantByName("Bell Baby")
 local RNG_SHIFT_INDEX = 35
 
@@ -116,7 +115,7 @@ local function digTreasure()
 end
 
 local function updateDigChance(_, player, cacheFlags)
-    if player:GetCollectibleNum(ITEM_ID) >= 1 then
+    if player:GetCollectibleNum(BELL_BABY_ID) >= 1 then
         if cacheFlags == CacheFlag.CACHE_LUCK then
             local luck = player.Luck
             local clamped_luck = math.min(MAX_LUCK, math.max(MIN_LUCK, luck))
@@ -243,7 +242,7 @@ local function evaluateCache(_, player, cacheFlag)
     if cacheFlag ~= CacheFlag.CACHE_FAMILIARS then return end
 
     local effects = player:GetEffects()
-    local count = effects:GetCollectibleEffectNum(ITEM_ID) + player:GetCollectibleNum(ITEM_ID)
+    local count = effects:GetCollectibleEffectNum(BELL_BABY_ID) + player:GetCollectibleNum(BELL_BABY_ID)
     local rng = RNG()
     local seed = math.max(Random(),1)
     rng:SetSeed(seed, RNG_SHIFT_INDEX)

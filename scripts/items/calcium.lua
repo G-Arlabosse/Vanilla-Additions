@@ -1,4 +1,3 @@
-local calcium = Isaac.GetItemIdByName("Calcium")
 local DAMAGE_MULTIPLIER = 0.25
 local FIRE_RATE_MULTIPLIER = 5.5
 local TEAR_SCALE = 0.4
@@ -103,12 +102,12 @@ end
 local function PostAddCollectible(_,type,charge,firstTime,slot,varData,player)
     if player:GetData().opikoko_calcium_active then
         if type == CollectibleType.COLLECTIBLE_SOY_MILK or type == CollectibleType.COLLECTIBLE_ALMOND_MILK then
-            calciumUse(_, calcium, RNG(), player)
+            calciumUse(_, CALCIUM_ID, RNG(), player)
         end
     end
 end
 
-Mod:AddCallback(ModCallbacks.MC_USE_ITEM, calciumUse, calcium)
+Mod:AddCallback(ModCallbacks.MC_USE_ITEM, calciumUse, CALCIUM_ID)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, calciumDeactivate)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_DAMAGE)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache, CacheFlag.CACHE_FIREDELAY)

@@ -1,13 +1,12 @@
-local ITEM_ID = Isaac.GetItemIdByName("Life Orb")
 local LIFE_ORB_DAMAGE_PER_HEART = 1.0
 
 ---@param player EntityPlayer
 local function addDamage(_, player, amount, healthType, optionalArg)
-    if player:HasCollectible(ITEM_ID) then
+    if player:HasCollectible(LIFE_ORB_ID) then
         if healthType == AddHealthType.MAX and amount < 0 then
             local containers_lost = math.abs(amount) /2
             local data = player:GetData()
-            local item_count = player:GetCollectibleNum(ITEM_ID)
+            local item_count = player:GetCollectibleNum(LIFE_ORB_ID)
             if data.opikoko_lifeorb_stacks then
                 data.opikoko_lifeorb_stacks = data.opikoko_lifeorb_stacks + containers_lost
             else 
@@ -23,9 +22,9 @@ end
 
 ---@param player EntityPlayer
 local function calculateDamage(_, player, statStage, value)
-    if player:HasCollectible(ITEM_ID) then
+    if player:HasCollectible(LIFE_ORB_ID) then
         local data = player:GetData()
-        local item_count = player:GetCollectibleNum(ITEM_ID)
+        local item_count = player:GetCollectibleNum(LIFE_ORB_ID)
         if data.opikoko_lifeorb_stacks then
             return value + data.opikoko_lifeorb_stacks * LIFE_ORB_DAMAGE_PER_HEART * item_count
         else 
@@ -43,7 +42,7 @@ end
 local function removeHeartOnFloor()
     for i=0, Game():GetNumPlayers()-1 do
         local player = Game():GetPlayer(i)
-        for j=0, player:GetCollectibleNum(ITEM_ID)-1 do
+        for j=0, player:GetCollectibleNum(LIFE_ORB_ID)-1 do
             if player:GetMaxHearts() >= 2 then
                 player:AddMaxHearts(-2, true)
                 player:TakeDamage(1, DamageFlag.DAMAGE_FAKE, EntityRef(player), 0)
@@ -55,5 +54,5 @@ end
 
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_ADD_HEARTS, addDamage)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_STAT, calculateDamage, EvaluateStatStage.DAMAGE_UP)
-Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, removeHeartOnPickup, ITEM_ID)
+Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, removeHeartOnPickup, LIFE_ORB_ID)
 Mod:AddCallback(ModCallbacks.MC_PRE_LEVEL_INIT, removeHeartOnFloor)

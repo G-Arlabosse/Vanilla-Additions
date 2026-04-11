@@ -1,7 +1,7 @@
 local item_config = Isaac.GetItemConfig()
 local pending_morhped_items = {}
 local devil_pickups = {}
-local fallen_angel = Isaac.GetItemIdByName("Fallen Angel")
+local FALLEN_ANGEL_ID = Isaac.GetItemIdByName("Fallen Angel")
 local collision = false
 
 local function InAngelRoom ()
@@ -10,7 +10,7 @@ local function InAngelRoom ()
 end
 
 local function FallenAngelActive ()
-    return InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)
+    return InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)
 end
 
 local function GetPedestalsInRoom()
@@ -217,7 +217,7 @@ local function EntityKilled(_,
 end
 
 local function PreLevelInit()
-    if PlayerManager.AnyoneHasCollectible(fallen_angel) then
+    if PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID) then
         local level = Game():GetLevel()
         level:AddAngelRoomChance(1-level:GetAngelRoomChance())
     end
@@ -243,7 +243,7 @@ local function AddCollectible (_,
     varData,    ---@param varData integer
     player      ---@param player EntityPlayer
 )
-    if type == fallen_angel then
+    if type == FALLEN_ANGEL_ID then
         local level = Game():GetLevel()
         level:AddAngelRoomChance(1-level:GetAngelRoomChance())
     end

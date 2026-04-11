@@ -9,7 +9,6 @@ local QUALITY_4_DOWNGRADE_CHANCE = 1
 local QUALITY_3_DOWNGRADE_CHANCE = 0.66
 local QUALITY_2_DOWNGRADE_CHANCE = 0
 
-local corrupted_clover = Isaac.GetItemIdByName("Corrupted Clover")
 local itemConfig = Isaac.GetItemConfig()
 local tracked_item_pools = {}
 
@@ -70,7 +69,7 @@ end
 
 
 local function OnNewLevel ()
-    if PlayerManager.AnyoneHasCollectible(corrupted_clover) then
+    if PlayerManager.AnyoneHasCollectible(CORRUPTED_CLOVER_ID) then
         local level = Game():GetLevel()
         local rng = RNG(Game():GetSeeds():GetStageSeed(level:GetStage()), 35)
 
@@ -94,7 +93,7 @@ local function AddCollectible(_,
     varData,    ---@param varData integer
     player      ---@param player EntityPlayer
 )
-    if type == corrupted_clover then
+    if type == CORRUPTED_CLOVER_ID then
         if not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
             Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_BLIND, false)
         end
@@ -110,7 +109,7 @@ local function GeneratePedestal (_,
     decrease,   ---@param decrease boolean
     seed        ---@param seed integer
 )
-    if PlayerManager.AnyoneHasCollectible(corrupted_clover) then
+    if PlayerManager.AnyoneHasCollectible(CORRUPTED_CLOVER_ID) then
         local item = itemConfig:GetCollectible(type)
         local quality = item.Quality
 
@@ -131,7 +130,7 @@ local function GeneratePedestal (_,
 end
 
 local function PostCurseEval(_, curses)
-    if PlayerManager.AnyoneHasCollectible(corrupted_clover) then
+    if PlayerManager.AnyoneHasCollectible(CORRUPTED_CLOVER_ID) then
         curses = curses | LevelCurse.CURSE_OF_BLIND
     end
     return curses
