@@ -11,13 +11,13 @@ end
 
 local function GetPedestalsInRoom()
     local pedestals = Isaac.FindByType(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_COLLECTIBLE,
-    -1,
-    false,
-    false
-)
-return pedestals
+        EntityType.ENTITY_PICKUP,
+        PickupVariant.PICKUP_COLLECTIBLE,
+        -1,
+        false,
+        false
+    )
+    return pedestals
 end
 
 local function GetClosestPlayer(pickup)
@@ -97,6 +97,10 @@ local function ChangePrice (
                 end 
             end
         end
+
+        if pickup.Price == PickupPrice.PRICE_TWO_HEARTS and PlayerManager.AnyoneHasTrinket(TrinketType.TRINKET_JUDAS_TONGUE) then
+            pickup.Price = PickupPrice.PRICE_ONE_HEART
+        end
     end
 end
 
@@ -107,7 +111,7 @@ local function InitPedestals()
         
         for i=1, #pedestals do
             local pickup = pedestals[i]:ToPickup()
-            if pickup then
+            if pickup and pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
                 if Game():GetRoom():IsFirstVisit() then
                     pickup.OptionsPickupIndex = 0
                     pickup.Price = -1
@@ -115,6 +119,7 @@ local function InitPedestals()
                     devil_pickups[pickup.Index].pickup = pickup
                     ChangePrice(pickup)
                 elseif pickup.Price < 0 then
+                    devil_pickups[pickup.Index] = {}
                     devil_pickups[pickup.Index].pickup = pickup
                 end
             end
@@ -278,3 +283,22 @@ local function HealthUpdate (_,
 end
 
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_ADD_HEARTS, HealthUpdate)
+
+
+local function UpdateAllPrices()
+    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel) then
+        print("CHANGE ALL")
+        local pedestals = GetPedestalsInRoom()
+        for i=1, #pedestals do
+            local pickup = pedestals[i]:ToPickup()
+            if pickup and pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
+                devil_pickups[pickup.Index].player = nil
+                ChangePrice(pickup)
+            end
+        end
+    end    
+end
+
+Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_DROP_TRINKET, UpdateAllPrices, TrinketType.TRINKET_JUDAS_TONGUE)
+Mod:AddCallback(ModCallbacks.MC_POST_TRIGGER_TRINKET_ADDED, UpdateAllPrices, TrinketType.TRINKET_JUDAS_TONGUE)
+
