@@ -9,6 +9,10 @@ local function InAngelRoom ()
     return roomDesc.Type == RoomType.ROOM_ANGEL
 end
 
+local function FallenAngelActive ()
+    return InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)
+end
+
 local function GetPedestalsInRoom()
     local pedestals = Isaac.FindByType(
         EntityType.ENTITY_PICKUP,
@@ -106,7 +110,7 @@ end
 
 local function InitPedestals()
     devil_pickups = {}
-    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel) then
+    if FallenAngelActive() then
         local pedestals = GetPedestalsInRoom()
         
         for i=1, #pedestals do
@@ -128,7 +132,7 @@ local function InitPedestals()
 end
 
 local function PostUpdate() 
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (FallenAngelActive()) then return end
 
     collision = false
 
@@ -146,7 +150,7 @@ local function PrePickupMorph(_,
     variant,    ---@param variant PickupVariant
     subtype
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (FallenAngelActive()) then return end
     -- Reset Price
     if not (pickup.Price == 0) then
         morphed_item_devil = true
@@ -164,7 +168,7 @@ local function PostPickupMorph(_,
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (FallenAngelActive()) then return end
 
     --- d6 reroll (or other)
     if entityType == EntityType.ENTITY_PICKUP and 
@@ -194,7 +198,7 @@ end
 local function EntityKilled(_,
     npc ---@param npc EntityNPC
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (FallenAngelActive()) then return end
 
     -- Spawn item on Angel kill
     if npc.Type == EntityType.ENTITY_URIEL or npc.Type == EntityType.ENTITY_GABRIEL then
@@ -220,7 +224,7 @@ local function PreLevelInit()
 end
 
 local function OnNPCInit (_, npc)
-    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel) then
+    if FallenAngelActive() then
         if npc.Type == EntityType.ENTITY_URIEL then
             npc:Morph(EntityType.ENTITY_URIEL, 1, 0, -1)
         end
@@ -286,7 +290,7 @@ Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_ADD_HEARTS, HealthUpdate)
 
 
 local function UpdateAllPrices()
-    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel) then
+    if FallenAngelActive() then
         print("CHANGE ALL")
         local pedestals = GetPedestalsInRoom()
         for i=1, #pedestals do
