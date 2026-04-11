@@ -52,6 +52,9 @@ MIMICS_FAVOR_ID = Isaac.GetTrinketIdByName("Mimic's Favor")
 -- REVERSE_CARD_ID = Isaac.GetCardIdByName("Reverse Card")
 
 
+--- Consumables ---
+include("scripts.consumables.uno_reverse_card")
+
 local damagePotion = Isaac.GetItemIdByName("Damage Potion")
 local damagePotionDamage = 1
 
