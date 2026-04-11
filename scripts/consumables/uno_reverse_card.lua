@@ -422,15 +422,6 @@ local function InitEID(_)
                         end
                     end
                 end
-
-                if descObj.ObjType == 5
-                and descObj.ObjVariant == PickupVariant.PICKUP_COLLECTIBLE
-                and descObj.ObjSubType == CollectibleType.COLLECTIBLE_BELT then
-
-                    descObj.Description = descObj.Description ..
-                        "#{{Card" .. Card.CARD_WILD .. "}} Wild Card eats poop"
-                end
-                return descObj
             end
         )    
 
@@ -467,4 +458,3 @@ end
 
 Mod:AddCallback(ModCallbacks.MC_USE_CARD, flipRoom, REVERSE_CARD_ID)
 Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, InitEID)
--- Mod:AddCallback(ModCallbacks.MC_HUD_RENDER, onHUDRender)
