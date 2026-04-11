@@ -155,6 +155,7 @@ local function PrePickupMorph(_,
     if not (pickup.Price == 0) then
         morphed_item_devil = true
         pickup:GetData().priceReset = true
+---@diagnostic disable-next-line: assign-type-mismatch
         pickup.Price = 0
         pickup.AutoUpdatePrice = true
         
