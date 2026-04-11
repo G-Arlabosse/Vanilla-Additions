@@ -1,6 +1,7 @@
-if EID then
+local function loadItemsDescriptions()
+    if not EID then return end
+
     local description
---- ITEMS ---
     --- Big Rock ---
     description = 
     [[{{ArrowUp}} +1 Damage
@@ -49,7 +50,8 @@ if EID then
     description = 
     [[#When losing a heart container, recieve permanently:
     #{{ArrowUp}} +1 Damage
-    #Lose a heart container on pickup and at the start of every floor]]
+    #Lose a heart container on pickup and at the start of every floor
+    #{{Warning}} Can kill Isaac]]
     EID:addCollectible(LIFE_ORB_ID, description)
 
     --- Corrupted Clover ---
@@ -120,8 +122,12 @@ if EID then
     #{{CurseRoom}} Spawn a curse room item]]
     EID:addCondition(CURSED_BODY_ID, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
     EID:addCollectible(CURSED_BODY_ID, description)
+end
 
---- TRINKETS ---
+local function loadTrinketsDescriptions()
+    if not EID then return end
+
+    local description
 
     --- Broken Scissors ---
     description =
@@ -134,4 +140,9 @@ if EID then
     [[{{SpikedChest}} Turns all Chests into Trapped Chests
     #{{Coin}} Better value coins have a higher chance to appear]]
     EID:addTrinket(MIMICS_FAVOR_ID, description)
+end
+
+if EID then
+    loadItemsDescriptions()
+    loadTrinketsDescriptions()
 end
