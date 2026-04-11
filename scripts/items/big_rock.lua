@@ -1,11 +1,11 @@
-local bigRock = Isaac.GetItemIdByName("Big Rock")
+
 local SPEED_MULTIPLIER = 0.75
 local BIG_ROCK_SPAWN_CHANCE = 0.05
 local has_bigRock_spawned = false
 
 ---@param player EntityPlayer
 local function evaluateCache(_, player, cacheFlags)
-    if player:GetCollectibleNum(bigRock) >= 1 then
+    if player:GetCollectibleNum(BIG_ROCK_ID) >= 1 then
         if cacheFlags == CacheFlag.CACHE_SPEED then
             player.MoveSpeed = player.MoveSpeed * SPEED_MULTIPLIER
             -- Cap the player's speed at 1.5 because of the multiplier
@@ -40,7 +40,7 @@ local function spawnBigRock(_, rock, rock_type)
             Isaac.Spawn(
                 EntityType.ENTITY_PICKUP,
                 PickupVariant.PICKUP_COLLECTIBLE,
-                bigRock,
+                BIG_ROCK_ID,
                 rock.Position,
                 Vector.Zero,
                 nil

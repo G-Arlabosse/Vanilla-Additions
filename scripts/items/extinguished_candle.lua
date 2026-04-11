@@ -1,7 +1,5 @@
-local extinguished_candle = Isaac.GetItemIdByName("Extinguished Candle")
-
 local function PostCurseEval(_, curses)
-    if PlayerManager.AnyoneHasCollectible(extinguished_candle) and
+    if PlayerManager.AnyoneHasCollectible(EXTINGUISHED_CANDLE_ID) and
             not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         curses = curses | LevelCurse.CURSE_OF_DARKNESS
     end
@@ -25,7 +23,7 @@ local npc_colors = {}
 
 ---@param npc EntityNPC
 local function NpcUpdate(_, npc)
-    if not PlayerManager.AnyoneHasCollectible(extinguished_candle) then return end
+    if not PlayerManager.AnyoneHasCollectible(EXTINGUISHED_CANDLE_ID) then return end
     if not npc:IsActiveEnemy(false) then return end
 
     -- Store original color once
@@ -109,7 +107,7 @@ Mod:AddCallback(ModCallbacks.MC_NPC_UPDATE, NpcUpdate)
 Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, OnNPCRemove)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, PostNewRoom)
 Mod:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, PostCurseEval)
-Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddExtinguishedCandle, extinguished_candle)
+Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddExtinguishedCandle, EXTINGUISHED_CANDLE_ID)
 
 
 ---@param player EntityPlayer
@@ -117,7 +115,7 @@ local function PostPeffectUpdate(_, player)
     local data = player:GetData()
     local halo = data.extinguished_candle_halo
 
-    if player:HasCollectible(extinguished_candle) then
+    if player:HasCollectible(EXTINGUISHED_CANDLE_ID) then
         if not (halo and halo:Exists()) then
             halo = Isaac.Spawn(
                 EntityType.ENTITY_EFFECT,

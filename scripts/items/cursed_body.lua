@@ -1,4 +1,3 @@
-local cursed_body = Isaac.GetItemIdByName("Cursed Body")
 local rng = RNG()
 local previous_rng = 0
 
@@ -72,7 +71,7 @@ local function AddCollectible (_,
     varData,    ---@param varData integer
     player      ---@param player EntityPlayer
 )
-    if type == cursed_body and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+    if type == CURSED_BODY_ID and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         Game():GetLevel():AddCurse(LevelCurse.CURSE_OF_THE_UNKNOWN, false)
     end
     
@@ -158,7 +157,7 @@ local function TakeDamage (_,
     local player = entity:ToPlayer()
     if not player then return end
     
-    for _=0, player:GetCollectibleNum(cursed_body)-1 do
+    for _=0, player:GetCollectibleNum(CURSED_BODY_ID)-1 do
         local rand_drop = rng:RandomFloat()
         if rand_drop < DROP_PROBABILITY then
             local rand_weight = rng:RandomFloat() * TOTAL_WEIGHTS
@@ -179,7 +178,7 @@ local function CalculateCache (_,
     player, ---@param player EntityPlayer
     flags   ---@param flags CacheFlag
 )
-    if player:HasCollectible(cursed_body) then
+    if player:HasCollectible(CURSED_BODY_ID) then
         local index = player:GetPlayerIndex()+1
         if flags == CacheFlag.CACHE_SPEED then
             player.MoveSpeed = player.MoveSpeed + PLAYER_STAT_BONUSES[index].speed
@@ -201,7 +200,7 @@ local function CalculateStat (_,
     stat,           ---@param stat EvaluateStatStage
     currentValue    ---@param currentValue number
 )
-    if player:HasCollectible(cursed_body) then
+    if player:HasCollectible(CURSED_BODY_ID) then
         local index = player:GetPlayerIndex()+1
         if stat == EvaluateStatStage.DAMAGE_UP then
             return currentValue + PLAYER_STAT_BONUSES[index].damage
@@ -217,7 +216,7 @@ local function OnNewGame ()
 end
 
 local function PostCurseEval (_, curses)
-    if PlayerManager.AnyoneHasCollectible(cursed_body) and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+    if PlayerManager.AnyoneHasCollectible(CURSED_BODY_ID) and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         curses = curses | LevelCurse.CURSE_OF_THE_UNKNOWN
     end 
     return curses

@@ -1,4 +1,3 @@
-local broken_compass = Isaac.GetItemIdByName("Broken Compass")
 local TELEPORT_CHANCE = 0.5
 local ADDITIONAL_PICKUP_CHANCE = 0.33
 local pickups = {
@@ -9,7 +8,7 @@ local pickups = {
 }
 
 local function PostCurseEval(_, curses)
-    if PlayerManager.AnyoneHasCollectible(broken_compass) and
+    if PlayerManager.AnyoneHasCollectible(BROKEN_COMPASS_ID) and
             not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) and 
             Game():GetLevel():GetAbsoluteStage()%2 ~= 0 then 
         curses = curses | LevelCurse.CURSE_OF_LABYRINTH
@@ -18,7 +17,7 @@ local function PostCurseEval(_, curses)
 end
 
 local function OnRoomClear()
-    if PlayerManager.AnyoneHasCollectible(broken_compass) then
+    if PlayerManager.AnyoneHasCollectible(BROKEN_COMPASS_ID) then
         local level = Game():GetLevel()
 
         -- Check if on Home stage

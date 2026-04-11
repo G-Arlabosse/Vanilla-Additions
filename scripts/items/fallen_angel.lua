@@ -1,7 +1,7 @@
 local item_config = Isaac.GetItemConfig()
 local pending_morhped_items = {}
 local devil_pickups = {}
-local fallen_angel = Isaac.GetItemIdByName("Fallen Angel")
+local FALLEN_ANGEL_ID = Isaac.GetItemIdByName("Fallen Angel")
 local collision = false
 
 local function InAngelRoom ()
@@ -102,7 +102,7 @@ end
 
 local function InitPedestals()
     devil_pickups = {}
-    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel) then
+    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID) then
         local pedestals = GetPedestalsInRoom()
         
         for i=1, #pedestals do
@@ -123,7 +123,7 @@ local function InitPedestals()
 end
 
 local function PostUpdate() 
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)) then return end
 
     collision = false
 
@@ -141,7 +141,7 @@ local function PrePickupMorph(_,
     variant,    ---@param variant PickupVariant
     subtype
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)) then return end
     -- Reset Price
     if not (pickup.Price == 0) then
         morphed_item_devil = true
@@ -159,7 +159,7 @@ local function PostPickupMorph(_,
     entityType, ---@param entityType EntityType
     variant    ---@param variant PickupVariant
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)) then return end
 
     --- d6 reroll (or other)
     if entityType == EntityType.ENTITY_PICKUP and 
@@ -189,7 +189,7 @@ end
 local function EntityKilled(_,
     npc ---@param npc EntityNPC
 )
-    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel)) then return end
+    if not (InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID)) then return end
 
     -- Spawn item on Angel kill
     if npc.Type == EntityType.ENTITY_URIEL or npc.Type == EntityType.ENTITY_GABRIEL then
@@ -208,14 +208,14 @@ local function EntityKilled(_,
 end
 
 local function PreLevelInit()
-    if PlayerManager.AnyoneHasCollectible(fallen_angel) then
+    if PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID) then
         local level = Game():GetLevel()
         level:AddAngelRoomChance(1-level:GetAngelRoomChance())
     end
 end
 
 local function OnNPCInit (_, npc)
-    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(fallen_angel) then
+    if InAngelRoom() and PlayerManager.AnyoneHasCollectible(FALLEN_ANGEL_ID) then
         if npc.Type == EntityType.ENTITY_URIEL then
             npc:Morph(EntityType.ENTITY_URIEL, 1, 0, -1)
         end
@@ -234,7 +234,7 @@ local function AddCollectible (_,
     varData,    ---@param varData integer
     player      ---@param player EntityPlayer
 )
-    if type == fallen_angel then
+    if type == FALLEN_ANGEL_ID then
         local level = Game():GetLevel()
         level:AddAngelRoomChance(1-level:GetAngelRoomChance())
     end

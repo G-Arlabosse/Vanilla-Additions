@@ -1,4 +1,3 @@
-local ominous_door = Isaac.GetItemIdByName("Ominous Door")
 local SpecialRooms = {}
 
 -- Chance to replace a normal room
@@ -52,7 +51,7 @@ function PreLevelPlaceRoom(_,
     oldConfig,  ---@param oldConfig RoomConfigRoom
     seed        
 )
-    if PlayerManager.AnyoneHasCollectible(ominous_door) then
+    if PlayerManager.AnyoneHasCollectible(OMINOUS_DOOR_ID) then
         local rng = RNG(seed, 35)
 
         if oldConfig.Type == RoomType.ROOM_DEFAULT and slot:GenerationIndex() ~= 0 then
@@ -112,7 +111,7 @@ function PostNewRoom()
 end
 
 function PostCurseEval(_, curses)
-    if PlayerManager.AnyoneHasCollectible(ominous_door) and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
+    if PlayerManager.AnyoneHasCollectible(OMINOUS_DOOR_ID) and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
         curses = curses | LevelCurse.CURSE_OF_THE_CURSED
     end
     return curses

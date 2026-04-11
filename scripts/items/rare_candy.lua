@@ -1,6 +1,5 @@
 --- BUG: Does not work with the Stompy transformation advancement from an item ---
 
-local rare_candy = Isaac.GetItemIdByName("Rare Candy")
 local itemConfig = Isaac.GetItemConfig()
 
 local TRANSFORMATION_TAGS = {
@@ -44,10 +43,10 @@ PLAYER_ID = 0
 local function changeTransformation(previous, new)
    if EID then
         if previous then
-            EID:removeTransformation("collectible", rare_candy, TRANSFORMATIONS[previous].icon)
+            EID:removeTransformation("collectible", RARE_CANDY_ID, TRANSFORMATIONS[previous].icon)
         end
         if new then
-            EID:assignTransformation("collectible", rare_candy, TRANSFORMATIONS[new].icon)
+            EID:assignTransformation("collectible", RARE_CANDY_ID, TRANSFORMATIONS[new].icon)
         end
     end
 end
@@ -125,5 +124,5 @@ Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, OnCollectibleAdded)
 Mod:AddCallback(ModCallbacks.MC_USE_PILL, OnPillEffect)
 Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, OnNewRun)
 
-Mod:AddCallback(ModCallbacks.MC_USE_ITEM, UseRareCandy, rare_candy)
+Mod:AddCallback(ModCallbacks.MC_USE_ITEM, UseRareCandy, RARE_CANDY_ID)
 -- Mod:AddCallback(ModCallbacks.MC_POST_TRIGGER_COLLECTIBLE_REMOVED, Mod.ItemRemoved)
