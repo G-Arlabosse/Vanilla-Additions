@@ -101,7 +101,7 @@ local function loadItemsDescriptions()
     # Upon Clearing a room:
     #{{Indent}}{{SecretRoom}} 50% chance to teleport in a random room
     #{{Indent}}{{Coin}} 33% chance to spawn an additional pickup as clear reward]]
-    --EID:addCondition(myItemId, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes curses")
+    EID:addCondition(BROKEN_COMPASS_ID, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse and teleport effect")
     EID:addCollectible(BROKEN_COMPASS_ID, description)
     EID:addCondition(BROKEN_COMPASS_ID, BROKEN_COMPASS_ID, "No additional effect from multiple copies")
     
