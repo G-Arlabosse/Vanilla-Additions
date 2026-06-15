@@ -41,6 +41,8 @@ local function OnRoomClear()
             )
         end
 
+        if PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then return end
+        
         if rng:RandomFloat() < TELEPORT_CHANCE then
             local index = level:GetRandomRoomIndex(false, seed)
             Game():StartRoomTransition(
