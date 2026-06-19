@@ -140,7 +140,12 @@ local function loadItemsDescriptions()
     #{{ArrowUp}} x1.5 Luck Multiplier
     #{{PlanetariumChance}} +7.77% Planetarium Chance
     #{{AngelDevilChance}} +20% Devil Deal Chance]]
-    EID:addCollectible(CLOVER_100_LEAVES_ID, description)    
+    EID:addCollectible(CLOVER_100_LEAVES_ID, description)
+
+    --- Lucky Find ---
+    description = 
+    [[{{ArrowUp}} +4 Luck]]
+    EID:addCollectible(LUCKY_FIND_ID, description)
 end
 
 local function loadTrinketsDescriptions()

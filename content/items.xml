@@ -14,6 +14,7 @@
     <passive name="Cursed Body" gfx="cursed_body.png" description="Precious Life" quality="2" tags="summonable" />
     <passive name="Extinguished Candle" gfx="extinguished_candle.png" description="" quality="1" tags="summonable" />
     <passive name="100 Leaves Clover" gfx="clover_100_leaves.png" description="Luck is on your side" quality="3" tags="summonable" luck="5.7" cache="luck"/>
+    <passive name="Lucky Find" gfx="lucky_find.png" description="You think you're special?" quality="1" tags="summonable" luck="4" cache="luck"/>
 
     <trinket name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
     <trinket name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />

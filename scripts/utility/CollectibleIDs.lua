@@ -14,6 +14,7 @@ OMINOUS_DOOR_ID = Isaac.GetItemIdByName("Ominous Door")
 POISON_MUSH_ID = Isaac.GetItemIdByName("Poison Mush")
 RARE_CANDY_ID = Isaac.GetItemIdByName("Rare Candy")
 CLOVER_100_LEAVES_ID = Isaac.GetItemIdByName("100 Leaves Clover")
+LUCKY_FIND_ID = Isaac.GetItemIdByName("Lucky Find")
 
 --- Trinket IDs ---
 BROKEN_SCISSORS_ID = Isaac.GetTrinketIdByName("Broken Scissors")
