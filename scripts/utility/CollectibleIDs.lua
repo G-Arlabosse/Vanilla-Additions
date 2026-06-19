@@ -13,6 +13,7 @@ LIFE_ORB_ID = Isaac.GetItemIdByName("Life Orb")
 OMINOUS_DOOR_ID = Isaac.GetItemIdByName("Ominous Door")
 POISON_MUSH_ID = Isaac.GetItemIdByName("Poison Mush")
 RARE_CANDY_ID = Isaac.GetItemIdByName("Rare Candy")
+CLOVER_100_LEAVES_ID = Isaac.GetItemIdByName("100 Leaves Clover")
 
 --- Trinket IDs ---
 BROKEN_SCISSORS_ID = Isaac.GetTrinketIdByName("Broken Scissors")
