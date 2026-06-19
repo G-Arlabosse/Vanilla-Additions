@@ -59,12 +59,28 @@ local function PostPickupInit(_,
                     v.X = v.X / 3
                     v.Y = v.Y / 3
                 end
-                print(v)
                 local new_pickup1 = Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_KEY,pickup.Position,v,nil,KeySubType.KEY_CHARGED,0)
                 local new_pickup2 = Game():Spawn(EntityType.ENTITY_PICKUP,PickupVariant.PICKUP_KEY,pickup.Position,-v,nil,KeySubType.KEY_CHARGED,0)
                 pickup:Remove()
             end
 
+        end
+    end
+
+    if Mod:PlayersHaveTrinket(broken_scissors + 32768) then
+        if pickup.Variant == PickupVariant.PICKUP_LIL_BATTERY then
+           if pickup.SubType == BatterySubType.BATTERY_MICRO then
+                local new_pickup = Game():Spawn(
+                    EntityType.ENTITY_PICKUP,
+                    PickupVariant.PICKUP_LIL_BATTERY,
+                    pickup.Position,
+                    pickup.Velocity,
+                    nil,
+                    BatterySubType.BATTERY_NORMAL,
+                    0
+                )
+                pickup:Remove() 
+            end
         end
     end
 end

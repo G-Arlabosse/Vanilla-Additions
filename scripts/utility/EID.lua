@@ -153,7 +153,20 @@ local function loadTrinketsDescriptions()
     EID:addTrinket(MIMICS_FAVOR_ID, description)
 end
 
+local function loadGoldenTrinketsDescriptions()
+    local goldenTrinketEffects = {
+        [BROKEN_SCISSORS_ID] = {"Also turns micro batteries into normal batteries"},
+    }
+    EID:updateDescriptionsViaTable(goldenTrinketEffects, EID.descriptions["en"].goldenTrinketEffects)
+
+    local goldenTrinketData = {
+        [BROKEN_SCISSORS_ID] = {append = true},
+    }
+    EID:updateDescriptionsViaTable(goldenTrinketData, EID.descriptions["en"].goldenTrinketData)
+end
+
 if EID then
     loadItemsDescriptions()
     loadTrinketsDescriptions()
+    loadGoldenTrinketsDescriptions()
 end
