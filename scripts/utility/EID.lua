@@ -133,6 +133,14 @@ local function loadItemsDescriptions()
     EID:addCondition(CURSED_BODY_ID, CollectibleType.COLLECTIBLE_BLACK_CANDLE, "{{ColorYellow}}Black Candle {{ColorWhite}}removes the curse")
     EID:addCollectible(CURSED_BODY_ID, description)
     EID:addCondition(CURSED_BODY_ID, CURSED_BODY_ID, "No additional effect from multiple copies")
+
+    --- 100 Leaves Clover ---
+    description = 
+    [[{{ArrowUp}} +5.7 Luck
+    #{{ArrowUp}} x1.5 Luck Multiplier
+    #{{PlanetariumChance}} +7.77% Planetarium Chance
+    #{{AngelDevilChance}} +20% Devil Deal Chance]]
+    EID:addCollectible(CLOVER_100_LEAVES_ID, description)    
 end
 
 local function loadTrinketsDescriptions()
