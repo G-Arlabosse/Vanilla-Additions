@@ -146,6 +146,12 @@ local function loadItemsDescriptions()
     description = 
     [[{{ArrowUp}} +4 Luck]]
     EID:addCollectible(LUCKY_FIND_ID, description)
+
+    --- Withered Flower ---
+    description = 
+    [[{{ArrowUp}} +0.75 Damage
+    #{{ArrowDown}} -1 Luck]]
+    EID:addCollectible(WITHERED_FLOWER_ID, description)
 end
 
 local function loadTrinketsDescriptions()
