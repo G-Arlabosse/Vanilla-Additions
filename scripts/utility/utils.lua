@@ -16,12 +16,19 @@ function Mod:Vec2Dir(vector)
 end
 
 function Mod:PlayersHaveTrinket (
-    trinket    ---@param trinket TrinketType
+    trinket,    ---@param trinket TrinketType
+    golden     ---@param golden boolean
 )
     for i=0, Game():GetNumPlayers() -1 do
         local player = Isaac.GetPlayer(i)
-        if player:HasTrinket(trinket) then
-            return true
+        if golden then
+            if player:HasGoldenTrinket(trinket) then
+                return true
+            end
+        else
+            if player:HasTrinket(trinket) then
+                return true
+            end
         end
     end
     return false

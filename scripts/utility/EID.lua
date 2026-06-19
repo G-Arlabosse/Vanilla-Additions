@@ -156,11 +156,13 @@ end
 local function loadGoldenTrinketsDescriptions()
     local goldenTrinketEffects = {
         [BROKEN_SCISSORS_ID] = {"Also turns micro batteries into normal batteries"},
+        [MIMICS_FAVOR_ID] = {"Even higher chance for better value coins to appear"},
     }
     EID:updateDescriptionsViaTable(goldenTrinketEffects, EID.descriptions["en"].goldenTrinketEffects)
 
     local goldenTrinketData = {
         [BROKEN_SCISSORS_ID] = {append = true},
+        [MIMICS_FAVOR_ID] = {append = true},
     }
     EID:updateDescriptionsViaTable(goldenTrinketData, EID.descriptions["en"].goldenTrinketData)
 end

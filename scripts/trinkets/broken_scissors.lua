@@ -3,7 +3,7 @@ local broken_scissors = Isaac.GetTrinketIdByName("Broken Scissors")
 local function PostPickupInit(_, 
     pickup  ---@param pickup EntityPickup
 )
-    if Mod:PlayersHaveTrinket(broken_scissors) then
+    if Mod:PlayersHaveTrinket(broken_scissors, false) then
         if pickup.Variant == PickupVariant.PICKUP_BOMB then
             if pickup.SubType == BombSubType.BOMB_NORMAL then
                 local new_pickup = Game():Spawn(
@@ -67,7 +67,7 @@ local function PostPickupInit(_,
         end
     end
 
-    if Mod:PlayersHaveTrinket(broken_scissors + 32768) then
+    if Mod:PlayersHaveTrinket(broken_scissors, true) then
         if pickup.Variant == PickupVariant.PICKUP_LIL_BATTERY then
            if pickup.SubType == BatterySubType.BATTERY_MICRO then
                 local new_pickup = Game():Spawn(
