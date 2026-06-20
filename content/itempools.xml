@@ -85,7 +85,9 @@
 
     <!-- bombBum -->
 
-    <!-- planetarium -->
+    <Pool Name="planetarium">
+        <Item Name="Nova" Weight="0.2" DecreaseBy="0.2" RemoveOn="0.1"/>
+    </Pool>
 
     <!-- oldChest -->
 

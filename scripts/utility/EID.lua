@@ -146,6 +146,14 @@ local function loadItemsDescriptions()
     description = 
     [[{{ArrowUp}} +4 Luck]]
     EID:addCollectible(LUCKY_FIND_ID, description)
+
+    --- Nebula ---
+    description = 
+    [[{{ArrowDown}} -0.5 Tear Size
+    #{{ArrowDown}} x0.42 Tears multiplier
+    # Isaac shoots 4 tears in a cross formation instead of 1
+    # The first enemy killed in the room spawns an attracting black hole that pulls in enemies and then explodes]]
+    EID:addCollectible(NOVA_ID, description)
 end
 
 local function loadTrinketsDescriptions()
