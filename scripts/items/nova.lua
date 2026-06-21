@@ -3,25 +3,30 @@ local EXPLOSION_BASE_DAMAGE = 20
 local EXPLOSION_DAMAGE_MULTIPLIER = 10
 local TEARS_MULTIPLIER = 0.42
 local SHOT_SPEED_BONUS = -0.3
-
-local firingFormation = false
-local lastHitDamage = {}
-local novaTearColor = Color(0.7, 0.7, 0.9, 1, 
+local TEAR_COLOR = Color(0.7, 0.7, 0.9, 1, 
             0.1, 0.1, 0.5, 
             0.1, 0.1, 0.3, 0.1)
-local novaLaserColor = Color(0.2, 0.5, 0.9, 1, 
+local LASER_COLOR = Color(0.2, 0.5, 0.9, 1, 
             0.2, 0.5, 0.9, 
             0, 0.1, 0.1, 0.1)
+            
+local firingFormation = false
+local lastHitDamage = {}
 
-local function ChangeTearColor(_, 
-    player, ---@param player EntityPlayer
-    cacheFlag
-)
-    if player:HasCollectible(NOVA_ID) then
-        player.TearColor = novaTearColor
-        player.LaserColor = novaLaserColor
+
+local function CalcRadiusMultiplier(playerRange)
+    local radiusMultiplier = math.log(playerRange/40 + 4, 10)
+    radiusMultiplier = math.max(radiusMultiplier, 0.9) -- Ensure the radius multiplier is at least 0.75
+    radiusMultiplier = math.min(radiusMultiplier, 1.5) -- Ensure the radius multiplier does not exceed 3.0
+    return radiusMultiplier
+end
+
+local function CalcExplosionDamage(playerDamage, hasMrMega)
+    local damgage = playerDamage * EXPLOSION_DAMAGE_MULTIPLIER + EXPLOSION_BASE_DAMAGE
+    if hasMrMega then
+        damgage = damgage * 1.85
     end
-
+    return damgage
 end
 
 local function getTearsToShootPositions(_, 
@@ -45,6 +50,72 @@ local function getTearsToShootPositions(_,
     return directions
 end
 
+-- Black Hole Logic ---
+local function EntityTakeDamage(_, 
+    entity, ---@param entity Entity
+    amount, ---@param amount number
+    flags,  ---@param flags DamageFlag
+    source, ---@param source EntityRef
+    countdown
+)
+    if not entity or not entity:IsEnemy() then return end
+        if source.Entity and source.Entity.SpawnerType == EntityType.ENTITY_PLAYER then
+            local player = source.Entity.SpawnerEntity:ToPlayer()
+            lastHitDamage[entity.InitSeed] = player
+
+    -- Brimstone synergy
+    elseif source.Type == EntityType.ENTITY_PLAYER then 
+        lastHitDamage[entity.InitSeed] = source.Entity:ToPlayer()
+    else
+        lastHitDamage[entity.InitSeed] = nil
+    end
+end
+
+local function PostNpcDeath (_, 
+    entityNpc ---@param entityNpc EntityNPC
+)
+    if not entityNpc:IsEnemy() then return end
+
+    if not lastHitDamage[entityNpc.InitSeed] then return end
+
+    ---@param player EntityPlayer
+    local player = lastHitDamage[entityNpc.InitSeed]
+    if not player:HasCollectible(NOVA_ID) then return end
+    local data = player:GetData()
+
+    if not data.nbNovaTrigged then
+        data.nbNovaTrigged = 0
+    end
+
+    if data.nbNovaTrigged < player:GetCollectibleNum(NOVA_ID) then
+        data.nbNovaTrigged = data.nbNovaTrigged + 1
+
+        local blackHole = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLACK_HOLE, 0, entityNpc.Position, Vector(0, 0), player)
+    blackHole:SetColor(TEAR_COLOR, -1, 0, false, false)
+        
+        --blackHole:ToEffect().Position = entityNpc.Position
+        
+        blackHole:GetData().IsCustomGravityWell = true
+        blackHole:GetData().Timer = 60 
+        blackHole:GetData().Damage = CalcExplosionDamage(player.Damage, player:HasCollectible(CollectibleType.COLLECTIBLE_MR_MEGA))
+        blackHole:GetData().Position = entityNpc.Position
+        blackHole:GetData().RadiusMultiplier = CalcRadiusMultiplier(player.TearRange)
+        --print("Black hole radiusMultiplier: " .. tostring(blackHole:GetData().RadiusMultiplier))
+    end 
+end
+
+local function PostNewRoom()
+    --- resets the data of all players
+    for i=0, Game():GetNumPlayers() -1 do
+        local player = Isaac.GetPlayer(i)
+        local data = player:GetData()
+        data.nbNovaTrigged = 0
+    end
+
+    lastHitDamage = {}
+end
+
+-- Multi Shot Logic ---
 local function PostFireTear(_,
     tear ---@param tear EntityTear
 )
@@ -91,151 +162,6 @@ local function PostFireTechXLaser(_,
     laser.Radius = laser.Radius * (1 + TEAR_SCALE_BONUS)
 end
 
-local function CalcRadiusMultiplier(playerRange)
-    local radiusMultiplier = math.log(playerRange/40 + 4, 10)
-    radiusMultiplier = math.max(radiusMultiplier, 0.9) -- Ensure the radius multiplier is at least 0.75
-    radiusMultiplier = math.min(radiusMultiplier, 1.5) -- Ensure the radius multiplier does not exceed 3.0
-    return radiusMultiplier
-end
-
-local function CalcExplosionDamage(playerDamage, hasMrMega)
-    local damgage = playerDamage * EXPLOSION_DAMAGE_MULTIPLIER + EXPLOSION_BASE_DAMAGE
-    if hasMrMega then
-        damgage = damgage * 1.85
-    end
-    return damgage
-end
-
-local function PostNpcDeath (_, 
-    entityNpc ---@param entityNpc EntityNPC
-)
-    if not entityNpc:IsEnemy() then return end
-
-    if not lastHitDamage[entityNpc.InitSeed] then return end
-
-    ---@param player EntityPlayer
-    local player = lastHitDamage[entityNpc.InitSeed]
-    if not player:HasCollectible(NOVA_ID) then return end
-    local data = player:GetData()
-
-    if not data.nbNovaTrigged then
-        data.nbNovaTrigged = 0
-    end
-
-    if data.nbNovaTrigged < player:GetCollectibleNum(NOVA_ID) then
-        data.nbNovaTrigged = data.nbNovaTrigged + 1
-
-        local blackHole = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLACK_HOLE, 0, entityNpc.Position, Vector(0, 0), player)
-    blackHole:SetColor(novaTearColor, -1, 0, false, false)
-        
-        --blackHole:ToEffect().Position = entityNpc.Position
-        
-        blackHole:GetData().IsCustomGravityWell = true
-        blackHole:GetData().Timer = 60 
-        blackHole:GetData().Damage = CalcExplosionDamage(player.Damage, player:HasCollectible(CollectibleType.COLLECTIBLE_MR_MEGA))
-        blackHole:GetData().Position = entityNpc.Position
-        blackHole:GetData().RadiusMultiplier = CalcRadiusMultiplier(player.TearRange)
-        --print("Black hole radiusMultiplier: " .. tostring(blackHole:GetData().RadiusMultiplier))
-    end 
-end
-
-local function OnEffectUpdate(_, 
-    effect ---@param effect EntityEffect
-)
-    if effect.Variant ~= EffectVariant.BLACK_HOLE then return end
-    local data = effect:GetData()
-    if not data.IsCustomGravityWell then return end
-    
-    if effect.State == 0 then
-        effect.SpriteScale = Vector(1,1)
-    else
-        effect.SpriteScale = Vector(1,1) * data.RadiusMultiplier * data.RadiusMultiplier
-        effect.Color = novaTearColor
-    end
-    
-    data.Timer = data.Timer - 1
-
-    if data.Timer <= 0 then
-        -- Black hole's lifetime is up -- detonate it
-        Game():BombExplosionEffects(
-            effect.Position,
-            data.Damage,
-            TearFlags.TEAR_NORMAL,
-            novaTearColor,
-            nil,
-            data.RadiusMultiplier,     -- radius multiplier
-            false, -- alternate explosion sprite
-            false, -- damage source
-            DamageFlag.DAMAGE_EXPLOSION      -- damage flags
-        )
-        effect:Remove()
-        return
-    end
-end
-
-local function PostNewRoom()
-    --- resets the data of all players
-    for i=0, Game():GetNumPlayers() -1 do
-        local player = Isaac.GetPlayer(i)
-        local data = player:GetData()
-        data.nbNovaTrigged = 0
-    end
-
-    lastHitDamage = {}
-end
-
-local function EntityTakeDamage(_, 
-    entity, ---@param entity Entity
-    amount, ---@param amount number
-    flags,  ---@param flags DamageFlag
-    source, ---@param source EntityRef
-    countdown
-)
-    if not entity or not entity:IsEnemy() then return end
-        if source.Entity and source.Entity.SpawnerType == EntityType.ENTITY_PLAYER then
-            local player = source.Entity.SpawnerEntity:ToPlayer()
-            lastHitDamage[entity.InitSeed] = player
-
-    -- Brimstone synergy
-    elseif source.Type == EntityType.ENTITY_PLAYER then 
-        lastHitDamage[entity.InitSeed] = source.Entity:ToPlayer()
-    else
-        lastHitDamage[entity.InitSeed] = nil
-    end
-end
-
-local function EvaluateFireDelay(_, 
-    player,     ---@param player EntityPlayer
-    cacheFlag   ---@param cacheFlag CacheFlag
-)
-    if player:HasCollectible(NOVA_ID) and not player:HasCollectible(CollectibleType.COLLECTIBLE_20_20) then
-        player.MaxFireDelay = Mod:toMaxFireDelay(Mod:toTearsPerSecond(player.MaxFireDelay) * TEARS_MULTIPLIER)
-    end
-end
-
-local function EvaluateShotSpeed(_, 
-    player,     ---@param player EntityPlayer
-    cacheFlag   ---@param cacheFlag CacheFlag
-)
-    if player:HasCollectible(NOVA_ID) then
-        player.ShotSpeed = player.ShotSpeed + SHOT_SPEED_BONUS 
-    end
-end
-
-Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, PostNpcDeath)
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, PostNewRoom)
-
-Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, PostFireTear)
-Mod:AddCallback(ModCallbacks.MC_POST_FIRE_BOMB, PostFireBomb)
-Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TECH_X_LASER, PostFireTechXLaser)
-
-Mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, OnEffectUpdate)
-Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, ChangeTearColor, CacheFlag.CACHE_TEARCOLOR)
-Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateShotSpeed, CacheFlag.CACHE_SHOTSPEED)
-Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateFireDelay, CacheFlag.CACHE_FIREDELAY)
-Mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, EntityTakeDamage)
-
-
 local function EvaluateMultiShotParams(_,
     player, ---@param player EntityPlayer 
     multiShotParams, ---@param multiShotParams MultiShotParams
@@ -277,4 +203,83 @@ local function EvaluateMultiShotParams(_,
     return multiShotParams
 end
 
+-- Stats Logic ---
+local function OnEffectUpdate(_, 
+    effect ---@param effect EntityEffect
+)
+    if effect.Variant ~= EffectVariant.BLACK_HOLE then return end
+    local data = effect:GetData()
+    if not data.IsCustomGravityWell then return end
+    
+    if effect.State == 0 then
+        effect.SpriteScale = Vector(1,1)
+    else
+        effect.SpriteScale = Vector(1,1) * data.RadiusMultiplier * data.RadiusMultiplier
+        effect.Color = TEAR_COLOR
+    end
+    
+    data.Timer = data.Timer - 1
+
+    if data.Timer <= 0 then
+        -- Black hole's lifetime is up -- detonate it
+        Game():BombExplosionEffects(
+            effect.Position,
+            data.Damage,
+            TearFlags.TEAR_NORMAL,
+            TEAR_COLOR,
+            nil,
+            data.RadiusMultiplier,     -- radius multiplier
+            false, -- alternate explosion sprite
+            false, -- damage source
+            DamageFlag.DAMAGE_EXPLOSION      -- damage flags
+        )
+        effect:Remove()
+        return
+    end
+end
+
+local function ChangeTearColor(_, 
+    player, ---@param player EntityPlayer
+    cacheFlag
+)
+    if player:HasCollectible(NOVA_ID) then
+        player.TearColor = TEAR_COLOR
+        player.LaserColor = LASER_COLOR
+    end
+
+end
+
+local function EvaluateShotSpeed(_, 
+    player,     ---@param player EntityPlayer
+    cacheFlag   ---@param cacheFlag CacheFlag
+)
+    if player:HasCollectible(NOVA_ID) then
+        player.ShotSpeed = player.ShotSpeed + SHOT_SPEED_BONUS 
+    end
+end
+
+local function EvaluateFireDelay(_, 
+    player,     ---@param player EntityPlayer
+    cacheFlag   ---@param cacheFlag CacheFlag
+)
+    if player:HasCollectible(NOVA_ID) and not player:HasCollectible(CollectibleType.COLLECTIBLE_20_20) then
+        player.MaxFireDelay = Mod:toMaxFireDelay(Mod:toTearsPerSecond(player.MaxFireDelay) * TEARS_MULTIPLIER)
+    end
+end
+
+-- Black Hole Logic ---
+Mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, EntityTakeDamage)
+Mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, PostNpcDeath)
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, PostNewRoom)
+
+-- Multi Shot Logic ---
+Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, PostFireTear)
+Mod:AddCallback(ModCallbacks.MC_POST_FIRE_BOMB, PostFireBomb)
+Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TECH_X_LASER, PostFireTechXLaser)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_MULTI_SHOT_PARAMS, EvaluateMultiShotParams)
+
+-- Stats Logic ---
+Mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, OnEffectUpdate)
+Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, ChangeTearColor, CacheFlag.CACHE_TEARCOLOR)
+Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateShotSpeed, CacheFlag.CACHE_SHOTSPEED)
+Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateFireDelay, CacheFlag.CACHE_FIREDELAY)

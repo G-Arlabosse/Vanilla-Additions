@@ -151,8 +151,9 @@ local function loadItemsDescriptions()
     description = 
     [[{{ArrowDown}} -0.35 Tear Size
     #{{ArrowDown}} x0.42 Tears multiplier
-    # Isaac shoots 4 tears in a cross formation instead of 1
-    # The first enemy killed in the room spawns an attracting black hole that pulls in enemies and then explodes]]
+    #{{ArrowDown}} -0.3 Shot Speed
+    # Isaac Shoots 4 tears at once in a star shaped pattern
+    # The first enemy killed in the room spawns an attracting black hole that explodes]]
     EID:addCollectible(NOVA_ID, description)
     EID:addCondition(NOVA_ID, NOVA_ID, "One additional blackhole can be trigged each room#No additional stat decrease#Isaac fires two more tears for the second copy ")
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_BRIMSTONE, "Isaac shoots two brimtones forward and two in random directons")
