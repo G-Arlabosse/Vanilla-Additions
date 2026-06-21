@@ -422,6 +422,7 @@ local function InitEID(_)
                         end
                     end
                 end
+                return descObj
             end
         )    
 
