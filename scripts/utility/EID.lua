@@ -155,7 +155,12 @@ local function loadItemsDescriptions()
     # The first enemy killed in the room spawns an attracting black hole that pulls in enemies and then explodes]]
     EID:addCollectible(NOVA_ID, description)
     EID:addCondition(NOVA_ID, NOVA_ID, "One additional blackhole can be trigged each room#No additional stat decrease#Isaac fires two more tears for the second copy ")
-    
+    EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_BRIMSTONE, "Isaac shoots two brimtones forward and two in random directons")
+    EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_TECHNOLOGY, "Isaac shoots two lasers forward and two in random directons")
+    EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_MOMS_KNIFE, "Isaac shoots two knifes forward and two in random directons")
+    EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_EPIC_FETUS, "Isaac shoots two additional rockets")
+    EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_20_20, "No fire rate penality with {{ColorYellow}}20/20")
+
 end
 
 local function loadTrinketsDescriptions()

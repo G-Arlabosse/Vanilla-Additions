@@ -15,7 +15,7 @@
     <passive name="Extinguished Candle" gfx="extinguished_candle.png" description="" quality="1" tags="summonable" />
     <passive name="100 Leaves Clover" gfx="clover_100_leaves.png" description="Luck is on your side" quality="3" tags="summonable" luck="5.7" cache="luck"/>
     <passive name="Lucky Find" gfx="lucky_find.png" description="You think you're special?" quality="1" tags="summonable" luck="4" cache="luck"/>
-    <passive name="Nova" gfx="nova.png" description="Cosmic power !" quality="4" tags="summonable" shotspeed="-0.5" cache="shotspeed firedelay tearcolor"/>
+    <passive id="500" name="Nova" gfx="nova.png" description="Cosmic power !" quality="4" tags="summonable" cache="shotspeed firedelay tearcolor"/>
 
     <trinket name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
     <trinket name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />

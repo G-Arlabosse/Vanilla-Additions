@@ -2,15 +2,24 @@ local TEAR_SCALE_BONUS = -0.30
 local EXPLOSION_BASE_DAMAGE = 20
 local EXPLOSION_DAMAGE_MULTIPLIER = 10
 local TEARS_MULTIPLIER = 0.42
+local SHOT_SPEED_BONUS = -0.3
 
 local firingFormation = false
 local lastHitDamage = {}
-
-local function ChangeTearColor(_, player, cacheFlag)
-    if player:HasCollectible(NOVA_ID) then
-        player.TearColor = Color(0.7, 0.7, 0.9, 1, 
+local novaTearColor = Color(0.7, 0.7, 0.9, 1, 
             0.1, 0.1, 0.5, 
             0.1, 0.1, 0.3, 0.1)
+local novaLaserColor = Color(0.2, 0.5, 0.9, 1, 
+            0.2, 0.5, 0.9, 
+            0, 0.1, 0.1, 0.1)
+
+local function ChangeTearColor(_, 
+    player, ---@param player EntityPlayer
+    cacheFlag
+)
+    if player:HasCollectible(NOVA_ID) then
+        player.TearColor = novaTearColor
+        player.LaserColor = novaLaserColor
     end
 
 end
@@ -63,7 +72,7 @@ local function PostFireBomb(_,
     ---@param player EntityPlayer
     local player = bomb.SpawnerEntity:ToPlayer()
     if player and not player:HasCollectible(NOVA_ID) then return end
-
+    
     if firingFormation then return end   
     
     local shootPositions = getTearsToShootPositions(_, player, bomb, 2)
@@ -117,9 +126,7 @@ local function PostNpcDeath (_,
         data.nbNovaTrigged = data.nbNovaTrigged + 1
 
         local blackHole = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLACK_HOLE, 0, entityNpc.Position, Vector(0, 0), player)
-    blackHole:SetColor(Color(0.1, 0.1, 0.1, 0.9, 
-        0, 0, 0, 
-        0, 0, 0, 0), -1, 0, false, false)
+    blackHole:SetColor(novaTearColor, -1, 0, false, false)
         
         --blackHole:ToEffect().Position = entityNpc.Position
         
@@ -132,7 +139,9 @@ local function PostNpcDeath (_,
     end 
 end
 
-local function OnEffectUpdate(_, effect)
+local function OnEffectUpdate(_, 
+    effect ---@param effect EntityEffect
+)
     if effect.Variant ~= EffectVariant.BLACK_HOLE then return end
     local data = effect:GetData()
     if not data.IsCustomGravityWell then return end
@@ -141,6 +150,7 @@ local function OnEffectUpdate(_, effect)
         effect.SpriteScale = Vector(1,1)
     else
         effect.SpriteScale = Vector(1,1) * data.RadiusMultiplier * data.RadiusMultiplier
+        effect.Color = novaTearColor
     end
     
     data.Timer = data.Timer - 1
@@ -151,7 +161,7 @@ local function OnEffectUpdate(_, effect)
             effect.Position,
             data.Damage,
             TearFlags.TEAR_NORMAL,
-            Color.Default,
+            novaTearColor,
             nil,
             data.RadiusMultiplier,     -- radius multiplier
             false, -- alternate explosion sprite
@@ -198,9 +208,17 @@ local function EvaluateFireDelay(_,
     player,     ---@param player EntityPlayer
     cacheFlag   ---@param cacheFlag CacheFlag
 )
-    player:GetWeaponModifiers()
-    if cacheFlag == CacheFlag.CACHE_FIREDELAY and player:HasCollectible(NOVA_ID) then
+    if player:HasCollectible(NOVA_ID) and not player:HasCollectible(CollectibleType.COLLECTIBLE_20_20) then
         player.MaxFireDelay = Mod:toMaxFireDelay(Mod:toTearsPerSecond(player.MaxFireDelay) * TEARS_MULTIPLIER)
+    end
+end
+
+local function EvaluateShotSpeed(_, 
+    player,     ---@param player EntityPlayer
+    cacheFlag   ---@param cacheFlag CacheFlag
+)
+    if player:HasCollectible(NOVA_ID) then
+        player.ShotSpeed = player.ShotSpeed + SHOT_SPEED_BONUS 
     end
 end
 
@@ -210,18 +228,12 @@ Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, PostNewRoom)
 Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, PostFireTear)
 Mod:AddCallback(ModCallbacks.MC_POST_FIRE_BOMB, PostFireBomb)
 Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TECH_X_LASER, PostFireTechXLaser)
---[[
-Mod:AddCallback(ModCallbacks.MC_POST_FIRE_BRIMSTONE_BALL, PostFireBrimstoneBall)
-Mod:AddCallback(ModCallbacks.MC_POST_FIRE_BRIMSTONE, PostFireBrimstone)
-Mod:AddCallback(ModCallbacks.MC_POST_FIRE_KNIFE, PostFireKnife)
-Mod:AddCallback(ModCallbacks.MC_POST_FIRE_TECH_LASER, PostFireTechLaser)
---]]
 
 Mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, OnEffectUpdate)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, ChangeTearColor, CacheFlag.CACHE_TEARCOLOR)
-Mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, EntityTakeDamage)
+Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateShotSpeed, CacheFlag.CACHE_SHOTSPEED)
 Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, EvaluateFireDelay, CacheFlag.CACHE_FIREDELAY)
-
+Mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, EntityTakeDamage)
 
 
 local function EvaluateMultiShotParams(_,
@@ -246,13 +258,12 @@ local function EvaluateMultiShotParams(_,
             if multiShotParams:GetNumRandomDirTears() < tearNum then
                 multiShotParams:SetNumRandomDirTears(tearNum)
             end
-            
+
         --- EPIC FETUS ---
         elseif weaponType == WeaponType.WEAPON_ROCKETS then
             local tearNum = 1 + math.min(player:GetCollectibleNum(NOVA_ID), 4)
             if multiShotParams:GetNumRandomDirTears() < tearNum then
                 multiShotParams:SetNumRandomDirTears(tearNum)
-                print(multiShotParams:GetNumRandomDirTears())
             end
 
         --- LUDOVICO ---
