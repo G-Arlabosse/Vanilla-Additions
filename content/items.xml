@@ -1,22 +1,22 @@
-<items gfxroot="gfx/items/" version="1">
-    <passive id="0" name="Big Rock" gfx="big_rock_item.png" description="DAMN" quality="3" cache="damage firedelay speed" damage="1" damagemult="1.2" tears="0.4" tags="offensive summonable" />
-    <active id="1" name="Calcium" gfx="calcium_item.png" description="Straight to the bone" quality="2" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor" tags="offensive" />
-    <active id="2" name="Rare Candy" gfx="rare_candy.png" description="Level Up !" quality="3" cache="offensive" chargetype="special" />
-    <familiar id="3" name="Bell Baby" gfx="bell_baby.png" description="What a cutie <3" quality="3" cache="familiars" tags="summonable monstermanual offensive" />
-    <passive id="4" name="Fallen Angel" gfx="fallen_angel.png" description="He is falling for you" quality="3" cache="offensive summonable" tags="summonable" devilprice="2"/> 
-    <passive id="5" name="Life Orb" gfx="life_orb.png" description="Suffering brings strength" quality="2" cache="damage" tags="nolostbr" devilprice="0"/>
-    <passive id="6" name="Ominous Door" gfx="ominous_door.png" description="And he walks" quality="2" />
-    <passive id="7" name="Corrupted Clover" gfx="corrupted_clover.png" description="May the blindness be with you" quality="2" tags="summonable" />
-    <passive id="8" name="Cursed Map" gfx="cursed_map.png" description="" quality="1" tags="summonable" />
-    <passive id="9" name="Poison Mush" gfx="poison_mush.png" description="Everything feels bigger" quality="1" achievement="Poison Mush" tags="summonable" />
-    <active  id="10" name="Cursed D6" gfx="cursed_d6.png" description="Rerolls.. but at what cost ?" quality="4" maxcharges="4" chargetype="normal" />
-    <passive id="11" name="Broken Compass" gfx="broken_compass.png" description="The house grew larger" quality="0" tags="summonable" />
-    <passive id="12" name="Cursed Body" gfx="cursed_body.png" description="Precious Life" quality="2" tags="summonable" />
-    <passive id="13" name="Extinguished Candle" gfx="extinguished_candle.png" description="" quality="1" tags="summonable" />
-    <passive id="14" name="100 Leaves Clover" gfx="clover_100_leaves.png" description="Luck is on your side" quality="3" tags="summonable" luck="5.7" cache="luck"/>
-    <passive id="15" name="Lucky Find" gfx="lucky_find.png" description="You think you're special?" quality="1" tags="summonable" luck="4" cache="luck"/>
-    <passive id="16" name="Nova" gfx="nova.png" description="Cosmic power !" quality="4" tags="summonable" cache="shotspeed firedelay tearcolor"/>
-    <passive id="17" name="Withered Flower" gfx="withered_flower.png" description="Everything dies eventually" quality="1" tags="summonable" luck="-1" damage="0.75" cache="luck damage"/>
+<items gfxroot="gfx/items/" version="1" deathanm2="gfx/death items.anm2">
+    <passive    id="0"  name="Big Rock"             gfx="big_rock_item.png"         description="DAMN"                          quality="3" tags="offensive summonable" cache="damage firedelay speed" damage="1" damagemult="1.2" tears="0.4"  />
+    <active     id="1"  name="Calcium"              gfx="calcium_item.png"          description="Straight to the bone"          quality="2" tags="offensive" maxcharges="3" chargetype="normal" cache="damage firedelay tearcolor"  />
+    <active     id="2"  name="Rare Candy"           gfx="rare_candy.png"            description="Level Up !"                    quality="3" cache="offensive" chargetype="special" />
+    <familiar   id="3"  name="Bell Baby"            gfx="bell_baby.png"             description="What a cutie <3"               quality="3" tags="summonable monstermanual offensive" cache="familiars"  />
+    <passive    id="4"  name="Fallen Angel"         gfx="fallen_angel.png"          description="He is falling for you"         quality="3" tags="summonable" cache="offensive summonable" devilprice="2"/> 
+    <passive    id="5"  name="Life Orb"             gfx="life_orb.png"              description="Suffering brings strength"     quality="2" tags="nolostbr" cache="damage" devilprice="0"/>
+    <passive    id="6"  name="Ominous Door"         gfx="ominous_door.png"          description="And he walks"                  quality="2" />
+    <passive    id="7"  name="Corrupted Clover"     gfx="corrupted_clover.png"      description="May the blindness be with you" quality="2" tags="summonable" />
+    <passive    id="8"  name="Cursed Map"           gfx="cursed_map.png"            description=""                              quality="1" tags="summonable" />
+    <passive    id="9"  name="Poison Mush"          gfx="poison_mush.png"           description="Everything feels bigger"       quality="1" tags="summonable" achievement="Poison Mush"  />
+    <active     id="10" name="Cursed D6"            gfx="cursed_d6.png"             description="Rerolls.. but at what cost ?"  quality="4" maxcharges="4" chargetype="normal" />
+    <passive    id="11" name="Broken Compass"       gfx="broken_compass.png"        description="The house grew larger"         quality="0" tags="summonable" />
+    <passive    id="12" name="Cursed Body"          gfx="cursed_body.png"           description="Precious Life"                 quality="2" tags="summonable" />
+    <passive    id="13" name="Extinguished Candle"  gfx="extinguished_candle.png"   description=""                              quality="1" tags="summonable" />
+    <passive    id="14" name="100 Leaves Clover"    gfx="clover_100_leaves.png"     description="Luck is on your side"          quality="3" tags="summonable" luck="5.7" cache="luck"/>
+    <passive    id="15" name="Lucky Find"           gfx="lucky_find.png"            description="You think you're special?"     quality="1" tags="summonable" luck="4" cache="luck"/>
+    <passive    id="16" name="Nova"                 gfx="nova.png"                  description="Cosmic power !"                quality="4" tags="summonable" cache="shotspeed firedelay tearcolor"/>
+    <passive    id="17" name="Withered Flower"      gfx="withered_flower.png"       description="Everything dies eventually"    quality="1" tags="summonable" luck="-1" damage="0.75" cache="luck damage"/>
     
     <trinket name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
     <trinket name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />
