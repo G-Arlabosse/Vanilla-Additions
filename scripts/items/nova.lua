@@ -150,7 +150,6 @@ local function PostFireBomb(_,
     firingFormation = true
     for _,p in pairs(shootPositions) do
         player:FireBomb(p, bomb.Velocity, player)
-        print(p)
     end
     firingFormation = false
     bomb:Remove() -- remove the original bomb
