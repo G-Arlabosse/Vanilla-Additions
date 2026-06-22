@@ -140,7 +140,7 @@ local function loadItemsDescriptions()
     #{{ArrowUp}} x1.5 Luck Multiplier
     #{{PlanetariumChance}} +7.77% Planetarium Chance
     #{{AngelDevilChance}} +20% Devil Deal Chance]]
-    EID:addCollectible(CLOVER_100_LEAVES_ID, description)
+    EID:addCollectible(CLOVER_100_LEAF_ID, description)
 
     --- Lucky Find ---
     description = 
@@ -152,7 +152,7 @@ local function loadItemsDescriptions()
     [[{{ArrowUp}} +0.75 Damage
     #{{ArrowDown}} -1 Luck]]
     EID:addCollectible(WITHERED_FLOWER_ID, description)
-    
+
     --- Nova ---
     description = 
     [[{{ArrowDown}} -0.35 Tear Size

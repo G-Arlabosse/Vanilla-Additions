@@ -20,7 +20,7 @@ include("scripts.items.cursed_d6")
 include("scripts.items.broken_compass")
 include("scripts.items.cursed_body")
 include("scripts.items.extinguished_candle")
-include("scripts.items.clover_100_leaves")
+include("scripts.items.clover_100_leaf")
 include("scripts.items.nova")
 
 --- Trinkets ---
