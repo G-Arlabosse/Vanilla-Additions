@@ -3,14 +3,6 @@ local FIRE_RATE_MULTIPLIER = 5.5
 local TEAR_SCALE = 0.4
 local TEAR_KNOCKBACK = 0.2
 
-local function toTearsPerSecond(maxFireDelay)
-  return 30 / (maxFireDelay + 1)
-end
-
-local function toMaxFireDelay(tearsPerSecond)
-  return (30 / tearsPerSecond) - 1
-end
-
 ---@param player EntityPlayer
 local function calciumUse(_, item, rng, player)
     local player_weapon_modifiers = player:GetWeaponModifiers()
@@ -70,7 +62,7 @@ local function evaluateCache(_, player, cacheFlags)
 
         -- Update Fire Rate with tears calculation
         elseif cacheFlags == CacheFlag.CACHE_FIREDELAY then
-            player.MaxFireDelay = toMaxFireDelay(toTearsPerSecond(player.MaxFireDelay) * data.opikoko_calcium_fire_rate_mult)
+            player.MaxFireDelay = Mod:toMaxFireDelay(Mod:toTearsPerSecond(player.MaxFireDelay) * data.opikoko_calcium_fire_rate_mult)
         
             -- Update Tear color
         elseif cacheFlags == CacheFlag.CACHE_TEARCOLOR then

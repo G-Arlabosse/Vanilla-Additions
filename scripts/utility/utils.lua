@@ -15,6 +15,14 @@ function Mod:Vec2Dir(vector)
     end
 end
 
+function Mod:toTearsPerSecond(maxFireDelay)
+  return 30 / (maxFireDelay + 1)
+end
+
+function Mod:toMaxFireDelay(tearsPerSecond)
+  return (30 / tearsPerSecond) - 1
+end
+
 function Mod:PlayersHaveTrinket (
     trinket,    ---@param trinket TrinketType
     golden     ---@param golden boolean
