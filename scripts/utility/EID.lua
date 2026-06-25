@@ -168,6 +168,18 @@ local function loadItemsDescriptions()
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_EPIC_FETUS, "Isaac shoots two additional rockets")
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_20_20, "No fire rate penality with {{ColorYellow}}20/20")
 
+    --- Withered Flower ---
+    description = 
+    [[{{CurseDarkness}} When the floor is affected by any curse:
+    #{{ArrowUp}} +0.3 Speed
+    #{{ArrowUp}} +0.8 Damage
+    #{{ArrowUp}} +0.4 Tears
+    #{{ArrowUp}} +2.5 Range
+    #{{ArrowUp}} +0.16 ShotSpeed
+    #{{AngelDevilChance}} +15% Devil Deal chance
+    #{{PlanetariumChance}} +10% planetarium chance#{{CurseLabyrinth}} Multiple curses grant a bigger stat bonus]]
+    EID:addCollectible(CURSED_SPIRIT_ID, description)
+    EID:addCondition(CURSED_SPIRIT_ID, CURSED_SPIRIT_ID, "Additional copies grant a smaller bonus")
 end
 
 local function loadTrinketsDescriptions()

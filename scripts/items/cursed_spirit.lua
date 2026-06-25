@@ -7,60 +7,82 @@ local LUCK_BONUS = 1.0
 local ANGEL_DEVIL_BONUS = 15
 local PLANETARIUM_BONUS = 10
 
+local function calcNumCurses()
+    local curses = Game():GetLevel():GetCurses()
+    local numCurses = 0
+    for i=0, LevelCurse.NUM_CURSES do
+        if (curses >> i) % 2 == 1 then
+            numCurses = numCurses + 1
+        end
+    end
+    return numCurses
+end
+
+local function calcBonusMult(nbItems)
+    local bonus = 0
+    for i=0, calcNumCurses()-1 do
+        local p_i = 1 << i
+        for j=0, nbItems-1 do
+            bonus = bonus + 1/(p_i * (1 << j))
+        end
+    end
+    return bonus
+end
+
 local function EvaluateSpeed(_, player, cache)
     if Game():GetLevel():GetCurses() > 0 and player:HasCollectible(CURSED_SPIRIT_ID) then
-        player.MoveSpeed = player.MoveSpeed + SPEED_BONUS
+        player.MoveSpeed = player.MoveSpeed + SPEED_BONUS * calcBonusMult(player:GetCollectibleNum(CURSED_SPIRIT_ID))
     end
 end
 
 local function EvaluateDamage(_, player, cache, currentValue)
     if Game():GetLevel():GetCurses() > 0 and player:HasCollectible(CURSED_SPIRIT_ID) then
-        return currentValue + DAMAGE_BONUS
+        return currentValue + DAMAGE_BONUS * calcBonusMult(player:GetCollectibleNum(CURSED_SPIRIT_ID))
     end
-end
-
-local function toTearsPerSecond(maxFireDelay)
-  return 30 / (maxFireDelay + 1)
-end
-
-local function toMaxFireDelay(tearsPerSecond)
-  return (30 / tearsPerSecond) - 1
 end
 
 local function EvaluateTears(_, player, cache, currentValue)
     if Game():GetLevel():GetCurses() > 0 and player:HasCollectible(CURSED_SPIRIT_ID) then
         print(currentValue)
-        return currentValue + TEARS_BONUS
+        return currentValue + TEARS_BONUS * calcBonusMult(player:GetCollectibleNum(CURSED_SPIRIT_ID))
     end
 end
 
 local function EvaluateRange(_, player, cache)
     if Game():GetLevel():GetCurses() > 0 and player:HasCollectible(CURSED_SPIRIT_ID) then
-        player.TearRange = player.TearRange + 40 * RANGE_BONUS
+        player.TearRange = player.TearRange + 40 * RANGE_BONUS * calcBonusMult(player:GetCollectibleNum(CURSED_SPIRIT_ID))
     end
 end
 
 local function EvaluateShotSpeed(_, player, cache)
     if Game():GetLevel():GetCurses() > 0 and player:HasCollectible(CURSED_SPIRIT_ID) then
-        player.ShotSpeed = player.ShotSpeed + SHOTSPEED_BONUS
+        player.ShotSpeed = player.ShotSpeed + SHOTSPEED_BONUS * calcBonusMult(player:GetCollectibleNum(CURSED_SPIRIT_ID))
     end
 end
 
 local function EvaluateLuck(_, player, cache)
     if Game():GetLevel():GetCurses() > 0 and player:HasCollectible(CURSED_SPIRIT_ID) then
-        player.Luck = player.Luck + LUCK_BONUS
+        player.Luck = player.Luck + LUCK_BONUS * calcBonusMult(player:GetCollectibleNum(CURSED_SPIRIT_ID))
     end
 end
 
 local function addDevilChance(_, chance)
     if Game():GetLevel():GetCurses() > 0 and PlayerManager.AnyoneHasCollectible(CURSED_SPIRIT_ID) then
-        return chance + ANGEL_DEVIL_BONUS/100
+        local nbItems = 0
+        for _,player in ipairs(PlayerManager.GetPlayers()) do
+            nbItems = nbItems + player:GetCollectibleNum(CURSED_SPIRIT_ID)
+        end
+        return chance + (ANGEL_DEVIL_BONUS/100) * calcBonusMult(nbItems)
     end
 end
 
 local function addPlanetariumChance(_, chance)
     if Game():GetLevel():GetCurses() > 0 and PlayerManager.AnyoneHasCollectible(CURSED_SPIRIT_ID) then
-        return chance + PLANETARIUM_BONUS/100
+        local nbItems = 0
+        for _,player in ipairs(PlayerManager.GetPlayers()) do
+            nbItems = nbItems + player:GetCollectibleNum(CURSED_SPIRIT_ID)
+        end
+        return chance + (PLANETARIUM_BONUS/100) * calcBonusMult(nbItems)
     end
 end
 
