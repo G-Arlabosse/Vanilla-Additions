@@ -18,6 +18,8 @@ LUCKY_FIND_ID = Isaac.GetItemIdByName("Lucky Find")
 WITHERED_FLOWER_ID = Isaac.GetItemIdByName("Withered Flower")
 NOVA_ID = Isaac.GetItemIdByName("Nova")
 
+MAIL_BOX_ID = Isaac.GetItemIdByName("Mail Box")
+
 --- Trinket IDs ---
 BROKEN_SCISSORS_ID = Isaac.GetTrinketIdByName("Broken Scissors")
 MIMICS_FAVOR_ID = Isaac.GetTrinketIdByName("Mimic's Favor")
