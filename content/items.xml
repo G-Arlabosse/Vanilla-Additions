@@ -7,12 +7,12 @@
     <passive    id="5"  name="Life Orb"             gfx="life_orb.png"              description="Suffering brings strength"     quality="2" tags="nolostbr" cache="damage" devilprice="0"/>
     <passive    id="6"  name="Ominous Door"         gfx="ominous_door.png"          description="And he walks"                  quality="2" />
     <passive    id="7"  name="Corrupted Clover"     gfx="corrupted_clover.png"      description="May the blindness be with you" quality="2" tags="summonable" />
-    <passive    id="8"  name="Cursed Map"           gfx="cursed_map.png"            description=""                              quality="1" tags="summonable" />
+    <passive    id="8"  name="Cursed Map"           gfx="cursed_map.png"            description="Full non-visible map"          quality="1" tags="summonable" />
     <passive    id="9"  name="Poison Mush"          gfx="poison_mush.png"           description="Everything feels bigger"       quality="1" tags="summonable" achievement="Poison Mush"  />
     <active     id="10" name="Cursed D6"            gfx="cursed_d6.png"             description="Rerolls.. but at what cost ?"  quality="4" maxcharges="4" chargetype="normal" />
     <passive    id="11" name="Broken Compass"       gfx="broken_compass.png"        description="The house grew larger"         quality="0" tags="summonable" />
     <passive    id="12" name="Cursed Body"          gfx="cursed_body.png"           description="Precious Life"                 quality="2" tags="summonable" />
-    <passive    id="13" name="Extinguished Candle"  gfx="extinguished_candle.png"   description=""                              quality="1" tags="summonable" />
+    <passive    id="13" name="Extinguished Candle"  gfx="extinguished_candle.png"   description="Darkness surrounds you..."     quality="1" tags="summonable" />
     <passive    id="14" name="100-Leaf Clover"      gfx="clover_100_leaf.png"       description="Luck is on your side"          quality="3" tags="summonable" luck="5.7" cache="luck"/>
     <passive    id="15" name="Lucky Find"           gfx="lucky_find.png"            description="You think you're special?"     quality="1" tags="summonable" luck="4" cache="luck"/>
     <passive    id="16" name="Nova"                 gfx="nova.png"                  description="Cosmic power !"                quality="4" tags="summonable" cache="shotspeed firedelay tearcolor"/>
