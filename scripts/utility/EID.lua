@@ -168,6 +168,13 @@ local function loadItemsDescriptions()
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_EPIC_FETUS, "Isaac shoots two additional rockets")
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_20_20, "No fire rate penality with {{ColorYellow}}20/20")
 
+    --- Mail Box ---
+    description = 
+    [[Consumes all pedestals in the room 
+    #For each pedestal: 
+    #{{Indent}}Spawns a new item next floor in a random room
+    #{{Indent}}{{Warning}} The new item is from the new room pool]]
+    EID:addCollectible(MAIL_BOX_ID, description)
 end
 
 local function loadTrinketsDescriptions()
