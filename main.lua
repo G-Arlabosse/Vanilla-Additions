@@ -22,6 +22,7 @@ include("scripts.items.cursed_body")
 include("scripts.items.extinguished_candle")
 include("scripts.items.clover_100_leaf")
 include("scripts.items.nova")
+include("scripts.items.holed_pockets")
 
 --- Trinkets ---
 include("scripts.trinkets.broken_scissors")
