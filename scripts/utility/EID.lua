@@ -168,6 +168,12 @@ local function loadItemsDescriptions()
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_EPIC_FETUS, "Isaac shoots two additional rockets")
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_20_20, "No fire rate penality with {{ColorYellow}}20/20")
 
+    --- Holed Pockets ---
+    description = 
+    [[40% chance to spawn an additional coin upon clearing a room
+    #{{Warning}} Isaac drops some coins when taking damage]]
+    EID:addCollectible(HOLED_POCKETS_ID, description)
+    EID:addCondition(HOLED_POCKETS_ID, HOLED_POCKETS_ID, "More coins can spawn but Isaac drops more coins")
 end
 
 local function loadTrinketsDescriptions()
