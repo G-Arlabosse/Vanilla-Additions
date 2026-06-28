@@ -25,6 +25,7 @@ include("scripts.items.nova")
 include("scripts.items.cursed_spirit")
 include("scripts.items.mail_box")
 include("scripts.items.holed_pockets")
+include("scripts.items.nothingness")
 
 --- Trinkets ---
 include("scripts.trinkets.broken_scissors")

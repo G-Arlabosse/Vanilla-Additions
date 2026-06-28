@@ -188,12 +188,25 @@ local function loadItemsDescriptions()
     #{{Indent}}Spawns a new item next floor in a random room
     #{{Indent}}{{Warning}} The new item is from the new room pool]]
     EID:addCollectible(MAIL_BOX_ID, description)
+
     --- Holed Pockets ---
     description = 
     [[40% chance to spawn an additional coin upon clearing a room
     #{{Warning}} Isaac drops some coins when taking damage]]
     EID:addCollectible(HOLED_POCKETS_ID, description)
     EID:addCondition(HOLED_POCKETS_ID, HOLED_POCKETS_ID, "More coins can spawn but Isaac drops more coins")
+    
+    --- Nothingness ---
+    description = 
+    [[{{ArrowUp}} x1.75 Damage multiplier#{{ArrowUp}} +0.5 ShotSpeed
+    #{{ArrowDown}} -0.7 Tears#Spectral Tears
+    #{{SoulHeart}} Sets Isaac's Health type to SoulHearts
+    #{{ArrowUp}} Isaac gets a damage bonus thats scales the lower the health is]]
+    EID:addCollectible(NOTHINGNESS_ID, description)
+    EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_BETHANY, "Health type stays unchanged", nil, nil, nil, false)
+    EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_KEEPER, "Health type stays unchanged", nil, nil, nil, true)
+    EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_THELOST, "Health type stays unchanged and damage bonus isn't applied", nil, nil, nil, true)
+    EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_THEFORGOTTEN, "Health type stays unchanged", nil, nil, nil, true)
 end
 
 local function loadTrinketsDescriptions()
