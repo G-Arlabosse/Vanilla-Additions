@@ -113,7 +113,7 @@ local function PickedCollectible(_,
     player:EvaluateItems()
 end
 
-function EvaluateCache(_, 
+local function EvaluateCache(_, 
     player,     ---@param player EntityPlayer
     cacheFlag
 )
