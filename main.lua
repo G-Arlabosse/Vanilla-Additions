@@ -24,6 +24,8 @@ include("scripts.items.clover_100_leaf")
 include("scripts.items.nova")
 include("scripts.items.cursed_spirit")
 
+include("scripts.items.mail_box")
+
 --- Trinkets ---
 include("scripts.trinkets.broken_scissors")
 include("scripts.trinkets.mimics_favor")

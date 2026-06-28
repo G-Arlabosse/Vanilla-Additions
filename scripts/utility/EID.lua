@@ -168,7 +168,7 @@ local function loadItemsDescriptions()
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_EPIC_FETUS, "Isaac shoots two additional rockets")
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_20_20, "No fire rate penality with {{ColorYellow}}20/20")
 
-    --- Withered Flower ---
+    --- Cursed Spirit ---
     description = 
     [[{{CurseDarkness}} When the floor is affected by any curse:
     #{{ArrowUp}} +0.3 Speed
@@ -180,6 +180,14 @@ local function loadItemsDescriptions()
     #{{PlanetariumChance}} +10% planetarium chance#{{CurseLabyrinth}} Multiple curses grant a bigger stat bonus]]
     EID:addCollectible(CURSED_SPIRIT_ID, description)
     EID:addCondition(CURSED_SPIRIT_ID, CURSED_SPIRIT_ID, "Additional copies grant a smaller bonus")
+    
+    --- Mail Box ---
+    description = 
+    [[Consumes all pedestals in the room 
+    #For each pedestal: 
+    #{{Indent}}Spawns a new item next floor in a random room
+    #{{Indent}}{{Warning}} The new item is from the new room pool]]
+    EID:addCollectible(MAIL_BOX_ID, description)
 end
 
 local function loadTrinketsDescriptions()
