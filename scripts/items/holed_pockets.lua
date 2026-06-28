@@ -10,7 +10,7 @@ local function playerTakeDamage (_,
 )
     local player = entity:ToPlayer()
     if player and player:HasCollectible(HOLED_POCKETS_ID) then
-        local dropped_coins = player:GetData().holed_pockets_rng :RandomInt(1,3)
+        local dropped_coins = player:GetData().holed_pockets_rng :RandomInt(1,3 * player:GetCollectibleNum(HOLED_POCKETS_ID))
         dropped_coins = math.min(dropped_coins, player:GetNumCoins()) 
         player:AddCoins(-dropped_coins)
 
@@ -29,6 +29,12 @@ local function playerTakeDamage (_,
     end
 end
 
+local function postGameStarted()
+    for _,player in pairs(PlayerManager.GetPlayers()) do
+        player:GetData().holed_pockets_rng = nil
+    end
+end
+
 local function postAddCollectible(_,
     type,
     charge,
@@ -37,7 +43,9 @@ local function postAddCollectible(_,
     varData,
     player  ---@param player EntityPlayer
 )
-    player:GetData().holed_pockets_rng = RNG(Game():GetSeeds():GetStartSeed())
+    if not player:GetData().holed_pockets_rng then
+        player:GetData().holed_pockets_rng = RNG(Game():GetSeeds():GetStartSeed())
+    end
 end
 
 local function postRoomTriggerClear()
@@ -63,3 +71,4 @@ end
 Mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, playerTakeDamage, EntityType.ENTITY_PLAYER)
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, postAddCollectible, HOLED_POCKETS_ID)
 Mod:AddCallback(ModCallbacks.MC_POST_ROOM_TRIGGER_CLEAR, postRoomTriggerClear)
+Mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, postGameStarted)
