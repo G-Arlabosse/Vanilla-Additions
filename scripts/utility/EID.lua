@@ -168,6 +168,18 @@ local function loadItemsDescriptions()
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_EPIC_FETUS, "Isaac shoots two additional rockets")
     EID:addCondition(NOVA_ID, CollectibleType.COLLECTIBLE_20_20, "No fire rate penality with {{ColorYellow}}20/20")
 
+    --- Nothingness ---
+    description = 
+    [[{{ArrowUp}} x1.75 Damage multiplier#{{ArrowUp}} +0.5 ShotSpeed
+    #{{ArrowDown}} -0.7 Tears#Spectral Tears
+    #{{SoulHeart}} Sets Isaac's Health type to SoulHearts
+    #{{ArrowUp}} Isaac gets a damage bonus thats scales the lower the health is]]
+    EID:addCollectible(NOTHINGNESS_ID, description)
+    EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_BETHANY, "Health type stays unchanged", nil, nil, nil, false)
+    EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_KEEPER, "Health type stays unchanged", nil, nil, nil, true)
+    EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_THELOST, "Health type stays unchanged and damage bonus isn't applied", nil, nil, nil, true)
+    EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_THEFORGOTTEN, "Health type stays unchanged", nil, nil, nil, true)
+    
 end
 
 local function loadTrinketsDescriptions()

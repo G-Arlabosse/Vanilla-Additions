@@ -17,6 +17,7 @@ CLOVER_100_LEAF_ID = Isaac.GetItemIdByName("100-Leaf Clover")
 LUCKY_FIND_ID = Isaac.GetItemIdByName("Lucky Find")
 WITHERED_FLOWER_ID = Isaac.GetItemIdByName("Withered Flower")
 NOVA_ID = Isaac.GetItemIdByName("Nova")
+NOTHINGNESS_ID = Isaac.GetItemIdByName("Nothingness")
 
 --- Trinket IDs ---
 BROKEN_SCISSORS_ID = Isaac.GetTrinketIdByName("Broken Scissors")

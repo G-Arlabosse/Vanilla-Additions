@@ -17,7 +17,8 @@
     <passive    id="15" name="Lucky Find"           gfx="lucky_find.png"            description="You think you're special?"     quality="1" tags="summonable" luck="4" cache="luck"/>
     <passive    id="16" name="Nova"                 gfx="nova.png"                  description="Cosmic power !"                quality="4" tags="summonable" cache="shotspeed firedelay tearcolor"/>
     <passive    id="17" name="Withered Flower"      gfx="withered_flower.png"       description="Everything dies eventually"    quality="1" tags="summonable" luck="-1" damage="0.75" cache="luck damage"/>
-    
+    <passive    id="22" name="Nothingness"          gfx="nothingness.png"           description="..."                           quality="4" tags="summonable" customcache="healthtype" cache="damage firedelay tearflag tearcolor shotspeed"/>
+
     <trinket name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
     <trinket name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />
     
