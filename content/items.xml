@@ -19,6 +19,7 @@
     <passive    id="17" name="Withered Flower"      gfx="withered_flower.png"       description="Everything dies eventually"    quality="1" tags="summonable" luck="-1" damage="0.75" cache="luck damage"/>
     <passive    id="18" name="Cursed Spirit"        gfx="cursed_spirit.png"         description="Curses are your gift"          quality="1" tags="summonable" cache="speed firedelay damage shotspeed range luck"/>
     <active     id="19" name="Mail Box"             gfx="mail_box.png"              desciption="Upcoming Delivery !"            quality="2" maxcharges="2" chargetype="normal" />
+    <passive    id="20" name="Holed Pockets"        gfx="holed_pockets.png"         description="Coins run away from you"        quality="1" tags="summonable" />
 
     <trinket name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
     <trinket name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />

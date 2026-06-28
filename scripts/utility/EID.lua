@@ -188,6 +188,12 @@ local function loadItemsDescriptions()
     #{{Indent}}Spawns a new item next floor in a random room
     #{{Indent}}{{Warning}} The new item is from the new room pool]]
     EID:addCollectible(MAIL_BOX_ID, description)
+    --- Holed Pockets ---
+    description = 
+    [[40% chance to spawn an additional coin upon clearing a room
+    #{{Warning}} Isaac drops some coins when taking damage]]
+    EID:addCollectible(HOLED_POCKETS_ID, description)
+    EID:addCondition(HOLED_POCKETS_ID, HOLED_POCKETS_ID, "More coins can spawn but Isaac drops more coins")
 end
 
 local function loadTrinketsDescriptions()
