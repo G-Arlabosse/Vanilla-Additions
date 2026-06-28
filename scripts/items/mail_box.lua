@@ -47,6 +47,7 @@ local function useItem(_,
 
     for _,player in pairs(PlayerManager.GetPlayers()) do
         local sprite = player:GetSprite()
+        player:GetData().mail_box_reroll_held_item = false
         if sprite:GetAnimation():match("Pickup") then
             has_rerolled = true
             player:GetData().mail_box_reroll_held_item = true
@@ -66,7 +67,6 @@ local function postNewLevel()
     ROOM_PEDESTALS_IDX = {}
     for i=1, NUM_PEDESTALS do
         local room_idx = Game():GetLevel():GetRandomRoomIndex(false, Game():GetLevel():GetGenerationRNG():Next())
-        print("Item Should spawn in: ".. room_idx)
         ROOM_PEDESTALS_IDX[i] = room_idx
     end
     NUM_PEDESTALS = 0
@@ -74,12 +74,11 @@ end
 
 local function postNewRoom()
     local room_idx = Game():GetLevel():GetCurrentRoomIndex()
-    print("Entered room: "..room_idx)
     for i=1, #ROOM_PEDESTALS_IDX do
         if room_idx == ROOM_PEDESTALS_IDX[i] then
             ROOM_PEDESTALS_IDX[i] = nil
             local room = Game():GetRoom()
-            local spawn_pos = room:FindFreePickupSpawnPosition(room:GetCenterPos(), 0, false, false)
+            local spawn_pos = room:FindFreePickupSpawnPosition(room:GetCenterPos(), 0, true, false)
             
             Game():Spawn(
                 EntityType.ENTITY_PICKUP, 
