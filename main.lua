@@ -21,6 +21,7 @@ include("scripts.items.broken_compass")
 include("scripts.items.cursed_body")
 include("scripts.items.extinguished_candle")
 include("scripts.items.clover_100_leaves")
+include("scripts.items.ophiuchus")
 
 --- Trinkets ---
 include("scripts.trinkets.broken_scissors")
