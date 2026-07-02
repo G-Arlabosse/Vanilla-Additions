@@ -3,6 +3,9 @@
         <Item Name="Calcium" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
         <Item Name="Bell Baby" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="100-Leaf Clover" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Lucky Find" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Withered Flower" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
     <Pool Name="shop">
@@ -14,6 +17,8 @@
     <Pool Name="devil">
 		<Item Name="Fallen Angel" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+        <Item Name="Withered Flower" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Nothingness" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
 
     <!-- angel -->
@@ -45,6 +50,7 @@
 		<Item Name="Cursed Body" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
 		<Item Name="Extinguished Candle" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
 		<Item Name="Cursed D6" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Cursed Spirit" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 
     <!-- keyMaster -->
@@ -53,24 +59,34 @@
 
     <!-- momsChest -->
 
-    <!-- greedTreasure -->
+    <Pool Name="greedTreasure">
+        <Item Name="100-Leaf Clover" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Lucky Find" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Withered Flower" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    </Pool>
 
     <!-- greedBoss -->
 
     <Pool Name="greedShop">
         <Item Name="Calcium" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+        <Item Name="100-Leaf Clover" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
     <Pool Name="greedCurse">
         <Item Name="Corrupted Clover" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
 		<Item Name="Poison Mush" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Cursed D6" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
 		<Item Name="Cursed Body" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
 		<Item Name="Extinguished Candle" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Cursed Spirit" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 
     <Pool Name="greedDevil">
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+        <Item Name="Withered Flower" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Fallen Angel" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+        <Item Name="Nothingness" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 
     <!-- greedAngel -->
@@ -91,7 +107,9 @@
 
     <!-- oldChest -->
 
-    <!-- babyShop -->
+    <Pool Name="babyShop">
+        <Item Name="Bell Baby" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
 
     <!-- woodenChest -->
 
