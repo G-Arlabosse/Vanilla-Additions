@@ -20,22 +20,23 @@ local TRANSFORMATION_TAGS = {
 }
 
 local TRANSFORMATIONS = {
-    [PlayerForm.PLAYERFORM_ADULTHOOD] =         {name="Adult"        ,icon="Adult"},
-    [PlayerForm.PLAYERFORM_ANGEL] =             {name="Seraphim"     ,icon="Seraphim"},
-    [PlayerForm.PLAYERFORM_BABY] =              {name="Conjoined"    ,icon="Conjoined"},
-    [PlayerForm.PLAYERFORM_BOB] =               {name="Bob"          ,icon="Bob"},
-    [PlayerForm.PLAYERFORM_BOOK_WORM] =         {name="Bookworm"     ,icon="Bookworm"},
-    [PlayerForm.PLAYERFORM_DRUGS] =             {name="Spun"         ,icon="Spun"},
-    [PlayerForm.PLAYERFORM_EVIL_ANGEL] =        {name="Leviathan"    ,icon="Leviathan"},
-    [PlayerForm.PLAYERFORM_GUPPY] =             {name="Guppy"        ,icon="Guppy"},
-    [PlayerForm.PLAYERFORM_LORD_OF_THE_FLIES] = {name="Beelzebub"    ,icon="LordoftheFlies"},
-    [PlayerForm.PLAYERFORM_MOM] =               {name="Yes Mother?"  ,icon="Mom"},
-    [PlayerForm.PLAYERFORM_MUSHROOM] =          {name="FunGuy"       ,icon="FunGuy"},
-    [PlayerForm.PLAYERFORM_POOP] =              {name="Oh Crap"      ,icon="OhCrap"},
-    [PlayerForm.PLAYERFORM_SPIDERBABY] =        {name="Spider Baby"  ,icon="SpiderBaby"},
-    [PlayerForm.PLAYERFORM_STOMPY] =            {name="Stompy"       ,icon="Stompy"}
+    [PlayerForm.PLAYERFORM_ADULTHOOD] =         {name="ADULT"        ,icon="Adult"},
+    [PlayerForm.PLAYERFORM_ANGEL] =             {name="ANGEL"     ,icon="Seraphim"},
+    [PlayerForm.PLAYERFORM_BABY] =              {name="CONJOINED"    ,icon="Conjoined"},
+    [PlayerForm.PLAYERFORM_BOB] =               {name="BOB"          ,icon="Bob"},
+    [PlayerForm.PLAYERFORM_BOOK_WORM] =         {name="BOOKWORM"     ,icon="Bookworm"},
+    [PlayerForm.PLAYERFORM_DRUGS] =             {name="SPUN"         ,icon="Spun"},
+    [PlayerForm.PLAYERFORM_EVIL_ANGEL] =        {name="LEVIATHAN"    ,icon="Leviathan"},
+    [PlayerForm.PLAYERFORM_GUPPY] =             {name="GUPPY"        ,icon="Guppy"},
+    [PlayerForm.PLAYERFORM_LORD_OF_THE_FLIES] = {name="LORD_OF_THE_FLIES"    ,icon="LordoftheFlies"},
+    [PlayerForm.PLAYERFORM_MOM] =               {name="MOM"  ,icon="Mom"},
+    [PlayerForm.PLAYERFORM_MUSHROOM] =          {name="MUSHROOM"       ,icon="FunGuy"},
+    [PlayerForm.PLAYERFORM_POOP] =              {name="POOP"      ,icon="OhCrap"},
+    [PlayerForm.PLAYERFORM_SPIDERBABY] =        {name="SPIDERBABY"  ,icon="SpiderBaby"},
+    [PlayerForm.PLAYERFORM_STOMPY] =            {name="STOMPY"       ,icon="Stompy"},
+    -- NECROMANCER
+    -- SuperBum
 }
-
  
 LAST_RARE_CANDY_TRANSFORMAION = nil
 PLAYER_ID = 0
@@ -43,10 +44,12 @@ PLAYER_ID = 0
 local function changeTransformation(previous, new)
    if EID then
         if previous then
-            EID:removeTransformation("collectible", RARE_CANDY_ID, TRANSFORMATIONS[previous].icon)
+            EID:removeTransformation("collectible", RARE_CANDY_ID, EID.TRANSFORMATION[TRANSFORMATIONS[previous].name])
         end
         if new then
-            EID:assignTransformation("collectible", RARE_CANDY_ID, TRANSFORMATIONS[new].icon)
+            print(tostring(TRANSFORMATIONS[new].icon))
+            print(tostring(EID.TRANSFORMATION[TRANSFORMATIONS[new].name]))
+            EID:assignTransformation("collectible", RARE_CANDY_ID, EID.TRANSFORMATION[TRANSFORMATIONS[new].name])
         end
     end
 end
