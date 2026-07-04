@@ -37,7 +37,6 @@ local function postPlayerTriggerEffectRemoved(_,
     item, ---@param item ItemConfigItem
     count
 )
-    print(item.Name, count)
     if item.Name == "Phoenix Boost" then
         player:GetEffects():AddNullEffect(Isaac.GetNullItemIdByName("Phoenix Boost"), false, count-1)
     end
