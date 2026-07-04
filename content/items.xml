@@ -16,7 +16,7 @@
     <passive name="100 Leaves Clover" gfx="clover_100_leaves.png" description="Luck is on your side" quality="3" tags="summonable" luck="5.7" cache="luck"/>
     <passive name="Lucky Find" gfx="lucky_find.png" description="You think you're special?" quality="1" tags="summonable" luck="4" cache="luck"/>
     <passive name="Withered Flower" gfx="withered_flower.png" description="Everything dies eventually" quality="1" tags="summonable" luck="-1" damage="0.75" cache="luck damage"/>
-    <passive name="Ophiuchus" gfx="ophiuchus.png" description="________WIP________" quality="3" tags="summonable" />
+    <passive name="Ophiuchus" gfx="ophiuchus.png" description="The snake wrestler" quality="3" tags="summonable" />
 
     <trinket name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />
     <trinket name="Mimic's Favor" gfx="mimics_favor.png" description="Shiny shiny" />
