@@ -64,7 +64,6 @@ end
 
 
 local function tryMatchAndReplace(_, effect)
-    print("Replace effect")
     local frame = Game():GetFrameCount()
     local bestHash, bestDist = nil, 20 -- distance threshold, tune to taste
 
