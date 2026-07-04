@@ -208,7 +208,20 @@ local function loadItemsDescriptions()
     EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_KEEPER, "Health type stays unchanged", nil, nil, nil, true)
     EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_THELOST, "Health type stays unchanged and damage bonus isn't applied", nil, nil, nil, true)
     EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_THEFORGOTTEN, "Health type stays unchanged", nil, nil, nil, true)
+    
+    --- Ophiuchus ---
+    description = 
+    [[{{Poison}} 10% chance to fire homing snakes that deal 2x Isaac's damage and inflict poison
+    #{{Luck}} 100% chance at 15 luck]]
+    EID:addCollectible(OPHIUCHUS_ID, description)
 end
+
+
+
+
+
+
+
 
 local function loadTrinketsDescriptions()
     if not EID then return end

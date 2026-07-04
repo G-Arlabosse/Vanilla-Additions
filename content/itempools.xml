@@ -6,6 +6,7 @@
         <Item Name="100-Leaf Clover" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Lucky Find" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Withered Flower" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Ophiuchus" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
     <Pool Name="shop">
@@ -63,6 +64,7 @@
         <Item Name="100-Leaf Clover" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Lucky Find" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Withered Flower" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Ophiuchus" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
     <!-- greedBoss -->
