@@ -207,6 +207,14 @@ local function loadItemsDescriptions()
     EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_KEEPER, "Health type stays unchanged", nil, nil, nil, true)
     EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_THELOST, "Health type stays unchanged and damage bonus isn't applied", nil, nil, nil, true)
     EID:addPlayerCondition(NOTHINGNESS_ID, PlayerType.PLAYER_THEFORGOTTEN, "Health type stays unchanged", nil, nil, nil, true)
+
+    --- Phoenix ---
+    description =
+    [[Flight
+    #{{ArrowUp}} +1 Life
+    #Phoenix revives Isaac in the current room with a temporary Invicibility
+    #Isaac revives with a temporary Speed, Damage and Tears boost after dying that decays over time]]
+    EID:addCollectible(PHOENIX_ID, description)
 end
 
 local function loadTrinketsDescriptions()

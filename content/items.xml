@@ -21,7 +21,7 @@
     <active     id="19" name="Mail Box"             gfx="mail_box.png"              desciption="Upcoming Delivery !"            quality="2" maxcharges="2" chargetype="normal" />
     <passive    id="20" name="Holed Pockets"        gfx="holed_pockets.png"         description="Coins run away from you"        quality="1" tags="summonable" />
     <passive    id="22" name="Nothingness"          gfx="nothingness.png"           description="..."                           quality="4" tags="summonable" customcache="healthtype" cache="damage firedelay tearflag tearcolor shotspeed"/>
-    <passive    id="26" name="Phoenix"              gfx="phoenix.png"               description="Rebirth from your ashes"       quality="3" tags="summonable" />
+    <passive    id="26" name="Phoenix"              gfx="phoenix.png"               description="Rebirth from your ashes"       quality="3" tags="summonable" cache="flying" />
 
 
     <trinket name="Broken Scissors" gfx="broken_scissors.png" description="As sharp as ever" />

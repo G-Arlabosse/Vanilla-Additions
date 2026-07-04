@@ -3,6 +3,7 @@
         <Item Name="Calcium" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
         <Item Name="Bell Baby" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Phoenix" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
     <Pool Name="shop">
@@ -16,7 +17,9 @@
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
 
-    <!-- angel -->
+    <Pool Name="angel">
+        <Item Name="Phoenix" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
 
     <Pool Name="secret">
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -53,7 +56,9 @@
 
     <!-- momsChest -->
 
-    <!-- greedTreasure -->
+    <Pool Name="greedTreasure">
+        <Item Name="Phoenix" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>    
 
     <!-- greedBoss -->
 
@@ -73,7 +78,9 @@
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
 
-    <!-- greedAngel -->
+    <Pool Name="greedAngel">
+        <Item Name="Phoenix" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
 
     <Pool Name="greedSecret">
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>

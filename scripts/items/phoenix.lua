@@ -48,3 +48,11 @@ Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, postAddCollectible, PHOENI
 
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_REVIVE, postPlayerRevive)
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_TRIGGER_EFFECT_REMOVED, postPlayerTriggerEffectRemoved)
+
+local function evaluteFly(_, player, cache) ---@param player EntityPlayer
+    if player:HasCollectible(PHOENIX_ID) then
+        player.CanFly = true
+    end
+end
+
+Mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluteFly, CacheFlag.CACHE_FLYING)
