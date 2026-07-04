@@ -3,6 +3,7 @@
         <Item Name="Calcium" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Rare Candy" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
         <Item Name="Bell Baby" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Ophiuchus" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
     <Pool Name="shop">
@@ -53,7 +54,9 @@
 
     <!-- momsChest -->
 
-    <!-- greedTreasure -->
+    <Pool Name="greedTreasure">
+        <Item Name="Ophiuchus" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    </Pool>
 
     <!-- greedBoss -->
 

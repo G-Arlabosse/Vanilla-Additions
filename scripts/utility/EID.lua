@@ -152,7 +152,20 @@ local function loadItemsDescriptions()
     [[{{ArrowUp}} +0.75 Damage
     #{{ArrowDown}} -1 Luck]]
     EID:addCollectible(WITHERED_FLOWER_ID, description)
+    
+    --- Ophiuchus ---
+    description = 
+    [[{{Poison}} 10% chance to fire homing snakes that deal 2x Isaac's damage and inflict poison
+    #{{Luck}} 100% chance at 15 luck]]
+    EID:addCollectible(OPHIUCHUS_ID, description)
 end
+
+
+
+
+
+
+
 
 local function loadTrinketsDescriptions()
     if not EID then return end
