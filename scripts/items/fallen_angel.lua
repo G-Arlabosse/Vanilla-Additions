@@ -1,5 +1,4 @@
 local item_config = Isaac.GetItemConfig()
-local pending_morhped_items = {}
 local devil_pickups = {}
 local FALLEN_ANGEL_ID = Isaac.GetItemIdByName("Fallen Angel")
 local collision = false
@@ -44,17 +43,15 @@ local function ChangePrice (
 )
     local closestPlayer = GetClosestPlayer(pickup)
     if closestPlayer and pickup and 
-        (devil_pickups[pickup.Index].player ~= closestPlayer.Index) and
         pickup.Price ~= 0 then
 
-        devil_pickups[pickup.Index].player = closestPlayer.Index
 
         local playerHearts = closestPlayer:GetHearts()
         local pickup_devil_price = item_config:GetCollectible(pickup.SubType).DevilPrice
-        local playerType = closestPlayer:GetPlayerType()
+        local playerHealthType = closestPlayer:GetHealthType()
         
-        -- KEEPER/T KEEPER --
-        if playerType == PlayerType.PLAYER_KEEPER or playerType == playerType == PlayerType.PLAYER_KEEPER_B then
+        -- COINS --
+        if playerHealthType == HealthType.COIN then
             pickup.AutoUpdatePrice = true
             if PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_STEAM_SALE) then
                 pickup.Price = math.floor(15*pickup_devil_price/2)
@@ -63,20 +60,23 @@ local function ChangePrice (
                 pickup.Price = 15*pickup_devil_price
                 pickup.ShopItemId = -1
             end
-        -- T BLUE BABY/T JUDAS --
-        elseif playerType == PlayerType.PLAYER_BLUEBABY_B or playerType == PlayerType.PLAYER_JUDAS_B or playerType == PlayerType.PLAYER_BETHANY_B then
-            pickup.Price = PickupPrice.PRICE_THREE_SOULHEARTS
-            pickup.AutoUpdatePrice = false
-        -- BLUE BABY --
-        elseif playerType == PlayerType.PLAYER_BLUEBABY then
-            if pickup_devil_price == -PickupPrice.PRICE_ONE_HEART then
-                pickup.Price = PickupPrice.PRICE_ONE_SOUL_HEART
+        -- SOUL HEARTS --
+        elseif playerHealthType == HealthType.SOUL then
+            -- Tainted Characters --
+            if EntityConfig.GetPlayer(closestPlayer:GetPlayerType()):IsTainted() then
+                pickup.Price = PickupPrice.PRICE_THREE_SOULHEARTS
                 pickup.AutoUpdatePrice = false
-            elseif pickup_devil_price == -PickupPrice.PRICE_TWO_HEARTS then
-                pickup.Price = PickupPrice.PRICE_TWO_SOUL_HEARTS
-                pickup.AutoUpdatePrice = false
+            else
+                if pickup_devil_price == -PickupPrice.PRICE_ONE_HEART then
+                    pickup.Price = PickupPrice.PRICE_ONE_SOUL_HEART
+                    pickup.AutoUpdatePrice = false
+                elseif pickup_devil_price == -PickupPrice.PRICE_TWO_HEARTS then
+                    pickup.Price = PickupPrice.PRICE_TWO_SOUL_HEARTS
+                    pickup.AutoUpdatePrice = false
+                end
             end
-        -- OTHER CHARACTERS --
+            
+        -- RED / BONE --
         else
             -- ONE HEART COST --
             if pickup_devil_price == -PickupPrice.PRICE_ONE_HEART then    
@@ -277,19 +277,6 @@ Mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, OnNPCInit)
 Mod:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AddCollectible)
 
 
-local function HealthUpdate (_,
-    player, --EntityPlayer 
-    string, ---CustomCacheTag 
-    value ---float
-)
-    for _,data in pairs(devil_pickups) do
-        data.player = nil
-    end
-end
-
-Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_ADD_HEARTS, HealthUpdate)
-
-
 local function UpdateAllPrices()
     if FallenAngelActive() then
         print("CHANGE ALL")
@@ -297,7 +284,6 @@ local function UpdateAllPrices()
         for i=1, #pedestals do
             local pickup = pedestals[i]:ToPickup()
             if pickup and pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
-                devil_pickups[pickup.Index].player = nil
                 ChangePrice(pickup)
             end
         end
