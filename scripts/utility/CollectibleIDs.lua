@@ -22,6 +22,7 @@ MAIL_BOX_ID = Isaac.GetItemIdByName("Mail Box")
 HOLED_POCKETS_ID = Isaac.GetItemIdByName("Holed Pockets")
 NOTHINGNESS_ID = Isaac.GetItemIdByName("Nothingness")
 OPHIUCHUS_ID = Isaac.GetItemIdByName("Ophiuchus")
+PHOENIX_ID = Isaac.GetItemIdByName("Phoenix")
 
 --- Trinket IDs ---
 BROKEN_SCISSORS_ID = Isaac.GetTrinketIdByName("Broken Scissors")

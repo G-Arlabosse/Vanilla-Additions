@@ -214,6 +214,14 @@ local function loadItemsDescriptions()
     [[{{Poison}} 10% chance to fire homing snakes that deal 2x Isaac's damage and inflict poison
     #{{Luck}} 100% chance at 15 luck]]
     EID:addCollectible(OPHIUCHUS_ID, description)
+
+    --- Phoenix ---
+    description =
+    [[Flight
+    #{{ArrowUp}} +1 Life
+    #Phoenix revives Isaac in the current room with a temporary Invicibility
+    #Isaac revives with a temporary Speed, Damage and Tears boost after dying that decays over time]]
+    EID:addCollectible(PHOENIX_ID, description)
 end
 
 

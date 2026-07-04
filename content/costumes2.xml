@@ -1,3 +1,4 @@
 <costumes anm2root="gfx/characters/">
     <costume id="16" anm2path="nova_stars.anm2" type="passive"/>
+    <costume id="26" anm2path="phoenix_wings.anm2" type="passive" isFlying="true"/>
 </costumes>

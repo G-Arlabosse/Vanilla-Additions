@@ -27,6 +27,7 @@ include("scripts.items.mail_box")
 include("scripts.items.holed_pockets")
 include("scripts.items.nothingness")
 include("scripts.items.ophiuchus")
+include("scripts.items.phoenix")
 
 --- Trinkets ---
 include("scripts.trinkets.broken_scissors")

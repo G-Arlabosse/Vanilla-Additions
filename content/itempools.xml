@@ -7,6 +7,7 @@
         <Item Name="Lucky Find" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Withered Flower" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Ophiuchus" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Phoenix" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     </Pool>
 
     <Pool Name="shop">
@@ -22,7 +23,9 @@
         <Item Name="Nothingness" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
     </Pool>
 
-    <!-- angel -->
+    <Pool Name="angel">
+        <Item Name="Phoenix" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
 
     <Pool Name="secret">
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -65,7 +68,8 @@
         <Item Name="Lucky Find" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Withered Flower" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
         <Item Name="Ophiuchus" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
-    </Pool>
+        <Item Name="Phoenix" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>    
 
     <!-- greedBoss -->
 
@@ -91,7 +95,9 @@
         <Item Name="Nothingness" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 
-    <!-- greedAngel -->
+    <Pool Name="greedAngel">
+        <Item Name="Phoenix" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+    </Pool>
 
     <Pool Name="greedSecret">
         <Item Name="Life Orb" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
