@@ -93,6 +93,7 @@ local function loadItemsDescriptions()
     #{{Pill}} Pills are turned into Horse Pills
     #{{GoldenChest}} Golden Chests are turned into Giant Chests]]
     EID:addCollectible(POISON_MUSH_ID, description)
+    EID:assignTransformation("collectible", POISON_MUSH_ID, EID.TRANSFORMATION["MUSHROOM"])
     EID:addCondition(POISON_MUSH_ID, POISON_MUSH_ID, "No additional effect from multiple copies")
 
     --- Broken Compass ---

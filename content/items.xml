@@ -8,7 +8,7 @@
     <passive    id="6"  name="Ominous Door"         gfx="ominous_door.png"          description="And he walks"                  quality="2" />
     <passive    id="7"  name="Corrupted Clover"     gfx="corrupted_clover.png"      description="May the blindness be with you" quality="2" tags="summonable" />
     <passive    id="8"  name="Cursed Map"           gfx="cursed_map.png"            description="Full non-visible map"          quality="1" tags="summonable" />
-    <passive    id="9"  name="Poison Mush"          gfx="poison_mush.png"           description="Everything feels bigger"       quality="1" tags="summonable" achievement="Poison Mush"  />
+    <passive    id="9"  name="Poison Mush"          gfx="poison_mush.png"           description="Everything feels bigger"       quality="1" tags="summonable mushroom" achievement="Poison Mush"  />
     <active     id="10" name="Cursed D6"            gfx="cursed_d6.png"             description="Rerolls.. but at what cost ?"  quality="4" maxcharges="4" chargetype="normal" />
     <passive    id="11" name="Broken Compass"       gfx="broken_compass.png"        description="The house grew larger"         quality="0" tags="summonable" />
     <passive    id="12" name="Cursed Body"          gfx="cursed_body.png"           description="Precious Life"                 quality="2" tags="summonable" />
